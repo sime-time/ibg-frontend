@@ -1,9 +1,9 @@
 /// <reference types="@solidjs/start/env" />
 
 interface ImportMetaEnv {
-  readonly POCKETBASE_URL: string;
-  readonly POCKETBASE_EMAIL: string;
-  readonly POCKETBASE_PASSWORD: string;
+  readonly VITE_POCKETBASE_URL: string;
+  readonly VITE_POCKETBASE_EMAIL: string;
+  readonly VITE_POCKETBASE_PASSWORD: string;
 }
 
 interface ImportMeta {
