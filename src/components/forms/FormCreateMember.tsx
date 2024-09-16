@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { useLocation, useNavigate, A } from "@solidjs/router";
 import { createMember } from "~/lib/CreateMember";
 import FormInput from "~/components/ui/FormInput";
@@ -57,12 +57,12 @@ export default function FormCreateMember() {
   return (
     <form onSubmit={submitMember} class="w-full flex justify-center">
       <Card class="bg-white text-black w-full md:w-1/3">
-        {onSignUpPage &&
+        <Show when={onSignUpPage} fallback={<CardHeader><CardTitle>Create a new member</CardTitle></CardHeader>}>
           <CardHeader>
             <CardTitle>Already a Member?</CardTitle>
             <CardDescription><A href="/login" class="underline text-red-700">Go to login</A></CardDescription>
           </CardHeader>
-        }
+        </Show>
         <CardContent class="flex flex-col gap-4">
           <FormInput type="text" name="fullName" label="Full Name" required={true} value={fullName()} setValue={setFullName} />
           <FormInput type="email" name="email" label="Email" required={true} value={email()} setValue={setEmail} />

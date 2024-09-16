@@ -19,7 +19,8 @@ export default function MemberDashboard() {
       when={pb.authStore.isValid && !pb.authStore.isAdmin}
       fallback={
         <main class="text-white text-center">
-          <p>You do not have access to this page. <A href="/login" class="underline">Go to login</A></p>
+          <p>You do not have access to this page. </p>
+          <p>Are you already a member? <A href="/login" class="underline">Go to login</A></p>
         </main>
       }
     >

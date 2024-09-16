@@ -22,6 +22,9 @@ export default function Nav() {
         <li class={`border-b-2 ${active("/dashboard-member")} mx-1.5 sm:mx-6`}>
           <a href="/dashboard-member">Dashboard (Member)</a>
         </li>
+        <li class={`border-b-2 ${active("/dashboard-coach")} mx-1.5 sm:mx-6`}>
+          <a href="/dashboard-coach">Dashboard (Coach)</a>
+        </li>
       </ul>
     </nav>
   );
