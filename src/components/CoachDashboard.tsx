@@ -62,7 +62,7 @@ export default function CoachDashboard() {
             <li>
               <div class="inline-flex items-center justify-between w-full">
                 <p>{member.name} : {member.email}</p>
-                <div>
+                <div class="inline-flex">
                   <Dialog>
                     <DialogTrigger as={Button} class="p-3 border rounded-md border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500/30 ml-3">Edit</DialogTrigger>
                     <DialogContent>

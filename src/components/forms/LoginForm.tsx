@@ -38,13 +38,7 @@ export default function LoginForm(props: LoginFormProps) {
   }
 
   return (
-    <form onSubmit={login} class="bg-white text-black rounded-lg p-6 flex flex-col gap-4 w-5/6 md:w-1/4">
-      <Show when={props.loginType === "member"} fallback={<h2 class="font-bold text-lg">Coach Login</h2>}>
-        <div>
-          <h2 class="font-bold text-lg">Member Login</h2>
-          <p class="text-sm">Are you new here? <A href="/signup" class="underline text-red-700">Sign up now</A></p>
-        </div>
-      </Show>
+    <form onSubmit={login} class="flex flex-col gap-4">
       <FormInput type="email" name="email" label="Email" required={false} value={email()} setValue={setEmail} />
       <FormInput type="password" name="password" label="Password" required={false} value={password()} setValue={setPassword} />
       {error() && <p class="text-red-500">{error()}</p>}
