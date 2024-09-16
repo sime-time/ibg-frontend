@@ -1,9 +1,9 @@
-import { createSignal, Show } from "solid-js";
-import { useNavigate, A } from "@solidjs/router";
+import { createSignal } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 import FormInput from "~/components/ui/FormInput";
 import { loginAuth } from "~/lib/LoginAuth";
 import { Button } from "~/components/ui/Button";
-import { AccountType } from "~/global";
+import { AccountType } from "~/lib/AccountType";
 
 interface LoginFormProps {
   accountType: string;

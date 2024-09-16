@@ -1,15 +1,10 @@
 import Pocketbase from "pocketbase";
-import { useNavigate, A } from "@solidjs/router";
+import { A } from "@solidjs/router";
 import LogoutButton from "./LogoutButton";
 
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
 export default function MemberDashboard() {
-  const navigate = useNavigate();
-  const logOut = async () => {
-    pb.authStore.clear();
-    navigate("/login");
-  }
 
   if (!pb.authStore.isValid || pb.authStore.isAdmin) {
     return (

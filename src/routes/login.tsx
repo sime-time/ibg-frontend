@@ -9,7 +9,7 @@ import {
   CardTitle
 } from "~/components/ui/Card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/Tabs"
-import { AccountType } from "~/global";
+import { AccountType } from "~/lib/AccountType";
 
 export default function Login() {
   return (

@@ -1,6 +1,6 @@
-import { createSignal, createResource, For, Show } from "solid-js";
+import { createResource, For, Show } from "solid-js";
 import Pocketbase from "pocketbase";
-import { useNavigate, A } from "@solidjs/router";
+import { A } from "@solidjs/router";
 import FormCreateMember from "~/components/forms/FormCreateMember";
 import FormUpdateMember from "~/components/forms/FormUpdateMember";
 import LogoutButton from "./LogoutButton";
@@ -62,6 +62,7 @@ export default function CoachDashboard() {
             <li>
               <div class="inline-flex items-center justify-between w-full">
                 <p>{member.name} : {member.email}</p>
+
                 <div class="inline-flex">
                   <Dialog>
                     <DialogTrigger as={Button} class="p-3 border rounded-md border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500/30 ml-3">Edit</DialogTrigger>
@@ -86,6 +87,7 @@ export default function CoachDashboard() {
                     </DialogContent>
                   </Dialog>
                 </div>
+
               </div>
             </li>
           }
