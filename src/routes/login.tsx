@@ -24,8 +24,8 @@ export default function Login() {
       <Tabs defaultValue={LoginType.Member} class="w-[400px]">
 
         <TabsList class="grid w-full grid-cols-2">
-          <TabsTrigger value={LoginType.Member}>Member</TabsTrigger>
-          <TabsTrigger value={LoginType.Coach}>Coach</TabsTrigger>
+          <TabsTrigger value={LoginType.Member}>I'm a Member</TabsTrigger>
+          <TabsTrigger value={LoginType.Coach}>I'm a Coach</TabsTrigger>
         </TabsList>
 
         <TabsContent value={LoginType.Member}>
