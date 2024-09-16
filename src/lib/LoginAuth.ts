@@ -17,7 +17,7 @@ const LoginSchema = v.object({
 
 type LoginData = v.InferOutput<typeof LoginSchema>;
 
-export const loginAuth = async (userType: string, loginData: LoginData, setError: Setter<string>): Promise<boolean> => {
+export const loginAuth = async (accountType: string, loginData: LoginData, setError: Setter<string>): Promise<boolean> => {
   const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_URL);
 
   try {
@@ -27,7 +27,7 @@ export const loginAuth = async (userType: string, loginData: LoginData, setError
     // "logout" of the last authenticated model 
     pb.authStore.clear();
 
-    if (userType === "member") {
+    if (accountType === "member") {
       await pb.collection("member").authWithPassword(
         validLogin.email,
         validLogin.password,

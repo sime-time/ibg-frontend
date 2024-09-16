@@ -33,7 +33,7 @@ export default function LogoutButton(props: LogoutButtonProps) {
           <DialogTitle>Are you sure you want to log out?</DialogTitle>
           <DialogDescription>You will be redirected to the login page.</DialogDescription>
         </DialogHeader>
-        <Button onClick={logOut} class="bg-red-600/90 hover:bg-red-700 text-white mt-3">Yes</Button>
+        <Button onClick={logOut} class="bg-red-600/90 hover:bg-red-700 text-white mt-2">Yes</Button>
       </DialogContent>
     </Dialog>
   );

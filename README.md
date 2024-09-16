@@ -14,14 +14,14 @@ In this program, there are 2 types of users, members and coaches.
 Coaches are administrators.
 Members are the customers that pay a monthly subscription to attend the gym. 
 
-## Coach Requirements 
-- a coach should be able to view all the current members. 
-- a coach should be able to see the current members 
-- a coach should be able to see all payments and profit made in within a timeframe.  
+## Coaches should be able to:  
+- view all the current members.
+- view all payments and profit made within a chosen timeframe.  
 
-## Member Requirements
-- a member should be able to signup and login. 
-- a member should be able to pay a monthly subscription for gym access.  
+## Members should be able to:   
+- signup and login account. 
+- pay a monthly subscription for gym access.  
+- change their name and password.
 
 ## How to run 
 

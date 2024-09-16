@@ -3,9 +3,10 @@ import { useNavigate, A } from "@solidjs/router";
 import FormInput from "~/components/ui/FormInput";
 import { loginAuth } from "~/lib/LoginAuth";
 import { Button } from "~/components/ui/Button";
+import { AccountType } from "~/global";
 
 interface LoginFormProps {
-  loginType: string;
+  accountType: string;
 }
 
 export default function LoginForm(props: LoginFormProps) {
@@ -24,11 +25,11 @@ export default function LoginForm(props: LoginFormProps) {
     }
 
     try {
-      const successful = loginAuth(props.loginType, formData, setError);
+      const successful = loginAuth(props.accountType, formData, setError);
       if (await successful) {
-        if (props.loginType === "member") {
+        if (props.accountType === AccountType.Member) {
           navigate("/dashboard-member");
-        } else if (props.loginType === "coach") {
+        } else if (props.accountType === AccountType.Coach) {
           navigate("/dashboard-coach")
         }
       }

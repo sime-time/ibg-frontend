@@ -69,14 +69,14 @@ export const createMember = async (memberData: MemberData, setError: Setter<stri
     const memberId = record.id;
 
     // add the phone number of this member
-    await pb.collection("member_phone_number").create({
+    await pb.collection("member_phone").create({
       "member_id": [memberId],
       "phone": validMember.phone,
       "phone_type_id": [PhoneType.Mobile],
     });
 
     // add the emergency number 
-    await pb.collection("member_phone_number").create({
+    await pb.collection("member_phone").create({
       "member_id": [memberId],
       "phone": validMember.emergencyPhone,
       "phone_type_id": [PhoneType.Emergency],
