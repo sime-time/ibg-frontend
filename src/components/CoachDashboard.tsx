@@ -4,11 +4,20 @@ import { useNavigate, A } from "@solidjs/router";
 import FormCreateMember from "~/components/forms/FormCreateMember";
 import FormUpdateMember from "~/components/forms/FormUpdateMember";
 import { MemberRecord } from "~/lib/MemberRecord";
+import { Button } from "~/components/ui/Button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "~/components/ui/Dialog"
 
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
 export default function CoachDashboard() {
-  const [selectedToUpdate, setSelectedToUpdate] = createSignal("");
   const [selectedToDelete, setSelectedToDelete] = createSignal("");
   const [openCreateMember, setOpenCreateMember] = createSignal(false);
   const navigate = useNavigate();
@@ -26,17 +35,6 @@ export default function CoachDashboard() {
     setOpenCreateMember(prev => !prev);
   }
 
-  const handleUpdate = (memberId: string) => {
-    // unfocus delete selection
-    setSelectedToDelete("");
-    setSelectedToUpdate(memberId);
-  }
-
-  const handleDelete = (memberId: string) => {
-    setSelectedToUpdate("");
-    setSelectedToDelete(memberId);
-  }
-
   const confirmDelete = async (memberId: string) => {
     try {
       await pb.collection("member").delete(memberId);
@@ -47,8 +45,6 @@ export default function CoachDashboard() {
       console.error("Error deleting member: ", err);
     }
   }
-
-
 
   if (!pb.authStore.isValid || !pb.authStore.isAdmin) {
     return (
@@ -62,18 +58,16 @@ export default function CoachDashboard() {
   const coach = pb.authStore.model;
 
   return (
-    <div class="flex flex-col justify-center items-center">
-      <h2>Welcome, {coach?.email}!</h2>
-      <button type="button" onClick={toggleCreateMember} class="bg-blue-600/90 hover:bg-blue-700 text-white rounded-md py-3 px-5 mt-2 font-bold">{openCreateMember() ? "Close" : "Create New Member"}</button>
-      <Show when={openCreateMember()} fallback={<></>}>
-        <FormCreateMember />
-      </Show>
+    <div class="flex flex-col justify-center items-center gap-5">
+      <h2 class="text-2xl">Welcome, {coach?.email}!</h2>
+
       <Show when={members.loading}>
         <p>Loading members...</p>
       </Show>
       <Show when={members.error}>
         <p>Error loading members: {members.error.message}</p>
       </Show>
+
       <ul class="flex flex-col gap-4 my-4">
         <For each={members()}>
           {(member, index) =>
@@ -81,28 +75,48 @@ export default function CoachDashboard() {
               <div class="inline-flex items-center justify-between w-full">
                 <p>{member.name} : {member.email}</p>
                 <div>
-                  <button type="button" onClick={() => handleUpdate(member.id)} class="p-3 border rounded-md border-blue-500 text-blue-500 ml-3">Edit</button>
-                  <button type="button" onClick={() => handleDelete(member.id)} class="p-3 border rounded-md border-red-500 text-red-500 ml-3">Delete</button>
+                  <Dialog>
+                    <DialogTrigger as={Button} class="p-3 border rounded-md border-blue-500 text-blue-500 bg-transparent hover:bg-blue-500/30 ml-3">Edit</DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Edit Member Profile</DialogTitle>
+                        <DialogDescription>
+                          Make changes to a member here. Click update when you are done.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <FormUpdateMember pb={pb} memberId={member.id} />
+                    </DialogContent>
+                  </Dialog>
+
+                  <Dialog>
+                    <DialogTrigger as={Button} class="p-3 border rounded-md border-red-500 text-red-500 bg-transparent hover:bg-red-500/30 ml-3">Delete</DialogTrigger>
+                    <DialogContent class="flex flex-col gap-5">
+                      <DialogHeader>
+                        <DialogTitle>Are you sure you want to delete {member.name}?</DialogTitle>
+                      </DialogHeader>
+                      <Button onClick={() => confirmDelete(member.id)} class="bg-red-600/90 hover:bg-red-700 text-white">Yes, delete</Button>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </div>
-              {selectedToDelete() === member.id && (
-                <div>
-                  <p>Are you sure you want to delete this member?</p>
-                  <button type="button" onClick={() => confirmDelete(member.id)} class="p-3 border rounded-md">Yes</button>
-                  <button type="button" onClick={() => setSelectedToDelete("")} class="p-3 border rounded-md">No</button>
-                </div>
-              )}
-              {selectedToUpdate() === member.id && (
-                <div>
-                  <FormUpdateMember pb={pb} memberId={member.id} />
-                  <button type="button" onClick={() => setSelectedToUpdate("")} class="p-3 border rounded-md w-full text-center">Cancel</button>
-                </div>
-              )}
             </li>
           }
         </For>
       </ul>
-      <button type="button" onClick={logOut} class="bg-red-600/90 hover:bg-red-700 text-white rounded-md py-3 px-5 mt-2 font-bold">Logout</button>
+
+      <div class="flex gap-5">
+        <Dialog>
+          <DialogTrigger as={Button} class="bg-blue-600/90 hover:bg-blue-700 text-white py-3 px-5">Create New Member</DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create a New Member</DialogTitle>
+              <DialogDescription>Add a new member to the gym. The member must be aware of what their password is.</DialogDescription>
+            </DialogHeader>
+            <FormCreateMember />
+          </DialogContent>
+        </Dialog>
+        <Button onClick={logOut} class="bg-red-600/90 hover:bg-red-700 text-white py-3 px-5">Logout</Button>
+      </div>
     </div>
   );
 }

@@ -45,7 +45,7 @@ export default function FormUpdateMember(props: UpdateMemberProps) {
 
       {error() && <p class="text-red-500">{error()}</p>}
 
-      <button type="submit" class="bg-blue-600/90 hover:bg-blue-700 text-white rounded-md py-3 px-5 mt-2 font-bold">Update Member</button>
+      <button type="submit" class="bg-blue-600/90 hover:bg-blue-700 text-white rounded-md py-3 px-5 mt-2 font-bold">Update</button>
     </form>
   );
 

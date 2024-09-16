@@ -1,16 +1,8 @@
-import { createSignal, Show } from "solid-js";
-import { useLocation, useNavigate, A } from "@solidjs/router";
+import { createSignal } from "solid-js";
+import { useLocation, useNavigate } from "@solidjs/router";
 import { createMember } from "~/lib/CreateMember";
 import FormInput from "~/components/ui/FormInput";
 import { Button } from "~/components/ui/Button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from "~/components/ui/Card"
 
 export default function FormCreateMember() {
   const [fullName, setFullName] = createSignal("");
@@ -55,28 +47,15 @@ export default function FormCreateMember() {
   }
 
   return (
-    <form onSubmit={submitMember} class="w-full flex justify-center">
-      <Card class="bg-white text-black w-full md:w-1/3">
-        <Show when={onSignUpPage} fallback={<CardHeader><CardTitle>Create a new member</CardTitle></CardHeader>}>
-          <CardHeader>
-            <CardTitle>Already a Member?</CardTitle>
-            <CardDescription><A href="/login" class="underline text-red-700">Go to login</A></CardDescription>
-          </CardHeader>
-        </Show>
-        <CardContent class="flex flex-col gap-4">
-          <FormInput type="text" name="fullName" label="Full Name" required={true} value={fullName()} setValue={setFullName} />
-          <FormInput type="email" name="email" label="Email" required={true} value={email()} setValue={setEmail} />
-          <FormInput type="tel" name="phone" label="Phone" placeholder="317-123-4567" required={true} value={phone()} setValue={setPhone} />
-          <FormInput type="tel" name="emergencyPhone" label="Emergency Phone" placeholder="317-987-6543" required={true} value={emergencyPhone()} setValue={setEmergencyPhone} />
-          <FormInput type="password" name="password" label="Password" required={true} value={password()} setValue={setPassword} />
-          <FormInput type="password" name="passwordConfirm" label="Confirm Password" required={true} value={passwordConfirm()} setValue={setPasswordConfirm} />
-        </CardContent>
-        <CardFooter class="flex flex-col gap-4 items-start">
-          {error() && <p class="text-red-500">{error()}</p>}
-          <Button type="submit" class="bg-red-600/90 hover:bg-red-700 text-white font-bold w-full">Submit</Button>
-        </CardFooter>
-      </Card>
-
-    </form>
+    <form onSubmit={submitMember} class="flex flex-col gap-4">
+      <FormInput type="text" name="fullName" label="Full Name" required={true} value={fullName()} setValue={setFullName} />
+      <FormInput type="email" name="email" label="Email" required={true} value={email()} setValue={setEmail} />
+      <FormInput type="tel" name="phone" label="Phone" placeholder="317-123-4567" required={true} value={phone()} setValue={setPhone} />
+      <FormInput type="tel" name="emergencyPhone" label="Emergency Phone" placeholder="317-987-6543" required={true} value={emergencyPhone()} setValue={setEmergencyPhone} />
+      <FormInput type="password" name="password" label="Password" required={true} value={password()} setValue={setPassword} />
+      <FormInput type="password" name="passwordConfirm" label="Confirm Password" required={true} value={passwordConfirm()} setValue={setPasswordConfirm} />
+      {error() && <p class="text-red-500">{error()}</p>}
+      <Button type="submit" class={`text-white w-full ${onSignUpPage ? "bg-red-600/90 hover:bg-red-700" : "bg-blue-600/90 hover:bg-blue-700"}`}>Submit</Button>
+    </form >
   );
 }
