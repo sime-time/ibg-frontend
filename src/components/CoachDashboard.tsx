@@ -3,6 +3,7 @@ import Pocketbase from "pocketbase";
 import { useNavigate, A } from "@solidjs/router";
 import FormCreateMember from "~/components/forms/FormCreateMember";
 import FormUpdateMember from "~/components/forms/FormUpdateMember";
+import LogoutButton from "./LogoutButton";
 import { MemberRecord } from "~/lib/MemberRecord";
 import { Button } from "~/components/ui/Button"
 import {
@@ -18,28 +19,15 @@ import {
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
 export default function CoachDashboard() {
-  const [selectedToDelete, setSelectedToDelete] = createSignal("");
-  const [openCreateMember, setOpenCreateMember] = createSignal(false);
-  const navigate = useNavigate();
 
   const [members, { mutate, refetch }] = createResource(async () => {
     return await pb.collection("member").getFullList<MemberRecord>();
   });
 
-  const logOut = async () => {
-    pb.authStore.clear();
-    navigate("/login");
-  }
-
-  const toggleCreateMember = () => {
-    setOpenCreateMember(prev => !prev);
-  }
-
   const confirmDelete = async (memberId: string) => {
     try {
       await pb.collection("member").delete(memberId);
       refetch();
-      setSelectedToDelete("");
       console.log(`Member id:${memberId} deleted from database.`);
     } catch (err) {
       console.error("Error deleting member: ", err);
@@ -48,10 +36,10 @@ export default function CoachDashboard() {
 
   if (!pb.authStore.isValid || !pb.authStore.isAdmin) {
     return (
-      <main class="text-white text-center">
+      <div class="text-white text-center">
         <p>You do not have access to this page.</p>
-        <p>Already have an account? <A href="/login" class="underline">Go to login</A></p>
-      </main>
+        <p>Already have an account? <A href="/login" class="underline text-red-700">Go to login</A></p>
+      </div>
     );
   }
 
@@ -90,11 +78,11 @@ export default function CoachDashboard() {
 
                   <Dialog>
                     <DialogTrigger as={Button} class="p-3 border rounded-md border-red-500 text-red-500 bg-transparent hover:bg-red-500/30 ml-3">Delete</DialogTrigger>
-                    <DialogContent class="flex flex-col gap-5">
+                    <DialogContent>
                       <DialogHeader>
                         <DialogTitle>Are you sure you want to delete {member.name}?</DialogTitle>
                       </DialogHeader>
-                      <Button onClick={() => confirmDelete(member.id)} class="bg-red-600/90 hover:bg-red-700 text-white">Yes, delete</Button>
+                      <Button onClick={() => confirmDelete(member.id)} class="bg-red-600/90 hover:bg-red-700 text-white mt-3">Yes, delete</Button>
                     </DialogContent>
                   </Dialog>
                 </div>
@@ -115,7 +103,8 @@ export default function CoachDashboard() {
             <FormCreateMember />
           </DialogContent>
         </Dialog>
-        <Button onClick={logOut} class="bg-red-600/90 hover:bg-red-700 text-white py-3 px-5">Logout</Button>
+
+        <LogoutButton pb={pb} />
       </div>
     </div>
   );

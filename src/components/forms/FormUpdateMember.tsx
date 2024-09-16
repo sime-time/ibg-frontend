@@ -1,10 +1,10 @@
 import { createEffect, createSignal } from "solid-js";
-import PocketBase from "pocketbase";
+import Pocketbase from "pocketbase";
 import { updateMember } from "~/lib/UpdateMember";
 import FormInput from "~/components/ui/FormInput";
 
 interface UpdateMemberProps {
-  pb: PocketBase;
+  pb: Pocketbase;
   memberId: string;
 }
 
