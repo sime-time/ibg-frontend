@@ -1,5 +1,6 @@
 import { A } from "@solidjs/router";
 import FormCreateMember from "~/components/forms/FormCreateMember";
+import GoogleLogin from "~/components/GoogleLogin";
 import {
   Card,
   CardContent,
@@ -17,6 +18,7 @@ export default function SignUp() {
         <CardHeader>
           <CardTitle>Already a Member?</CardTitle>
           <CardDescription><A href="/login" class="underline text-red-600/90">Go to login</A></CardDescription>
+          <GoogleLogin />
         </CardHeader>
         <CardContent >
           <FormCreateMember />

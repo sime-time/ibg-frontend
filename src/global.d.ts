@@ -10,7 +10,3 @@ interface ImportMeta {
   readonly env: ImportMetaEnv
 }
 
-export enum AccountType {
-  Member = "member",
-  Coach = "coach",
-}
