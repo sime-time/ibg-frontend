@@ -1,6 +1,10 @@
+import OnboardTimeline from "./OnboardTimeline";
+
 export default function MemberOnboard() {
   return (
-    <div>Member onboarding</div>
+    <div>
+      <OnboardTimeline />
+    </div>
   );
 }
 
