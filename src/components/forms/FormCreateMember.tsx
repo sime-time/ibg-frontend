@@ -7,8 +7,6 @@ import { Button } from "~/components/ui/Button";
 export default function FormCreateMember() {
   const [fullName, setFullName] = createSignal("");
   const [email, setEmail] = createSignal("");
-  const [phone, setPhone] = createSignal("");
-  const [emergencyPhone, setEmergencyPhone] = createSignal("");
   const [password, setPassword] = createSignal("");
   const [passwordConfirm, setPasswordConfirm] = createSignal("");
   const [error, setError] = createSignal("");
@@ -22,8 +20,6 @@ export default function FormCreateMember() {
 
     const formData = {
       fullName: fullName(),
-      phone: phone(),
-      emergencyPhone: emergencyPhone(),
       email: email(),
       password: password(),
       passwordConfirm: passwordConfirm(),
@@ -50,8 +46,6 @@ export default function FormCreateMember() {
     <form onSubmit={submitMember} class="flex flex-col gap-4">
       <FormInput type="text" name="fullName" label="Full Name" required={true} value={fullName()} setValue={setFullName} />
       <FormInput type="email" name="email" label="Email" required={true} value={email()} setValue={setEmail} />
-      <FormInput type="tel" name="phone" label="Phone" placeholder="317-123-4567" required={true} value={phone()} setValue={setPhone} />
-      <FormInput type="tel" name="emergencyPhone" label="Emergency Phone" placeholder="317-987-6543" required={true} value={emergencyPhone()} setValue={setEmergencyPhone} />
       <FormInput type="password" name="password" label="Password" required={true} value={password()} setValue={setPassword} />
       <FormInput type="password" name="passwordConfirm" label="Confirm Password" required={true} value={passwordConfirm()} setValue={setPasswordConfirm} />
       {error() && <p class="text-red-500">{error()}</p>}

@@ -15,13 +15,18 @@ Coaches are administrators.
 Members are the customers that pay a monthly subscription to attend the gym. 
 
 ## Coaches should be able to:  
-- view all the current members.
-- view all payments and profit made within a chosen timeframe.  
+- view list of all the current members.
+- C.R.U.D. any member. 
+- view all payments made within a chosen timeframe.  
+- schedule recurring weekly classes. 
 
 ## Members should be able to:   
-- signup and login account. 
-- pay a monthly subscription for gym access.  
-- change their name and password.
+- signup and login with Instagram, Facebook, or Google. 
+- pay a monthly subscription for gym access via Stripe.  
+- manage/cancel their monthly subscription.
+- update their profile: name, password, email, phone.
+- log missed attendance in case they forgot to sign-in in person.
+
 
 ## How to run 
 

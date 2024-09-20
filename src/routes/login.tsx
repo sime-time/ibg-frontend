@@ -1,5 +1,6 @@
 import { A } from "@solidjs/router";
 import LoginForm from "~/components/forms/LoginForm";
+import OAuth2Login from "~/components/auth/OAuth2Login";
 import {
   Card,
   CardContent,
@@ -24,9 +25,9 @@ export default function Login() {
 
         <TabsContent value={AccountType.Member}>
           <Card>
-            <CardHeader>
+            <CardHeader class="gap-3">
               <CardTitle>Member Login</CardTitle>
-              <CardDescription>Are you new here? <A href="/signup" class="underline text-red-600/90">Sign up now</A></CardDescription>
+              <OAuth2Login />
             </CardHeader>
             <CardContent>
               <LoginForm accountType={AccountType.Member} />

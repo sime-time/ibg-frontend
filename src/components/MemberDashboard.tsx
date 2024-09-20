@@ -1,7 +1,17 @@
 import Pocketbase from "pocketbase";
 import { A } from "@solidjs/router";
-import LogoutButton from "./LogoutButton";
-
+import LogoutButton from "./auth/LogoutButton";
+import { Button } from "./ui/Button";
+import FormUpdateMember from "~/components/forms/FormUpdateMember";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "~/components/ui/Dialog"
 
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
@@ -21,16 +31,23 @@ export default function MemberDashboard() {
   return (
     <>
       <h2 class="text-2xl">Welcome, {member?.name}!</h2>
-      <h1>Choose a martial art</h1>
-      <div class="flex gap-10">
-        <button class="size-32 bg-red-600/90 rounded-md">
-          <img src="/images/boxing-gloves.png" alt="boxing" />
-        </button>
-        <button class="size-32 bg-red-600/90 rounded-md">
-          <img src="/images/bjj-belt.png" alt="brazilian jiu jitsu" />
-        </button>
+      <div class="flex flex-col gap-5">
+        <Button>Manage Subscription</Button>
+        <Button>Log Missed Attendance</Button>
+        <Dialog>
+          <DialogTrigger as={Button}>Edit Profile</DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Your Profile</DialogTitle>
+              <DialogDescription>
+                Make changes to your profile here. Click update when you are done.
+              </DialogDescription>
+            </DialogHeader>
+            <FormUpdateMember pb={pb} memberId={member?.id} />
+          </DialogContent>
+        </Dialog>
+        <LogoutButton pb={pb} />
       </div>
-      <LogoutButton pb={pb} />
     </>
   );
 }

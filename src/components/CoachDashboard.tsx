@@ -3,7 +3,7 @@ import Pocketbase from "pocketbase";
 import { A } from "@solidjs/router";
 import FormCreateMember from "~/components/forms/FormCreateMember";
 import FormUpdateMember from "~/components/forms/FormUpdateMember";
-import LogoutButton from "./LogoutButton";
+import LogoutButton from "./auth/LogoutButton";
 import { MemberRecord } from "~/lib/MemberRecord";
 import { Button } from "~/components/ui/Button"
 import {
