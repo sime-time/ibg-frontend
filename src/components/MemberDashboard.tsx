@@ -3,6 +3,9 @@ import { A } from "@solidjs/router";
 import LogoutButton from "./auth/LogoutButton";
 import { Button } from "./ui/Button";
 import FormUpdateMember from "~/components/forms/FormUpdateMember";
+import { BsCreditCard2BackFill } from 'solid-icons/bs'
+import { RiDesignEditFill } from 'solid-icons/ri'
+import { FaSolidClipboardList } from 'solid-icons/fa'
 import {
   Dialog,
   DialogContent,
@@ -29,16 +32,16 @@ export default function MemberDashboard() {
   const member = pb.authStore.model;
 
   return (
-    <>
-      <h2 class="text-2xl">Welcome, {member?.name}!</h2>
-      <div class="flex flex-col gap-5">
-        <Button>Manage Subscription</Button>
-        <Button>Log Missed Attendance</Button>
+    <div class="w-fit m-auto flex flex-col gap-6">
+      <h1 class="text-3xl text-center font-bold">Welcome, {member?.name}!</h1>
+      <div class="flex flex-col gap-4">
+        <Button size="lg" class="flex gap-2 items-center"><FaSolidClipboardList class="size-5" /> Log Attendance</Button>
+        <Button size="lg" class="flex gap-2 items-center"><BsCreditCard2BackFill class="size-5" /> Manage Subscription</Button>
         <Dialog>
-          <DialogTrigger as={Button}>Edit Profile</DialogTrigger>
+          <DialogTrigger as={Button} size="lg" class="flex gap-2 items-center"><RiDesignEditFill class="size-5" />Edit Profile</DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Edit Your Profile</DialogTitle>
+              <DialogTitle class="flex gap-2 items-center"><RiDesignEditFill /> Edit Your Profile</DialogTitle>
               <DialogDescription>
                 Make changes to your profile here. Click update when you are done.
               </DialogDescription>
@@ -46,8 +49,8 @@ export default function MemberDashboard() {
             <FormUpdateMember pb={pb} memberId={member?.id} />
           </DialogContent>
         </Dialog>
-        <LogoutButton pb={pb} />
       </div>
-    </>
+      <LogoutButton pb={pb} />
+    </div>
   );
 }

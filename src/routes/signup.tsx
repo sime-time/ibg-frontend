@@ -15,7 +15,7 @@ export default function SignUp() {
       <h1 class="text-6xl text-red-600/90 text-center font-thin uppercase">Member Sign-Up</h1>
       <Card class="w-full md:w-1/3">
         <CardHeader class="gap-3">
-          <CardTitle>Sign up as a new member</CardTitle>
+          <CardTitle>Create your account</CardTitle>
           <OAuth2Login />
         </CardHeader>
         <CardContent >

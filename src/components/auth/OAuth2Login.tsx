@@ -11,9 +11,9 @@ export default function OAuth2Login() {
       <FacebookLogin pb={pb} />
       <GoogleLogin pb={pb} />
       <div class="grid grid-cols-3 items-center">
-        <hr class="border-gray-600" />
+        <hr class="border-gray-500" />
         <p class="text-center font-bold">OR</p>
-        <hr class="border-gray-600" />
+        <hr class="border-gray-500" />
       </div>
     </>
   );
