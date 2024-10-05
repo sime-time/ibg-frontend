@@ -16,20 +16,13 @@ import {
   DialogTrigger
 } from "~/components/ui/Dialog"
 
-const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
+interface MemberDashboardProps {
+  pb: Pocketbase
+}
 
-export default function MemberDashboard() {
+export default function MemberDashboard(props: MemberDashboardProps) {
 
-  if (!pb.authStore.isValid || pb.authStore.isAdmin) {
-    return (
-      <div class="text-white text-center">
-        <p>You do not have access to this page.</p>
-        <p>Already have an account? <A href="/login" class="underline text-red-700">Go to login</A></p>
-      </div>
-    );
-  }
-
-  const member = pb.authStore.model;
+  const member = props.pb.authStore.model;
 
   return (
     <div class="w-fit m-auto flex flex-col gap-6">
@@ -46,11 +39,11 @@ export default function MemberDashboard() {
                 Make changes to your profile here. Click update when you are done.
               </DialogDescription>
             </DialogHeader>
-            <FormUpdateMember pb={pb} memberId={member?.id} />
+            <FormUpdateMember pb={props.pb} memberId={member?.id} />
           </DialogContent>
         </Dialog>
       </div>
-      <LogoutButton pb={pb} />
+      <LogoutButton pb={props.pb} />
     </div>
   );
 }
