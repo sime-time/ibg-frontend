@@ -3,7 +3,14 @@ import { Button } from "~/components/ui/Button";
 import Radio, { RadioGroup } from "~/components/ui/Radio";
 
 interface SelectSubscriptionProps {
-  email: string;
+  memberId: string;
+}
+interface CheckoutSessionResponse {
+  url: string;
+}
+interface CheckoutSessionParams {
+  memberId: string;
+  priceId: string;
 }
 
 export default function SelectSubscription(props: SelectSubscriptionProps) {
@@ -14,40 +21,53 @@ export default function SelectSubscription(props: SelectSubscriptionProps) {
     {
       name: "boxing",
       price: "70",
-      paymentLink: "https://buy.stripe.com/test_eVadSg3P373W7hS144",
+      priceId: "price_1Q30Yu06MCKUDe5TaDFKUmwn",
     },
     {
       name: "jiu-jitsu",
       price: "100",
-      paymentLink: "https://buy.stripe.com/test_eVa29y0CR3RK6dO9AC",
+      priceId: "price_1Q30ZV06MCKUDe5T8hxKMWhK",
     },
     {
       name: "mma",
       price: "120",
-      paymentLink: "https://buy.stripe.com/test_6oEeWk5XbbkcgSsfYZ",
+      priceId: "price_1Q3M2m06MCKUDe5TCJbaFfzR",
     }
   ];
 
-  // percent encode the email address 
-  const encodedEmail = props.email.replace("@", "%40")
-
   const handleSubmit = (async (event: Event) => {
     event.preventDefault();
-    let stripeUrl: string = "";
 
     // use martial art to redirect to the correct payment link 
     for (let i = 0; i < plans.length; i++) {
       if (martialArt() === plans[i].name) {
-        stripeUrl = `${plans[i].paymentLink}?prefilled_email=${encodedEmail}`;
+        try {
+          const response = await fetch(`${import.meta.env.VITE_POCKETBASE_URL}/member-checkout-session`, {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+              memberId: props.memberId,
+              priceId: plans[i].priceId,
+            }),
+          });
+
+          const data: CheckoutSessionResponse = await response.json();
+
+          if (response.ok && data.url) {
+            // redirect to the payment page 
+            window.location.href = data.url;
+          }
+        } catch (error) {
+          console.error("Error creating checkout session: ", error);
+          setMessage("Internal server error. Try again later.");
+        }
       }
     }
 
-    if (stripeUrl != "") {
-      window.location.href = stripeUrl;
-      setMessage("Refresh the page when subscription payment is completed")
-    } else {
-      setMessage("You must select a martial art");
-    }
+    // if for loop of plans is exhausted: 
+    setMessage("You must select a martial art");
   });
 
 

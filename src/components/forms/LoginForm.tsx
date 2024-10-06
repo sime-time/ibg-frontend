@@ -35,6 +35,7 @@ export default function LoginForm(props: LoginFormProps) {
       }
     } catch (err) {
       console.error("Error logging in: ", err);
+      setError("Server Authentication Error. Try again later.");
     }
   }
 

@@ -1,5 +1,4 @@
 import Pocketbase from "pocketbase";
-import { A } from "@solidjs/router";
 import LogoutButton from "./auth/LogoutButton";
 import { Button } from "./ui/Button";
 import FormUpdateMember from "~/components/forms/FormUpdateMember";

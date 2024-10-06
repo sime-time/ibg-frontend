@@ -23,7 +23,11 @@ export default function DashboardMember() {
 
   return (
     <main class="m-auto p-4 flex flex-col gap-6 items-center w-full">
-      <Show when={isSubscribed} fallback={<SelectSubscription email={member?.email} />}>
+      <Show when={isSubscribed} fallback={
+        <SelectSubscription
+          memberId={member?.id}
+        />
+      }>
         <MemberDashboard pb={pb} />
       </Show>
     </main>
