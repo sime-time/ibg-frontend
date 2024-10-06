@@ -8,7 +8,7 @@ interface SelectSubscriptionProps {
 
 export default function SelectSubscription(props: SelectSubscriptionProps) {
   const [martialArt, setMartialArt] = createSignal("");
-  const [errorMessage, setErrorMessage] = createSignal("");
+  const [message, setMessage] = createSignal("");
 
   const plans = [
     {
@@ -19,12 +19,12 @@ export default function SelectSubscription(props: SelectSubscriptionProps) {
     {
       name: "jiu-jitsu",
       price: "100",
-      paymentLink: "https://buy.stripe.com/test_eVadSg3P373W7hS144",
+      paymentLink: "https://buy.stripe.com/test_eVa29y0CR3RK6dO9AC",
     },
     {
       name: "mma",
       price: "120",
-      paymentLink: "https://buy.stripe.com/test_eVadSg3P373W7hS144",
+      paymentLink: "https://buy.stripe.com/test_6oEeWk5XbbkcgSsfYZ",
     }
   ];
 
@@ -33,15 +33,21 @@ export default function SelectSubscription(props: SelectSubscriptionProps) {
 
   const handleSubmit = (async (event: Event) => {
     event.preventDefault();
-    console.log(martialArt());
+    let stripeUrl: string = "";
 
     // use martial art to redirect to the correct payment link 
     for (let i = 0; i < plans.length; i++) {
       if (martialArt() === plans[i].name) {
-        window.location.href = `${plans[i].paymentLink}?prefilled_email=${encodedEmail}`;
+        stripeUrl = `${plans[i].paymentLink}?prefilled_email=${encodedEmail}`;
       }
     }
-    setErrorMessage("You must select a martial art");
+
+    if (stripeUrl != "") {
+      window.location.href = stripeUrl;
+      setMessage("Refresh the page when subscription payment is completed")
+    } else {
+      setMessage("You must select a martial art");
+    }
   });
 
 
@@ -65,8 +71,8 @@ export default function SelectSubscription(props: SelectSubscriptionProps) {
           </For>
         </div>
       </RadioGroup>
-      {errorMessage() &&
-        <p class="text-red-500">{errorMessage()}</p>
+      {message() &&
+        <p class="text-red-500">{message()}</p>
       }
       <Button type="submit" class="bg-red-600/90 hover:bg-red-700 text-white text-lg font-semibold py-6 mt-2">Continue</Button>
     </form >

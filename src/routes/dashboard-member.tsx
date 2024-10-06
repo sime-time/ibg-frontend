@@ -19,7 +19,6 @@ export default function DashboardMember() {
   }
 
   const member = pb.authStore.model;
-  // determine if member needs to be onboarded (no subscription)
   const isSubscribed: boolean = false;
 
   return (
