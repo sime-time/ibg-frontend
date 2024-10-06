@@ -3,14 +3,10 @@ import { Button } from "~/components/ui/Button";
 import Radio, { RadioGroup } from "~/components/ui/Radio";
 
 interface SelectSubscriptionProps {
-  memberId: string;
+  customerId: string;
 }
 interface CheckoutSessionResponse {
   url: string;
-}
-interface CheckoutSessionParams {
-  memberId: string;
-  priceId: string;
 }
 
 export default function SelectSubscription(props: SelectSubscriptionProps) {
@@ -42,13 +38,13 @@ export default function SelectSubscription(props: SelectSubscriptionProps) {
     for (let i = 0; i < plans.length; i++) {
       if (martialArt() === plans[i].name) {
         try {
-          const response = await fetch(`${import.meta.env.VITE_POCKETBASE_URL}/member-checkout-session`, {
+          const response = await fetch(`${import.meta.env.VITE_POCKETBASE_URL}/checkout-session`, {
             method: "POST",
             headers: {
               "Content-type": "application/json",
             },
             body: JSON.stringify({
-              memberId: props.memberId,
+              customerId: props.customerId,
               priceId: plans[i].priceId,
             }),
           });
