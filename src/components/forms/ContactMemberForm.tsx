@@ -25,10 +25,14 @@ export default function ContactMemberForm() {
     const pb = await authorizePB();
     const member = pb.authStore.model;
     setName(member?.name);
-  })
+  });
+
+  const handleSubmit = (event: Event) => {
+    event.preventDefault();
+  }
 
   return (
-    <form class="m-auto p-4 flex flex-col gap-6 items-center">
+    <form onSubmit={handleSubmit} class="m-auto p-4 flex flex-col gap-6 items-center">
       <Card class="w-full md:w-1/3">
         <CardHeader class="gap-3">
           <CardTitle class="text-2xl">Release & Liability Waiver</CardTitle>
@@ -42,6 +46,7 @@ export default function ContactMemberForm() {
           <FormInput type="text" name="emergency-name" label="Emergency Contact Name" value={emergencyName()} setValue={setEmergencyName} />
           <FormInput type="text" name="emergency-phone" label="Emergency Contact Phone" value={emergencyPhone()} setValue={setEmergencyPhone} />
           <FormInput type="date" name="birth-date" label="Date of Birth" value={birthDate()} setValue={setBirthDate} />
+          {error() && <p class="text-red-500">{error()}</p>}
           <Button type="submit" class="bg-red-600/90 hover:bg-red-700 text-white text-lg font-semibold py-6 mt-2">Continue</Button>
         </CardContent>
       </Card>
