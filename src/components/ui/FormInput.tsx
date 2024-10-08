@@ -29,8 +29,8 @@ interface FormInputProps {
   label: string;
   required?: boolean;
   placeholder?: string;
-  value: string;
-  setValue: Setter<string>;
+  value: string | Date;
+  setValue: Setter<string> | Setter<Date>;
 }
 
 export default function FormInput(props: FormInputProps) {
@@ -39,12 +39,16 @@ export default function FormInput(props: FormInputProps) {
       <TextFieldLabel for={props.name}>{props.label}</TextFieldLabel>
       <TextFieldInput
         onInput={(event) => {
-          props.setValue(event.currentTarget.value);
+          if (props.type === "date") {
+            (props.setValue as Setter<Date>)(new Date(event.currentTarget.value));
+          } else {
+            (props.setValue as Setter<string>)(event.currentTarget.value);
+          }
         }}
         type={props.type}
         id={props.name}
         name={props.name}
-        placeholder={props.placeholder ?? props.label}
+        placeholder={props.placeholder}
         required={props.required ?? false}
       ></TextFieldInput>
     </TextField>

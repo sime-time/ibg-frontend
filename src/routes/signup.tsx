@@ -1,4 +1,4 @@
-import FormCreateMember from "~/components/forms/CreateMemberForm";
+import CreateMemberForm from "~/components/forms/CreateMemberForm";
 import OAuth2Login from "~/components/auth/OAuth2Login";
 import {
   Card,
@@ -19,7 +19,7 @@ export default function SignUp() {
           <OAuth2Login />
         </CardHeader>
         <CardContent >
-          <FormCreateMember />
+          <CreateMemberForm />
         </CardContent>
       </Card>
     </main>

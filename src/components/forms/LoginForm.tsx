@@ -28,9 +28,9 @@ export default function LoginForm(props: LoginFormProps) {
       const successful = loginAuth(props.accountType, formData, setError);
       if (await successful) {
         if (props.accountType === AccountType.Member) {
-          navigate("/dashboard-member");
+          navigate("/member");
         } else if (props.accountType === AccountType.Coach) {
-          navigate("/dashboard-coach")
+          navigate("/coach")
         }
       }
     } catch (err) {

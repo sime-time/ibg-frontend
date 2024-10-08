@@ -1,6 +1,6 @@
 import { clientOnly } from "@solidjs/start";
 import { Show } from "solid-js";
-import { A, redirect } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import Pocketbase from "pocketbase";
 
 const MemberDashboard = clientOnly(() => import("~/components/MemberDashboard"));
@@ -26,7 +26,8 @@ export default function MemberPage() {
 
   // if member has not signed the liability waiver, redirect them 
   if (waiverSigned === false) {
-    redirect("/liability-waiver");
+    const navigate = useNavigate();
+    navigate("/waiver");
   }
 
   return (
