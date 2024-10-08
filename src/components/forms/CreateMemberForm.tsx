@@ -4,7 +4,7 @@ import { createMember } from "~/lib/CreateMember";
 import FormInput from "~/components/ui/FormInput";
 import { Button } from "~/components/ui/Button";
 
-export default function FormCreateMember() {
+export default function CreateMemberForm() {
   const [fullName, setFullName] = createSignal("");
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");

@@ -2,14 +2,14 @@ import { createSignal, For } from "solid-js";
 import { Button } from "~/components/ui/Button";
 import Radio, { RadioGroup } from "~/components/ui/Radio";
 
-interface SelectSubscriptionProps {
+interface CheckoutProps {
   customerId: string;
 }
 interface CheckoutSessionResponse {
   url: string;
 }
 
-export default function SelectSubscription(props: SelectSubscriptionProps) {
+export default function Checkout(props: CheckoutProps) {
   const [martialArt, setMartialArt] = createSignal("");
   const [message, setMessage] = createSignal("");
 
@@ -63,7 +63,9 @@ export default function SelectSubscription(props: SelectSubscriptionProps) {
     }
 
     // if for loop of plans is exhausted: 
-    setMessage("You must select a martial art");
+    if (message() === "") {
+      setMessage("You must select a martial art");
+    }
   });
 
 

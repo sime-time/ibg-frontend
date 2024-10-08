@@ -34,6 +34,6 @@ export default function GoogleLogin(props: GoogleLoginProps) {
   }
 
   return (
-    <Button onClick={loginWithGoogle} ><FaBrandsGoogle class="size-5 mr-2" />Login with Google</Button>
+    <Button onClick={loginWithGoogle} ><FaBrandsGoogle class="size-5 mr-2" />Continue with Google</Button>
   );
 }

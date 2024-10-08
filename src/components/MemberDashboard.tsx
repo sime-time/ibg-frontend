@@ -1,7 +1,7 @@
 import Pocketbase from "pocketbase";
 import LogoutButton from "./auth/LogoutButton";
 import { Button } from "./ui/Button";
-import FormUpdateMember from "~/components/forms/FormUpdateMember";
+import FormUpdateMember from "~/components/forms/UpdateMemberForm";
 import { BsCreditCard2BackFill } from 'solid-icons/bs'
 import { RiDesignEditFill } from 'solid-icons/ri'
 import { FaSolidClipboardList } from 'solid-icons/fa'

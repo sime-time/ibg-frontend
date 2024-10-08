@@ -8,7 +8,7 @@ interface UpdateMemberProps {
   memberId: string;
 }
 
-export default function FormUpdateMember(props: UpdateMemberProps) {
+export default function UpdateMemberForm(props: UpdateMemberProps) {
   const [email, setEmail] = createSignal("");
   const [name, setName] = createSignal("");
   const [error, setError] = createSignal("");

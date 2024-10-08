@@ -1,14 +1,14 @@
 import { clientOnly } from "@solidjs/start";
 import { Show } from "solid-js";
-import { A } from "@solidjs/router";
+import { A, redirect } from "@solidjs/router";
 import Pocketbase from "pocketbase";
 
 const MemberDashboard = clientOnly(() => import("~/components/MemberDashboard"));
-const SelectSubscription = clientOnly(() => import("~/components/SelectSubscription"));
+const Checkout = clientOnly(() => import("~/components/Checkout"));
 
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
-export default function DashboardMember() {
+export default function MemberPage() {
   if (!pb.authStore.isValid || pb.authStore.isAdmin) {
     return (
       <div class="text-white text-center">
@@ -19,14 +19,20 @@ export default function DashboardMember() {
   }
 
   const member = pb.authStore.model;
+
+  // temp variables
   const isSubscribed: boolean = false;
+  const waiverSigned: boolean = false;
+
+  // if member has not signed the liability waiver, redirect them 
+  if (waiverSigned === false) {
+    redirect("/liability-waiver");
+  }
 
   return (
     <main class="m-auto p-4 flex flex-col gap-6 items-center w-full">
       <Show when={isSubscribed} fallback={
-        <SelectSubscription
-          customerId={String(member?.stripe_customer_id)}
-        />
+        <Checkout customerId={String(member?.stripe_customer_id)} />
       }>
         <MemberDashboard pb={pb} />
       </Show>

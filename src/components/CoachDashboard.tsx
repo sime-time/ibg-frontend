@@ -1,8 +1,8 @@
 import { createResource, For, Show } from "solid-js";
 import Pocketbase from "pocketbase";
 import { A } from "@solidjs/router";
-import FormCreateMember from "~/components/forms/FormCreateMember";
-import FormUpdateMember from "~/components/forms/FormUpdateMember";
+import FormCreateMember from "~/components/forms/CreateMemberForm";
+import FormUpdateMember from "~/components/forms/UpdateMemberForm";
 import LogoutButton from "./auth/LogoutButton";
 import { MemberRecord } from "~/lib/MemberRecord";
 import { Button } from "~/components/ui/Button"

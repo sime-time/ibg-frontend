@@ -19,11 +19,11 @@ export default function Nav() {
         <li class={`border-b-2 ${active("/login")} mx-1.5 sm:mx-6`}>
           <a href="/login">Log In</a>
         </li>
-        <li class={`border-b-2 ${active("/dashboard-member")} mx-1.5 sm:mx-6`}>
-          <a href="/dashboard-member">Dashboard (Member)</a>
+        <li class={`border-b-2 ${active("/member")} mx-1.5 sm:mx-6`}>
+          <a href="/member">For Member</a>
         </li>
-        <li class={`border-b-2 ${active("/dashboard-coach")} mx-1.5 sm:mx-6`}>
-          <a href="/dashboard-coach">Dashboard (Coach)</a>
+        <li class={`border-b-2 ${active("/coach")} mx-1.5 sm:mx-6`}>
+          <a href="/coach">For Coach</a>
         </li>
       </ul>
     </nav>

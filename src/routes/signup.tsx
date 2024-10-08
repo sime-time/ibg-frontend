@@ -1,4 +1,4 @@
-import FormCreateMember from "~/components/forms/FormCreateMember";
+import FormCreateMember from "~/components/forms/CreateMemberForm";
 import OAuth2Login from "~/components/auth/OAuth2Login";
 import {
   Card,

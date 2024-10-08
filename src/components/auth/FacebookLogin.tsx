@@ -34,6 +34,6 @@ export default function FacebookLogin(props: FacebookLoginProps) {
   }
 
   return (
-    <Button onClick={loginWithOAuth2} ><FaBrandsSquareFacebook class="size-5 mr-2" />Login with Facebook</Button>
+    <Button onClick={loginWithOAuth2} ><FaBrandsSquareFacebook class="size-5 mr-2" />Continue with Facebook</Button>
   );
 }

@@ -34,6 +34,6 @@ export default function InstagramLogin(props: InstagramLoginProps) {
   }
 
   return (
-    <Button onClick={loginWithOAuth2} ><FaBrandsInstagram class="size-5 mr-2" />Login with Instagram</Button>
+    <Button onClick={loginWithOAuth2} ><FaBrandsInstagram class="size-5 mr-2" />Continue with Instagram</Button>
   );
 }
