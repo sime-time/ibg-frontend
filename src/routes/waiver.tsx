@@ -1,11 +1,15 @@
-import ContactMemberForm from "~/components/forms/ContactMemberForm";
 import Pocketbase from "pocketbase";
 import { A } from "@solidjs/router";
+import { clientOnly } from "@solidjs/start";
+import { Show, createSignal } from "solid-js";
 
+const ContactMemberForm = clientOnly(() => import("~/components/forms/ContactMemberForm"));
+const LiabilityWaiver = clientOnly(() => import("~/components/forms/LiabilityWaiver"));
 
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
 export default function Waiver() {
+  const [hasBirthDate, setHasBirthDate] = createSignal(false)
   if (!pb.authStore.isValid || pb.authStore.isAdmin) {
     return (
       <div class="text-white text-center">
@@ -19,11 +23,18 @@ export default function Waiver() {
 
   // show liability waiver after member inputs birth date 
   // if member under 18, require guardian signature
+  if (member?.birth_date) {
+    setHasBirthDate(true);
 
+  }
 
   return (
     <main class="w-full">
-      <ContactMemberForm />
+      <Show when={hasBirthDate()} fallback={
+        <ContactMemberForm />
+      }>
+        <LiabilityWaiver />
+      </Show>
     </main>
   );
 }

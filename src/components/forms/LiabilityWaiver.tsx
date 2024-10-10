@@ -1,6 +1,6 @@
 
 export default function LiabilityWaiver() {
   return (
-    <div></div>
+    <div>Liability Waiver Here</div>
   );
 }

@@ -3,6 +3,8 @@ import * as v from "valibot";
 import { authorizePB } from "./PocketBaseAuth";
 import { PhoneType } from "./PhoneType";
 
+
+
 const ContactSchema = v.object({
   phone: v.pipe(
     v.string('You must include your phone number.'),
@@ -47,6 +49,13 @@ export const addContactInfo = async (contactInfo: ContactData, setError: Setter<
       throw new Error("phone_match");
     }
 
+    // check if birth year is valid 
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    if (validContactInfo.birthDate > oneYearAgo) {
+      throw new Error("invalid_birth_date");
+    }
+
     const newPhone = {
       "phone_number": validContactInfo.phone,
       "phone_type_id": PhoneType.Personal,
@@ -65,7 +74,6 @@ export const addContactInfo = async (contactInfo: ContactData, setError: Setter<
       "birth_date": validContactInfo.birthDate,
     };
 
-
     const phoneRecord = await pb.collection("member_phone").create(newPhone);
     const emergencyRecord = await pb.collection("member_phone").create(newEmergency);
     const updateBirthDate = await pb.collection("member").update(member?.id, newBirthDate);
@@ -77,8 +85,10 @@ export const addContactInfo = async (contactInfo: ContactData, setError: Setter<
       setError(err.issues[0].message);
     } else if (err instanceof Error && err.message == "phone_match") {
       setError("The emergency contact phone number and your phone number cannot be the same.");
-    } else if (err instanceof Error && err.message == "phone_match") {
-      setError("The Administrator (Coach) is logged in. Not a member.")
+    } else if (err instanceof Error && err.message == "admin_logged_in") {
+      setError("The Administrator (Coach) is logged in. Not a member.");
+    } else if (err instanceof Error && err.message == "invalid_birth_date") {
+      setError("Please enter a valid birth date.");
     } else {
       setError("An unexpected error occurred. Try again later.");
     }

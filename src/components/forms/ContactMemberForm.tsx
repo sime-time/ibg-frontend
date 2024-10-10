@@ -58,7 +58,7 @@ export default function ContactMemberForm() {
     <form onSubmit={handleSubmit} class="m-auto p-4 flex flex-col gap-6 items-center">
       <Card class="w-full md:w-1/3">
         <CardHeader class="gap-3">
-          <CardTitle class="text-2xl">Release & Liability Waiver</CardTitle>
+          <CardTitle class="text-2xl">Release & Waiver of Liability</CardTitle>
         </CardHeader>
         <CardContent class="flex flex-col gap-3">
           <TextField class="grid w-full max-w-sm items-center gap-1.5">
