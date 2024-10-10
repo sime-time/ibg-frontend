@@ -6,7 +6,7 @@ import { PhoneType } from "./PhoneType";
 const ContactSchema = v.object({
   phone: v.pipe(
     v.string('You must include your phone number.'),
-    v.maxLength(20, 'The phone number must not exceed 20 characters'),
+    v.maxLength(20, 'The phone number must not exceed 20 characters.'),
     v.nonEmpty('Please enter your phone number.'),
   ),
   emergencyName: v.pipe(
@@ -15,7 +15,7 @@ const ContactSchema = v.object({
   ),
   emergencyPhone: v.pipe(
     v.string("You must include your emergency contact's phone number."),
-    v.maxLength(20, 'The phone number must not exceed 20 characters'),
+    v.maxLength(20, 'The phone number must not exceed 20 characters.'),
     v.nonEmpty("Please enter your emergency contact's phone number."),
   ),
   birthDate: v.pipe(
@@ -80,7 +80,7 @@ export const addContactInfo = async (contactInfo: ContactData, setError: Setter<
     } else if (err instanceof Error && err.message == "phone_match") {
       setError("The Administrator (Coach) is logged in. Not a member.")
     } else {
-      setError("An unexpected error occurred. No member created.");
+      setError("An unexpected error occurred. Try again later.");
     }
     return false;
   }

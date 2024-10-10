@@ -11,6 +11,8 @@ import {
 import { TextField, TextFieldInput, TextFieldLabel } from "../ui/TextField"
 import { Button } from "../ui/Button";
 import { authorizePB } from "~/lib/PocketBaseAuth";
+import { addContactInfo } from "~/lib/AddContactInfo";
+import { useNavigate } from "@solidjs/router";
 
 export default function ContactMemberForm() {
   const [name, setName] = createSignal("");
@@ -20,6 +22,8 @@ export default function ContactMemberForm() {
   const [birthDate, setBirthDate] = createSignal<Date>(new Date());
   const [error, setError] = createSignal("");
 
+  const navigate = useNavigate();
+
   // get the member's name 
   onMount(async () => {
     const pb = await authorizePB();
@@ -27,8 +31,27 @@ export default function ContactMemberForm() {
     setName(member?.name);
   });
 
-  const handleSubmit = (event: Event) => {
-    event.preventDefault();
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault();
+    setError("");
+
+    const formData = {
+      phone: phone(),
+      emergencyName: emergencyName(),
+      emergencyPhone: emergencyPhone(),
+      birthDate: birthDate(),
+    }
+
+    try {
+      const successful = addContactInfo(formData, setError);
+      if (await successful) {
+        navigate("/member");
+      }
+    } catch (err) {
+      console.error("Error with Server: ", err);
+      setError("Error with server.")
+    }
+
   }
 
   return (
@@ -46,7 +69,9 @@ export default function ContactMemberForm() {
           <FormInput type="text" name="emergency-name" label="Emergency Contact Name" value={emergencyName()} setValue={setEmergencyName} />
           <FormInput type="text" name="emergency-phone" label="Emergency Contact Phone" value={emergencyPhone()} setValue={setEmergencyPhone} />
           <FormInput type="date" name="birth-date" label="Date of Birth" value={birthDate()} setValue={setBirthDate} />
+
           {error() && <p class="text-red-500">{error()}</p>}
+
           <Button type="submit" class="bg-red-600/90 hover:bg-red-700 text-white text-lg font-semibold py-6 mt-2">Continue</Button>
         </CardContent>
       </Card>

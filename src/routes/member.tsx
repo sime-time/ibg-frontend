@@ -19,16 +19,17 @@ export default function MemberPage() {
   }
 
   const member = pb.authStore.model;
+  const navigate = useNavigate();
 
   // temp variables
   const isSubscribed: boolean = false;
   const waiverSigned: boolean = false;
 
-  // if member has not signed the liability waiver, redirect them 
+  // if member has not subscribed or signed the liability waiver, redirect them 
   if (waiverSigned === false) {
-    const navigate = useNavigate();
     navigate("/waiver");
   }
+
 
   return (
     <main class="m-auto p-4 flex flex-col gap-6 items-center w-full">
