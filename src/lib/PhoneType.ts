@@ -1,4 +1,4 @@
 export enum PhoneType {
-  Personal = "25ljfgerqp9wqog",
-  Emergency = "u1dl964iz0qk4jy",
+  Personal = "xcl6xdpg8rfbsh6",
+  Emergency = "e93xgcs03zv6uao",
 }
