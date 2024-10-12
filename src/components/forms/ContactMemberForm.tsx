@@ -10,26 +10,20 @@ import {
 } from "~/components/ui/Card"
 import { TextField, TextFieldInput, TextFieldLabel } from "../ui/TextField"
 import { Button } from "../ui/Button";
-import { authorizePB } from "~/lib/PocketBaseAuth";
 import { addContactInfo } from "~/lib/AddContactInfo";
 import { useNavigate } from "@solidjs/router";
 
-export default function ContactMemberForm() {
-  const [name, setName] = createSignal("");
+interface ContactMemberProps {
+  memberName: string;
+}
+
+export default function ContactMemberForm(props: ContactMemberProps) {
   const [phone, setPhone] = createSignal("");
   const [emergencyName, setEmergencyName] = createSignal("");
   const [emergencyPhone, setEmergencyPhone] = createSignal("");
   const [birthDate, setBirthDate] = createSignal<Date>(new Date());
   const [error, setError] = createSignal("");
-
   const navigate = useNavigate();
-
-  // get the member's name 
-  onMount(async () => {
-    const pb = await authorizePB();
-    const member = pb.authStore.model;
-    setName(member?.name);
-  });
 
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
@@ -45,7 +39,7 @@ export default function ContactMemberForm() {
     try {
       const successful = addContactInfo(formData, setError);
       if (await successful) {
-        navigate("/member");
+        window.location.href = import.meta.env.VITE_DOCUSEAL_URL;
       }
     } catch (err) {
       console.error("Error with Server: ", err);
@@ -55,15 +49,15 @@ export default function ContactMemberForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} class="m-auto p-4 flex flex-col gap-6 items-center">
+    <form onSubmit={handleSubmit} class="m-auto p-4 flex flex-col gap-6 items-center text-start">
       <Card class="w-full md:w-1/3">
         <CardHeader class="gap-3">
-          <CardTitle class="text-2xl">Release & Waiver of Liability</CardTitle>
+          <CardTitle class="text-2xl">Member Contact Information</CardTitle>
         </CardHeader>
         <CardContent class="flex flex-col gap-3">
           <TextField class="grid w-full max-w-sm items-center gap-1.5">
             <TextFieldLabel for="member-name">Name</TextFieldLabel>
-            <TextFieldInput type="text" readOnly={true} disabled={true} id="member-name" value={name()} />
+            <TextFieldInput type="text" readOnly={true} disabled={true} id="member-name" value={props.memberName} />
           </TextField>
           <FormInput type="tel" name="phone" label="Phone Number" value={phone()} setValue={setPhone} />
           <FormInput type="text" name="emergency-name" label="Emergency Contact Name" value={emergencyName()} setValue={setEmergencyName} />

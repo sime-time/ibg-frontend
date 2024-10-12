@@ -3,8 +3,6 @@ import * as v from "valibot";
 import { authorizePB } from "./PocketBaseAuth";
 import { PhoneType } from "./PhoneType";
 
-
-
 const ContactSchema = v.object({
   phone: v.pipe(
     v.string('You must include your phone number.'),

@@ -30,7 +30,6 @@ export default function MemberPage() {
     navigate("/waiver");
   }
 
-
   return (
     <main class="m-auto p-4 flex flex-col gap-6 items-center w-full">
       <Show when={isSubscribed} fallback={
