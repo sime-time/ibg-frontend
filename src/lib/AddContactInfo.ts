@@ -56,14 +56,14 @@ export const addContactInfo = async (contactInfo: ContactData, setError: Setter<
 
     const newPhone = {
       "phone_number": validContactInfo.phone,
-      "phone_type_id": PhoneType.Personal,
+      "phone_type_id": import.meta.env.VITE_PERSONAL_PHONE_ID,
       "description": `${member?.name}'s Personal`,
       "member_id": member?.id,
     }
 
     const newEmergency = {
       "phone_number": validContactInfo.emergencyPhone,
-      "phone_type_id": PhoneType.Emergency,
+      "phone_type_id": import.meta.env.VITE_EMERGENCY_PHONE_ID,
       "description": validContactInfo.emergencyName,
       "member_id": member?.id,
     }
