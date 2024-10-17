@@ -2,7 +2,7 @@ import Pocketbase from "pocketbase";
 import { A } from "@solidjs/router";
 import { clientOnly } from "@solidjs/start";
 
-const MemberContactForm = clientOnly(() => import("~/components/forms/MemberContactForm"));
+const OnboardForm = clientOnly(() => import("~/components/forms/OnboardForm"));
 
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
@@ -20,7 +20,7 @@ export default function Onboard() {
 
   return (
     <main class="w-full">
-      <MemberContactForm memberName={member?.name} />
+      <OnboardForm memberName={member?.name} />
     </main>
   );
 }

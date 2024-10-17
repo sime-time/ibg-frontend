@@ -51,7 +51,13 @@ export const createMember = async (memberData: MemberData, setError: Setter<stri
 
 
     const record = await pb.collection("member").create(newMember);
-    console.log("Member registered successfully!");
+    console.log("New member created successfully!");
+    console.log("Logging in as new member...")
+    pb.authStore.clear();
+    await pb.collection("member").authWithPassword(
+      validMember.email,
+      validMember.password,
+    );
 
   } catch (err) {
     if (err instanceof v.ValiError) {

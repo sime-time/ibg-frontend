@@ -63,11 +63,6 @@ export default function Checkout(props: CheckoutProps) {
         }
       }
     }
-
-    // if for loop of plans is exhausted: 
-    if (message() === "") {
-      setMessage("You must select a martial art");
-    }
   });
 
 
@@ -94,7 +89,7 @@ export default function Checkout(props: CheckoutProps) {
       {message() &&
         <p class="text-red-500">{message()}</p>
       }
-      <Button type="submit" class="bg-red-600/90 hover:bg-red-700 text-white text-lg font-semibold py-6 mt-2">Continue</Button>
+      <Button type="submit" disabled={martialArt() === "" ? true : false} class="bg-red-600/90 hover:bg-red-700 text-white text-lg font-semibold py-6 mt-2">Continue</Button>
     </form >
   );
 }

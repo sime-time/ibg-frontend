@@ -25,7 +25,8 @@ export default function MemberPage() {
   const isSubscribed: boolean = false;
 
   // if member has no birthdate, they have not completed onboarding yet
-  if (member?.birth_date === null) {
+  console.log(member?.birth_date);
+  if (!member?.birth_date) {
     navigate("/onboard");
   }
 

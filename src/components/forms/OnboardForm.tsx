@@ -13,11 +13,11 @@ import { Button } from "../ui/Button";
 import { addContactInfo } from "~/lib/AddContactInfo";
 import { useNavigate } from "@solidjs/router";
 
-interface MemberContactProps {
+interface OnboardProps {
   memberName: string;
 }
 
-export default function MemberContactForm(props: MemberContactProps) {
+export default function OnboardForm(props: OnboardProps) {
   const [phone, setPhone] = createSignal("");
   const [emergencyName, setEmergencyName] = createSignal("");
   const [emergencyPhone, setEmergencyPhone] = createSignal("");
