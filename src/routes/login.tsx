@@ -1,4 +1,4 @@
-import { A } from "@solidjs/router";
+import { useNavigate } from "@solidjs/router";
 import LoginForm from "~/components/forms/LoginForm";
 import OAuth2Login from "~/components/auth/OAuth2Login";
 import {
@@ -11,8 +11,22 @@ import {
 } from "~/components/ui/Card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/Tabs"
 import { AccountType } from "~/lib/AccountType";
+import Pocketbase from "pocketbase";
+
+const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
 export default function Login() {
+  // if user has already signed in on this browser
+  // go to the correct dashboard (coach or member)
+  const navigate = useNavigate();
+  if (pb.authStore.isValid) {
+    if (pb.authStore.isAdmin) {
+      navigate("/coach");
+    } else {
+      navigate("/member");
+    }
+  }
+
   return (
     <main class="m-auto p-4 flex flex-col gap-6 items-center">
       <h1 class="text-6xl text-red-600/90 font-thin uppercase">Log In</h1>

@@ -48,8 +48,10 @@ export default function Checkout(props: CheckoutProps) {
               priceId: plans[i].priceId,
             }),
           });
+          console.log(response);
 
           const data: CheckoutSessionResponse = await response.json();
+          console.log(data)
 
           if (response.ok && data.url) {
             // redirect to the payment page 
