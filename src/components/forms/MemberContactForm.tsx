@@ -13,11 +13,11 @@ import { Button } from "../ui/Button";
 import { addContactInfo } from "~/lib/AddContactInfo";
 import { useNavigate } from "@solidjs/router";
 
-interface ContactMemberProps {
+interface MemberContactProps {
   memberName: string;
 }
 
-export default function ContactMemberForm(props: ContactMemberProps) {
+export default function MemberContactForm(props: MemberContactProps) {
   const [phone, setPhone] = createSignal("");
   const [emergencyName, setEmergencyName] = createSignal("");
   const [emergencyPhone, setEmergencyPhone] = createSignal("");
@@ -39,7 +39,7 @@ export default function ContactMemberForm(props: ContactMemberProps) {
     try {
       const successful = addContactInfo(formData, setError);
       if (await successful) {
-        window.location.href = import.meta.env.VITE_DOCUSEAL_URL;
+        navigate("/member");
       }
     } catch (err) {
       console.error("Error with Server: ", err);

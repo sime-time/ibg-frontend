@@ -2,11 +2,11 @@ import Pocketbase from "pocketbase";
 import { A } from "@solidjs/router";
 import { clientOnly } from "@solidjs/start";
 
-const ContactMemberForm = clientOnly(() => import("~/components/forms/ContactMemberForm"));
+const MemberContactForm = clientOnly(() => import("~/components/forms/MemberContactForm"));
 
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
-export default function Waiver() {
+export default function Onboard() {
   if (!pb.authStore.isValid || pb.authStore.isAdmin) {
     return (
       <div class="text-white text-center">
@@ -20,7 +20,7 @@ export default function Waiver() {
 
   return (
     <main class="w-full">
-      <ContactMemberForm memberName={member?.name} />
+      <MemberContactForm memberName={member?.name} />
     </main>
   );
 }

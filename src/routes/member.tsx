@@ -23,11 +23,10 @@ export default function MemberPage() {
 
   // temp variables
   const isSubscribed: boolean = false;
-  const waiverSigned: boolean = false;
 
-  // if member has not subscribed or signed the liability waiver, redirect them 
-  if (waiverSigned === false) {
-    navigate("/waiver");
+  // if member has no birthdate, they have not completed onboarding yet
+  if (member?.birth_date === null) {
+    navigate("/onboard");
   }
 
   return (
