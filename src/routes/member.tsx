@@ -18,14 +18,11 @@ export default function MemberPage() {
     );
   }
 
-  const member = pb.authStore.model;
   const navigate = useNavigate();
-
-  // temp variables
-  const isSubscribed: boolean = false;
+  const member = pb.authStore.model;
+  const isSubscribed: boolean = member?.is_subscribed;
 
   // if member has no birthdate, they have not completed onboarding yet
-  console.log(member?.birth_date);
   if (!member?.birth_date) {
     navigate("/onboard");
   }
