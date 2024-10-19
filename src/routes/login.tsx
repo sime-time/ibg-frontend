@@ -16,6 +16,16 @@ import Pocketbase from "pocketbase";
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
 export default function Login() {
+  // if user is already logged in, route to their dashboard 
+  const navigate = useNavigate();
+  if (pb.authStore.isValid) {
+    if (pb.authStore.isAdmin) {
+      navigate("/coach")
+    } else {
+      navigate("/member");
+    }
+  }
+
   return (
     <main class="m-auto p-4 flex flex-col gap-6 items-center">
       <h1 class="text-6xl text-red-600/90 text-center font-thin uppercase">Log In</h1>

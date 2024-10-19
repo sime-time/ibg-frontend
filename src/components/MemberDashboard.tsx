@@ -29,6 +29,8 @@ export default function MemberDashboard(props: MemberDashboardProps) {
       <div class="flex flex-col gap-4">
         <Button size="lg" class="flex gap-2 items-center"><FaSolidClipboardList class="size-5" /> Log Attendance</Button>
         <Button size="lg" class="flex gap-2 items-center"><BsCreditCard2BackFill class="size-5" /> Manage Subscription</Button>
+        <Button size="lg" class="flex gap-2 items-center">Change Plan</Button>
+        <Button size="lg" class="flex gap-2 items-center">Class Schedule</Button>
         <Dialog>
           <DialogTrigger as={Button} size="lg" class="flex gap-2 items-center"><RiDesignEditFill class="size-5" />Edit Profile</DialogTrigger>
           <DialogContent>

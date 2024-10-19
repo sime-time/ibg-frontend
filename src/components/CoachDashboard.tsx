@@ -1,6 +1,6 @@
 import { createResource, For, Show } from "solid-js";
 import Pocketbase from "pocketbase";
-import { A } from "@solidjs/router";
+import AccessDenied from "./auth/AccessDenied";
 import FormCreateMember from "~/components/forms/CreateMemberForm";
 import FormUpdateMember from "~/components/forms/UpdateMemberForm";
 import LogoutButton from "./auth/LogoutButton";
@@ -21,10 +21,7 @@ const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 export default function CoachDashboard() {
   if (!pb.authStore.isValid || !pb.authStore.isAdmin) {
     return (
-      <div class="text-white text-center">
-        <p>You do not have access to this page.</p>
-        <p>Already have an account? <A href="/login" class="underline text-red-700">Go to login</A></p>
-      </div>
+      <AccessDenied />
     );
   }
 

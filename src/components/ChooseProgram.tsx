@@ -2,14 +2,14 @@ import { createSignal, For } from "solid-js";
 import { Button } from "~/components/ui/Button";
 import Radio, { RadioGroup } from "~/components/ui/Radio";
 
-interface CheckoutProps {
+interface ChooseProgramProps {
   customerId: string;
 }
 interface CheckoutSessionResponse {
   url: string;
 }
 
-export default function Checkout(props: CheckoutProps) {
+export default function ChooseProgram(props: ChooseProgramProps) {
   const [martialArt, setMartialArt] = createSignal("");
   const [message, setMessage] = createSignal("");
 

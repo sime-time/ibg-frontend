@@ -1,39 +1,42 @@
 import { clientOnly } from "@solidjs/start";
-import { Show } from "solid-js";
+import { createSignal, Show, onMount } from "solid-js";
 import { A, useNavigate } from "@solidjs/router";
 import Pocketbase from "pocketbase";
+import AccessDenied from "~/components/auth/AccessDenied";
 
 const MemberDashboard = clientOnly(() => import("~/components/MemberDashboard"));
-const Checkout = clientOnly(() => import("~/components/Checkout"));
+const Checkout = clientOnly(() => import("~/components/ChooseProgram"));
 
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
 export default function MemberPage() {
   if (!pb.authStore.isValid || pb.authStore.isAdmin) {
     return (
-      <div class="text-white text-center">
-        <p>You do not have access to this page.</p>
-        <p>Already have an account? <A href="/login" class="underline text-red-700">Go to login</A></p>
-      </div>
+      <AccessDenied />
     );
   }
 
-  const member = pb.authStore.model;
 
-  // if member has no birthdate, they have not completed onboarding yet
-  /*
-  if (!member?.birth_date) {
-    navigate("/onboard");
-  }
-  */
+  onMount(() => {
+    const member = pb.authStore.model;
+    const navigate = useNavigate();
+
+    // if member has no birthdate, they have not completed onboarding yet
+    if (!member?.birth_date) {
+      navigate("/onboard");
+    }
+
+    // if member has not subscribed, lead them to checkout 
+    if (member?.is_subscribed === false) {
+      navigate("/checkout")
+    }
+
+
+  });
 
   return (
     <main class="m-auto p-4 flex flex-col gap-6 items-center w-full">
-      <Show when={member?.is_subscribed} fallback={
-        <Checkout customerId={String(member?.stripe_customer_id)} />
-      }>
-        <MemberDashboard pb={pb} />
-      </Show>
+      <MemberDashboard pb={pb} />
     </main>
   );
 }
