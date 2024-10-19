@@ -31,7 +31,6 @@ export default function UpdateMemberForm(props: UpdateMemberProps) {
     try {
       const successful = updateMember(props.memberId, formData, setError);
       if (await successful) {
-        location.reload();
       }
     } catch (err) {
       console.error("Error updating member: ", err);

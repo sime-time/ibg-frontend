@@ -19,6 +19,14 @@ import {
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
 export default function CoachDashboard() {
+  if (!pb.authStore.isValid || !pb.authStore.isAdmin) {
+    return (
+      <div class="text-white text-center">
+        <p>You do not have access to this page.</p>
+        <p>Already have an account? <A href="/login" class="underline text-red-700">Go to login</A></p>
+      </div>
+    );
+  }
 
   const [members, { mutate, refetch }] = createResource(async () => {
     return await pb.collection("member").getFullList<MemberRecord>();
@@ -32,15 +40,6 @@ export default function CoachDashboard() {
     } catch (err) {
       console.error("Error deleting member: ", err);
     }
-  }
-
-  if (!pb.authStore.isValid || !pb.authStore.isAdmin) {
-    return (
-      <div class="text-white text-center">
-        <p>You do not have access to this page.</p>
-        <p>Already have an account? <A href="/login" class="underline text-red-700">Go to login</A></p>
-      </div>
-    );
   }
 
   const coach = pb.authStore.model;

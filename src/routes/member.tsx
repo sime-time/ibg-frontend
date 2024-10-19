@@ -18,18 +18,18 @@ export default function MemberPage() {
     );
   }
 
-  const navigate = useNavigate();
   const member = pb.authStore.model;
-  const isSubscribed: boolean = member?.is_subscribed;
 
   // if member has no birthdate, they have not completed onboarding yet
+  /*
   if (!member?.birth_date) {
     navigate("/onboard");
   }
+  */
 
   return (
     <main class="m-auto p-4 flex flex-col gap-6 items-center w-full">
-      <Show when={isSubscribed} fallback={
+      <Show when={member?.is_subscribed} fallback={
         <Checkout customerId={String(member?.stripe_customer_id)} />
       }>
         <MemberDashboard pb={pb} />

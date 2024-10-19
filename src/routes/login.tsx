@@ -16,21 +16,10 @@ import Pocketbase from "pocketbase";
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
 export default function Login() {
-  // if user has already signed in on this browser
-  // go to the correct dashboard (coach or member)
-  const navigate = useNavigate();
-  if (pb.authStore.isValid) {
-    if (pb.authStore.isAdmin) {
-      navigate("/coach");
-    } else {
-      navigate("/member");
-    }
-  }
-
   return (
     <main class="m-auto p-4 flex flex-col gap-6 items-center">
-      <h1 class="text-6xl text-red-600/90 font-thin uppercase">Log In</h1>
-      <Tabs defaultValue={AccountType.Member} class="w-[400px]">
+      <h1 class="text-6xl text-red-600/90 text-center font-thin uppercase">Log In</h1>
+      <Tabs defaultValue={AccountType.Member} class="w-full md:w-1/4">
 
         <TabsList class="grid w-full grid-cols-2">
           <TabsTrigger value={AccountType.Member}>I'm a Member</TabsTrigger>
