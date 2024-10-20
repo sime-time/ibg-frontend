@@ -1,6 +1,4 @@
 import { clientOnly } from "@solidjs/start";
-import { onMount } from "solid-js";
-import { useNavigate } from "@solidjs/router";
 import Pocketbase from "pocketbase";
 
 const AccessDenied = clientOnly(() => import("~/components/AccessDenied"))
@@ -14,15 +12,18 @@ export default function MemberPage() {
   const member = pb.authStore.model;
   if (!pb.authStore.isValid || pb.authStore.isAdmin) {
     return <main><AccessDenied /></main>;
+
   } else if (!member?.birth_date) {
     return <main><OnboardForm memberName={member?.name} /></main>;
-  } else if (member?.is_subscribed === false) {
-    return <main><ChooseProgram customerId={String(member?.stripe_customer_id)} /></main>
-  }
 
-  return (
-    <main class="m-auto p-4 flex flex-col gap-6 items-center w-full">
-      <MemberDashboard pb={pb} />
-    </main>
-  );
+  } else if (!member?.is_subscribed) {
+    return <main><ChooseProgram customerId={String(member?.stripe_customer_id)} /></main>
+
+  } else {
+    return (
+      <main class="m-auto p-4 flex flex-col gap-6 items-center w-full">
+        <MemberDashboard pb={pb} />
+      </main>
+    );
+  }
 }
