@@ -55,8 +55,7 @@ export default function ChooseProgram(props: ChooseProgramProps) {
 
           if (response.ok && data.url) {
             // redirect to the payment page 
-            //window.location.href = data.url;
-            console.log(data.url)
+            window.location.href = data.url;
           }
         } catch (error) {
           console.error("Error creating checkout session: ", error);
