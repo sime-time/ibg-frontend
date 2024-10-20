@@ -1,6 +1,7 @@
 import { Setter } from "solid-js";
 import * as v from "valibot";
 import { authorizePB } from "./AuthorizePocketbase";
+import { AccountType } from "./AccountType";
 
 const LoginSchema = v.object({
   email: v.pipe(
@@ -27,7 +28,7 @@ export const loginAuth = async (accountType: string, loginData: LoginData, setEr
     // "logout" of the last authenticated model 
     pb.authStore.clear();
 
-    if (accountType === "member") {
+    if (accountType === AccountType.Member) {
       await pb.collection("member").authWithPassword(
         validLogin.email,
         validLogin.password,

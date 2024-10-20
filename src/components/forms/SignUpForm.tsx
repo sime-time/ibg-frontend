@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from "@solidjs/router";
 import { createMember } from "~/lib/CreateMember";
 import FormInput from "~/components/ui/FormInput";
 import { Button } from "~/components/ui/Button";
+import { AccountType } from "~/lib/AccountType";
+import { loginAuth } from "~/lib/LoginAuth";
+
 
 export default function SignUpForm() {
   const [fullName, setFullName] = createSignal("");
@@ -26,13 +29,20 @@ export default function SignUpForm() {
     }
 
     try {
-      const successful = createMember(formData, setError);
+      const signUpSuccess = await createMember(formData, setError);
 
-      // if on register page, redirect to login
+      // if on sign up page, auto log-in
       // otherwise, refresh the page
-      if (await successful) {
+      if (signUpSuccess) {
         if (onSignUpPage) {
-          navigate("/login");
+          const loginCreds = {
+            email: formData.email,
+            password: formData.password
+          }
+          const loginSuccess = await loginAuth(AccountType.Member, loginCreds, setError);
+          if (loginSuccess) {
+            navigate("/member");
+          }
         } else {
           location.reload();
         }
