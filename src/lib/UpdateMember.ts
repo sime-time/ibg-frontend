@@ -1,6 +1,6 @@
 import { Setter } from "solid-js";
 import * as v from "valibot";
-import { authorizePB } from "./PocketBaseAuth";
+import { authorizePB } from "./AuthorizePocketbase";
 
 const UpdateSchema = v.object({
   name: v.optional(

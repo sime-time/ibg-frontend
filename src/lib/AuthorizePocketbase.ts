@@ -1,6 +1,6 @@
-import PocketBase from "pocketbase";
+import Pocketbase from "pocketbase";
 
-const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_URL);
+const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
 // this function is for admin registration
 export const authorizePB = async () => {

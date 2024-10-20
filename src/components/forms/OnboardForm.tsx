@@ -39,7 +39,7 @@ export default function OnboardForm(props: OnboardProps) {
     try {
       const successful = addContactInfo(formData, setError);
       if (await successful) {
-        navigate("/member");
+        location.reload()
       }
     } catch (err) {
       console.error("Error with Server: ", err);

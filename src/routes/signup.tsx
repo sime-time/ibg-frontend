@@ -1,4 +1,3 @@
-import CreateMemberForm from "~/components/forms/CreateMemberForm";
 import OAuth2Login from "~/components/auth/OAuth2Login";
 import {
   Card,
@@ -8,6 +7,7 @@ import {
   CardHeader,
   CardTitle
 } from "~/components/ui/Card"
+import SignUpForm from "~/components/forms/SignUpForm";
 
 export default function SignUp() {
   return (
@@ -19,7 +19,7 @@ export default function SignUp() {
           <OAuth2Login />
         </CardHeader>
         <CardContent >
-          <CreateMemberForm />
+          <SignUpForm />
         </CardContent>
       </Card>
     </main>

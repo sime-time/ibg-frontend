@@ -1,8 +1,5 @@
 import { createResource, For, Show } from "solid-js";
 import Pocketbase from "pocketbase";
-import AccessDenied from "./auth/AccessDenied";
-import FormCreateMember from "~/components/forms/CreateMemberForm";
-import FormUpdateMember from "~/components/forms/UpdateMemberForm";
 import LogoutButton from "./auth/LogoutButton";
 import { MemberRecord } from "~/lib/MemberRecord";
 import { Button } from "~/components/ui/Button"
@@ -15,23 +12,21 @@ import {
   DialogTitle,
   DialogTrigger
 } from "~/components/ui/Dialog"
+import UpdateMemberForm from "~/components/forms/UpdateMemberForm";
+import SignUpForm from "./forms/SignUpForm";
 
-const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
+interface CoachDashboardProps {
+  pb: Pocketbase
+}
 
-export default function CoachDashboard() {
-  if (!pb.authStore.isValid || !pb.authStore.isAdmin) {
-    return (
-      <AccessDenied />
-    );
-  }
-
+export default function CoachDashboard(props: CoachDashboardProps) {
   const [members, { mutate, refetch }] = createResource(async () => {
-    return await pb.collection("member").getFullList<MemberRecord>();
+    return await props.pb.collection("member").getFullList<MemberRecord>();
   });
 
   const confirmDelete = async (memberId: string) => {
     try {
-      await pb.collection("member").delete(memberId);
+      await props.pb.collection("member").delete(memberId);
       refetch();
       console.log(`Member id:${memberId} deleted from database.`);
     } catch (err) {
@@ -39,7 +34,7 @@ export default function CoachDashboard() {
     }
   }
 
-  const coach = pb.authStore.model;
+  const coach = props.pb.authStore.model;
 
   return (
     <div class="flex flex-col justify-center items-center gap-5">
@@ -69,7 +64,7 @@ export default function CoachDashboard() {
                           Make changes to a member here. Click update when you are done.
                         </DialogDescription>
                       </DialogHeader>
-                      <FormUpdateMember pb={pb} memberId={member.id} />
+                      <UpdateMemberForm pb={props.pb} memberId={member.id} />
                     </DialogContent>
                   </Dialog>
 
@@ -98,11 +93,11 @@ export default function CoachDashboard() {
               <DialogTitle>Create a New Member</DialogTitle>
               <DialogDescription>Add a new member to the gym. The member must be aware of what their password is.</DialogDescription>
             </DialogHeader>
-            <FormCreateMember />
+            <SignUpForm />
           </DialogContent>
         </Dialog>
 
-        <LogoutButton pb={pb} />
+        <LogoutButton pb={props.pb} />
       </div>
     </div>
   );

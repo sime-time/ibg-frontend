@@ -1,4 +1,5 @@
-import { useNavigate } from "@solidjs/router";
+import { onMount } from "solid-js";
+import { A, useNavigate } from "@solidjs/router";
 import LoginForm from "~/components/forms/LoginForm";
 import OAuth2Login from "~/components/auth/OAuth2Login";
 import {
@@ -18,13 +19,15 @@ const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 export default function Login() {
   // if user is already logged in, route to their dashboard 
   const navigate = useNavigate();
-  if (pb.authStore.isValid) {
-    if (pb.authStore.isAdmin) {
-      navigate("/coach")
-    } else {
-      navigate("/member");
+  onMount(() => {
+    if (pb.authStore.isValid) {
+      if (pb.authStore.isAdmin) {
+        navigate("/coach")
+      } else {
+        navigate("/member");
+      }
     }
-  }
+  });
 
   return (
     <main class="m-auto p-4 flex flex-col gap-6 items-center">

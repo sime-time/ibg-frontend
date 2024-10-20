@@ -1,6 +1,6 @@
 import { Setter } from "solid-js";
 import * as v from "valibot";
-import PocketBase from "pocketbase";
+import { authorizePB } from "./AuthorizePocketbase";
 
 const LoginSchema = v.object({
   email: v.pipe(
@@ -18,7 +18,7 @@ const LoginSchema = v.object({
 type LoginData = v.InferOutput<typeof LoginSchema>;
 
 export const loginAuth = async (accountType: string, loginData: LoginData, setError: Setter<string>): Promise<boolean> => {
-  const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_URL);
+  const pb = await authorizePB();
 
   try {
     //validate user input 

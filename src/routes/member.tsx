@@ -1,38 +1,28 @@
 import { clientOnly } from "@solidjs/start";
-import { createSignal, Show, onMount } from "solid-js";
-import { A, useNavigate } from "@solidjs/router";
+import { onMount } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 import Pocketbase from "pocketbase";
-import AccessDenied from "~/components/auth/AccessDenied";
 
+const AccessDenied = clientOnly(() => import("~/components/AccessDenied"))
+const OnboardForm = clientOnly(() => import("~/components/forms/OnboardForm"))
+const ChooseProgram = clientOnly(() => import("~/components/ChooseProgram"))
 const MemberDashboard = clientOnly(() => import("~/components/MemberDashboard"));
-const Checkout = clientOnly(() => import("~/components/ChooseProgram"));
 
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
 export default function MemberPage() {
+  const member = pb.authStore.model;
   if (!pb.authStore.isValid || pb.authStore.isAdmin) {
-    return (
-      <AccessDenied />
-    );
+    return <main><AccessDenied /></main>;
   }
-
-
-  onMount(() => {
-    const member = pb.authStore.model;
-    const navigate = useNavigate();
-
-    // if member has no birthdate, they have not completed onboarding yet
-    if (!member?.birth_date) {
-      navigate("/onboard");
-    }
-
-    // if member has not subscribed, lead them to checkout 
-    if (member?.is_subscribed === false) {
-      navigate("/checkout")
-    }
-
-
-  });
+  // if member has no birthdate, they have not completed onboarding yet
+  if (!member?.birth_date) {
+    return <main><OnboardForm memberName={member?.name} /></main>;
+  }
+  // if member has not subscribed, let them choose a program first 
+  if (member?.is_subscribed === false) {
+    return <main><ChooseProgram customerId={String(member?.stripe_customer_id)} /></main>
+  }
 
   return (
     <main class="m-auto p-4 flex flex-col gap-6 items-center w-full">
