@@ -31,7 +31,8 @@ export default function ChooseProgram(props: ChooseProgramProps) {
     }
   ];
 
-  const handleSubmit = (async () => {
+  const handleSubmit = (async (e: Event) => {
+    e.preventDefault();
 
     // use martial art to redirect to the correct payment link 
     for (let i = 0; i < plans.length; i++) {
