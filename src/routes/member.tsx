@@ -17,7 +17,7 @@ export default function MemberPage() {
   const member = pb.authStore.model;
 
   createEffect(() => {
-    setIsMember(Boolean(!pb.authStore.isValid || pb.authStore.isAdmin));
+    setIsMember(Boolean(pb.authStore.isValid && !pb.authStore.isAdmin));
     setHasBirthDate(Boolean(member?.birth_date));
     setIsSubscribed(Boolean(member?.is_subscribed));
     console.log("Is Member: ", isMember());
@@ -27,7 +27,7 @@ export default function MemberPage() {
 
   return (
     //class="m-auto p-4 flex flex-col gap-6 items-center w-full"
-    <main >
+    <main>
       <Switch>
         <Match when={isMember() == false}>
           <AccessDenied />
