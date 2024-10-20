@@ -13,14 +13,19 @@ export default function MemberPage() {
   const [isMember, setIsMember] = createSignal<boolean>(false);
   const [hasBirthDate, setHasBirthDate] = createSignal<boolean>(false);
   const [isSubscribed, setIsSubscribed] = createSignal<boolean>(false);
-
-  const member = pb.authStore.model;
+  const [memberName, setMemberName] = createSignal("");
+  const [customerId, setCustomerId] = createSignal("");
 
   createEffect(() => {
     pb.collection("member").authRefresh();
+    const member = pb.authStore.model;
+
     setIsMember(Boolean(pb.authStore.isValid && !pb.authStore.isAdmin));
     setHasBirthDate(Boolean(member?.birth_date));
     setIsSubscribed(Boolean(member?.is_subscribed));
+    setMemberName(String(member?.name));
+    setCustomerId(String(member?.stripe_customer_id));
+
     console.log("Is Member: ", isMember());
     console.log("Birthdate: ", hasBirthDate());
     console.log("Is Subscribed: ", isSubscribed());
@@ -33,10 +38,10 @@ export default function MemberPage() {
           <AccessDenied />
         </Match>
         <Match when={hasBirthDate() == false}>
-          <OnboardForm memberName={member?.name} />
+          <OnboardForm memberName={memberName()} />
         </Match>
         <Match when={isSubscribed() == false}>
-          <ChooseProgram customerId={String(member?.stripe_customer_id)} />
+          <ChooseProgram customerId={customerId()} />
         </Match>
         <Match when={hasBirthDate() && isSubscribed()}>
           <MemberDashboard pb={pb} />
