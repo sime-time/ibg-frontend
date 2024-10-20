@@ -1,6 +1,6 @@
 import { clientOnly } from "@solidjs/start";
 import Pocketbase from "pocketbase";
-import { createSignal, Match, Switch } from "solid-js";
+import { createEffect, createSignal, Match, Switch } from "solid-js";
 
 const AccessDenied = clientOnly(() => import("~/components/AccessDenied"))
 const OnboardForm = clientOnly(() => import("~/components/forms/OnboardForm"))
@@ -10,23 +10,28 @@ const MemberDashboard = clientOnly(() => import("~/components/MemberDashboard"))
 const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
 
 export default function MemberPage() {
-  const member = pb.authStore.model;
+  const [isMember, setIsMember] = createSignal<boolean>(false);
   const [hasBirthDate, setHasBirthDate] = createSignal<boolean>(false);
   const [isSubscribed, setIsSubscribed] = createSignal<boolean>(false);
 
-  if (!pb.authStore.isValid || pb.authStore.isAdmin) {
-    return <main><AccessDenied /></main>;
-  } else {
-    console.log("Birthdate: ", member?.birth_date);
-    console.log("Is Subscribed: ", member?.is_subscribed);
+  const member = pb.authStore.model;
 
+  createEffect(() => {
+    setIsMember(Boolean(!pb.authStore.isValid || pb.authStore.isAdmin));
     setHasBirthDate(Boolean(member?.birth_date));
     setIsSubscribed(Boolean(member?.is_subscribed));
-  }
+    console.log("Is Member: ", isMember());
+    console.log("Birthdate: ", hasBirthDate());
+    console.log("Is Subscribed: ", isSubscribed());
+  });
 
   return (
-    <main class="m-auto p-4 flex flex-col gap-6 items-center w-full">
+    //class="m-auto p-4 flex flex-col gap-6 items-center w-full"
+    <main >
       <Switch>
+        <Match when={isMember() == false}>
+          <AccessDenied />
+        </Match>
         <Match when={hasBirthDate() == false}>
           <OnboardForm memberName={member?.name} />
         </Match>
