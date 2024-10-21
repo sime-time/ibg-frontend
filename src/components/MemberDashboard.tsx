@@ -22,13 +22,33 @@ interface MemberDashboardProps {
 export default function MemberDashboard(props: MemberDashboardProps) {
 
   const member = props.pb.authStore.model;
+  const handleManageSubscription = (async (e: Event) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${import.meta.env.VITE_POCKETBASE_URL}/customer-portal`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          customerId: member?.stripe_customer_id
+        })
+      });
+      console.log(response);
+    } catch (error) {
+      console.error("Error opening customer portal: ", error);
+    }
+
+  });
 
   return (
     <div class="w-fit m-auto flex flex-col gap-6">
       <h1 class="text-3xl text-center font-bold">Welcome, {member?.name}!</h1>
       <div class="flex flex-col gap-4">
         <Button size="lg" class="flex gap-2 items-center"><FaRegularCalendarDays class="size-5" /> Class Schedule</Button>
-        <Button size="lg" class="flex gap-2 items-center"><BsCreditCard2BackFill class="size-5" /> Manage Subscription</Button>
+        <form onSubmit={handleManageSubscription}>
+          <Button type="submit" size="lg" class="flex gap-2 items-center"><BsCreditCard2BackFill class="size-5" /> Manage Subscription</Button>
+        </form>
         <Dialog>
           <DialogTrigger as={Button} size="lg" class="flex gap-2 items-center"><RiDesignEditFill class="size-5" />Edit Profile</DialogTrigger>
           <DialogContent>
