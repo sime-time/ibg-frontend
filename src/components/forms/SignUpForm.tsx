@@ -12,6 +12,7 @@ export default function SignUpForm() {
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
   const [passwordConfirm, setPasswordConfirm] = createSignal("");
+  const [disableSubmit, setDisableSubmit] = createSignal<boolean>(false);
   const [error, setError] = createSignal("");
 
   const onSignUpPage: boolean = (useLocation().pathname === "/signup");
@@ -19,6 +20,7 @@ export default function SignUpForm() {
 
   const submitMember = async (e: Event) => {
     e.preventDefault();
+    setDisableSubmit(true);
     setError(""); // clear any previous errors 
 
     const formData = {
@@ -60,7 +62,7 @@ export default function SignUpForm() {
       <FormInput type="password" name="password" label="Password" required={true} value={password()} setValue={setPassword} />
       <FormInput type="password" name="passwordConfirm" label="Confirm Password" required={true} value={passwordConfirm()} setValue={setPasswordConfirm} />
       {error() && <p class="text-red-500">{error()}</p>}
-      <Button type="submit" class={`text-white w-full ${onSignUpPage ? "bg-red-600/90 hover:bg-red-700" : "bg-blue-600/90 hover:bg-blue-700"}`}>Submit</Button>
+      <Button type="submit" disabled={disableSubmit()} class={`text-white w-full ${onSignUpPage ? "bg-red-600/90 hover:bg-red-700" : "bg-blue-600/90 hover:bg-blue-700"}`}>Submit</Button>
     </form >
   );
 }
