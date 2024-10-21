@@ -49,6 +49,7 @@ export default function SignUpForm() {
       }
     } catch (err) {
       console.error("Error registering member: ", err);
+      setError("Error registering member.")
     }
   }
 
