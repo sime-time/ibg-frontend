@@ -53,6 +53,7 @@ export default function SignUpForm() {
       console.error("Error registering member: ", err);
       setError("Error registering member.")
     }
+    setDisableSubmit(false);
   }
 
   return (
