@@ -9,17 +9,20 @@ const MemberSubscribe = clientOnly(() => import("~/components/MemberSubscribe"))
 
 
 export default function Member() {
-  const { user, userIsMember } = usePocket();
+  const { user, userIsMember, pb } = usePocket();
   const [hasContactInfo, setHasContactInfo] = createSignal<boolean>(false);
   const [isSubscribed, setIsSubscribed] = createSignal<boolean>(false);
 
   createEffect(async () => {
-    if (userIsMember()) {
-      setHasContactInfo(Boolean(user()?.phone_number));
-      setIsSubscribed(Boolean(user()?.is_subscribed));
-    }
-    console.log("Member has contact info: ", hasContactInfo());
-    console.log("Member is subscribed: ", isSubscribed());
+    await pb.collection("member").authRefresh()
+      .then(() => {
+        if (userIsMember()) {
+          setHasContactInfo(Boolean(user()?.phone_number));
+          setIsSubscribed(Boolean(user()?.is_subscribed));
+        }
+        console.log("Member has contact info: ", hasContactInfo());
+        console.log("Member is subscribed: ", isSubscribed());
+      });
   });
 
   return <>

@@ -34,7 +34,7 @@ export default function MemberSubscribe() {
     setError("");
     setSubmitDisabled(true);
 
-    // use martial art to redirect to the correct payment link 
+    // use martial art signal to redirect to the correct payment link 
     for (let i = 0; i < plans.length; i++) {
       if (martialArt() === plans[i].name) {
         try {

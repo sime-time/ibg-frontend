@@ -2,6 +2,7 @@ import { Accessor, createContext, useContext, createSignal, createEffect, Parent
 import Pocketbase, { AuthModel } from "pocketbase";
 
 interface PocketbaseContextProps {
+  pb: Pocketbase,
   token: Accessor<string>,
   user: Accessor<AuthModel>,
   signup: (newMember: MemberData) => Promise<boolean>,
@@ -11,7 +12,6 @@ interface PocketbaseContextProps {
   userIsAdmin: () => boolean,
   userIsMember: () => boolean,
   addContactInfo: (contactInfo: ContactInfo) => Promise<boolean>,
-  getPhone: () => Promise<string>,
 }
 
 interface MemberData {
@@ -102,17 +102,6 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   }
 
-  const getPhone = async () => {
-    try {
-      const member = await pb.collection("member").getOne(user()?.id);
-      const phoneNumber: string = member.phone_number;
-      return phoneNumber;
-    } catch (err) {
-      console.error("Error fetching phone number: ", err);
-      return "";
-    }
-  }
-
   const testPocketbase = async () => {
     try {
       console.log('Testing PB connection...');
@@ -125,7 +114,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, getPhone }} >
+    <PocketbaseContext.Provider value={{ pb, token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, }} >
       {props.children}
     </PocketbaseContext.Provider>
   );
