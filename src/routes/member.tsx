@@ -5,6 +5,7 @@ import { clientOnly } from "@solidjs/start";
 
 const AccessDenied = clientOnly(() => import("~/components/AccessDenied"));
 const MemberContactInfo = clientOnly(() => import("~/components/MemberContactInfo"));
+const MemberSubscribe = clientOnly(() => import("~/components/MemberSubscribe"));
 
 
 export default function Member() {
@@ -14,7 +15,7 @@ export default function Member() {
 
   createEffect(async () => {
     if (userIsMember()) {
-      setHasContactInfo(Boolean(user()?.birth_date));
+      setHasContactInfo(Boolean(user()?.phone_number));
       setIsSubscribed(Boolean(user()?.is_subscribed));
     }
     console.log("Member has contact info: ", hasContactInfo());
@@ -35,7 +36,7 @@ export default function Member() {
           <MemberContactInfo />
         </Match>
         <Match when={!isSubscribed()}>
-          <div>Select Martial Art</div>
+          <MemberSubscribe />
         </Match>
       </Switch>
     </main>

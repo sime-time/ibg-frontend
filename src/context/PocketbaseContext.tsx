@@ -1,6 +1,5 @@
 import { Accessor, createContext, useContext, createSignal, createEffect, ParentProps } from "solid-js";
 import Pocketbase, { AuthModel } from "pocketbase";
-import { PhoneType } from "~/enums/PhoneType";
 
 interface PocketbaseContextProps {
   token: Accessor<string>,
@@ -12,7 +11,7 @@ interface PocketbaseContextProps {
   userIsAdmin: () => boolean,
   userIsMember: () => boolean,
   addContactInfo: (contactInfo: ContactInfo) => Promise<boolean>,
-  getPhone: (phoneType: PhoneType) => Promise<string>,
+  getPhone: () => Promise<string>,
 }
 
 interface MemberData {
@@ -81,28 +80,18 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const addContactInfo = async (contactInfo: ContactInfo) => {
     try {
-      // fetch phone type IDs from database 
-      const personalPhoneType = await pb.collection("phone_type").getFirstListItem(`name="${PhoneType.Personal}"`);
-      const emergencyPhoneType = await pb.collection("phone_type").getFirstListItem(`name="${PhoneType.Emergency}"`);
-      console.log("PersonalPhoneID: ", personalPhoneType.id);
-      console.log("EmergencyPhoneID: ", emergencyPhoneType.id);
-
-      const newPhone = {
+      const memberPhone = {
         "phone_number": contactInfo.phone,
-        "phone_type_id": personalPhoneType.id,
-        "description": `${user()?.name}'s Personal`,
-        "member_id": user()?.id
       }
 
-      const newEmergencyPhone = {
+      const emergencyContact = {
         "phone_number": contactInfo.emergencyPhone,
-        "phone_type_id": emergencyPhoneType.id,
         "description": contactInfo.emergencyName,
         "member_id": user()?.id
       }
 
-      await pb.collection("member_phone").create(newPhone);
-      await pb.collection("member_phone").create(newEmergencyPhone);
+      await pb.collection("member").update(user()?.id, memberPhone);
+      await pb.collection("member_emergency").create(emergencyContact);
 
       console.log("Contact info added successfully!");
       return true;
@@ -113,14 +102,10 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   }
 
-  const getPhone = async (phoneType: PhoneType) => {
+  const getPhone = async () => {
     try {
-      // fetch phone type ID from database 
-      console.log(`Fetching ${phoneType} phone number...`);
-      const phoneTypeRecord = await pb.collection("phone_type").getFirstListItem(`name="${phoneType}"`);
-      const record = await pb.collection("member_phone").getFirstListItem(`phone_type_id="${phoneTypeRecord.id}" && member_id="${user()?.id}"`)
-      const phoneNumber: string = record.phone_number;
-      console.log(phoneNumber);
+      const member = await pb.collection("member").getOne(user()?.id);
+      const phoneNumber: string = member.phone_number;
       return phoneNumber;
     } catch (err) {
       console.error("Error fetching phone number: ", err);
