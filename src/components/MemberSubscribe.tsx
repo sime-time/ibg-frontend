@@ -31,6 +31,8 @@ export default function MemberSubscribe() {
 
   const handleSubmit = (async (e: Event) => {
     e.preventDefault();
+    setError("");
+    setSubmitDisabled(true);
 
     // use martial art to redirect to the correct payment link 
     for (let i = 0; i < plans.length; i++) {
@@ -61,6 +63,7 @@ export default function MemberSubscribe() {
         }
       }
     }
+    setSubmitDisabled(false);
   });
 
   return (
