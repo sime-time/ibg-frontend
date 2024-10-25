@@ -96,9 +96,9 @@ export default function SignUp() {
     <main class="flex items-start justify-center min-h-full mt-4">
       <div class="card bg-base-100 shadow-xl w-fit md:w-96">
         <div class="card-body">
-          <h1 class="card-title text-2xl font-bold mb-3">Sign Up</h1>
-
+          <h1 class="card-title text-2xl font-bold">Sign Up</h1>
           <form onSubmit={handleSignUp} class="flex flex-col gap-4">
+
             <div class="form-control">
               <label class="label">
                 <span class="label-text">Name</span>
@@ -116,6 +116,7 @@ export default function SignUp() {
                 />
               </label>
             </div>
+
             <div class="form-control">
               <label class="label">
                 <span class="label-text">Email</span>
@@ -133,6 +134,7 @@ export default function SignUp() {
                 />
               </label>
             </div>
+
             <div class="form-control">
               <label class="label">
                 <span class="label-text">Password</span>
@@ -150,6 +152,7 @@ export default function SignUp() {
                 />
               </label>
             </div>
+
             <div class="form-control">
               <label class="label">
                 <span class="label-text">Confirm Password</span>
@@ -167,10 +170,12 @@ export default function SignUp() {
                 />
               </label>
             </div>
+
             <Show when={error()}>
               <p class="text-error">{error()}</p>
             </Show>
-            <div class="form-control mt-2">
+
+            <div class="form-control mt-3">
               <button type="submit" class="btn btn-primary" disabled={submitDisabled()}>
                 {submitDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Continue"}
               </button>
