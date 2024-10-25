@@ -8,6 +8,7 @@ interface CheckoutSessionResponse {
 
 export default function MemberSubscribe() {
   const [martialArt, setMartialArt] = createSignal("");
+  const [submitDisabled, setSubmitDisabled] = createSignal(false);
   const [error, setError] = createSignal("");
   const { user } = usePocket();
   const plans = [
@@ -86,7 +87,9 @@ export default function MemberSubscribe() {
         <Show when={error()}>
           <p class="text-error">{error()}</p>
         </Show>
-        <button type="submit" disabled={martialArt() === "" ? true : false} class="btn btn-primary">Continue</button>
+        <button type="submit" class="btn btn-primary" disabled={submitDisabled() || !martialArt()}>
+          {submitDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Continue"}
+        </button>
       </form>
     </div>
   );
