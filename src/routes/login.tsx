@@ -23,8 +23,8 @@ const LoginSchema = v.object({
 type LoginData = v.InferOutput<typeof LoginSchema>;
 
 export default function Login() {
-  const [isMember, setIsMember] = createSignal(false);
-  const [isCoach, setIsCoach] = createSignal(false);
+  const [memberLogin, setMemberLogin] = createSignal(false);
+  const [coachLogin, setCoachLogin] = createSignal(false);
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
   const [error, setError] = createSignal("");
@@ -86,22 +86,22 @@ export default function Login() {
 
   return <>
     <Title>Log In</Title>
-    <main class="flex items-start justify-center min-h-screen mt-4">
+    <main class="flex items-start justify-center min-h-full mt-4">
       <Switch fallback={
         <div class="flex flex-col gap-4 mt-24">
           <h2 class="text-2xl text-center font-bold">I am a...</h2>
           <div class="flex gap-4">
-            <button onClick={() => setIsMember(true)} class="btn btn-primary">Member</button>
-            <button onClick={() => setIsCoach(true)} class="btn btn-secondary">Coach</button>
+            <button onClick={() => setMemberLogin(true)} class="btn btn-primary">Member</button>
+            <button onClick={() => setCoachLogin(true)} class="btn btn-secondary">Coach</button>
           </div>
         </div>
       }>
-        <Match when={isMember()}>
+        <Match when={memberLogin()}>
           <div class="card bg-base-100 shadow-xl w-fit md:w-96">
             <div class="card-body">
               <div class="flex justify-between items-center">
                 <h1 class="card-title text-2xl font-bold">Member Log In</h1>
-                <button onClick={() => setIsMember(false)} class="btn btn-circle"><IoClose class="w-5 h-5" /></button>
+                <button onClick={() => setMemberLogin(false)} class="btn btn-circle"><IoClose class="w-5 h-5" /></button>
               </div>
               <form onSubmit={(e: Event) => handleLogin(e, UserType.Member)} class="flex flex-col gap-4">
                 <div class="form-control">
@@ -152,12 +152,12 @@ export default function Login() {
           </div>
         </Match>
 
-        <Match when={isCoach()}>
+        <Match when={coachLogin()}>
           <div class="card bg-base-100 shadow-xl w-fit md:w-96">
             <div class="card-body">
               <div class="flex justify-between items-center">
                 <h1 class="card-title text-2xl font-bold">Coach Log In</h1>
-                <button onClick={() => setIsCoach(false)} class="btn btn-circle"><IoClose class="w-5 h-5" /></button>
+                <button onClick={() => setCoachLogin(false)} class="btn btn-circle"><IoClose class="w-5 h-5" /></button>
               </div>
               <form onSubmit={(e: Event) => handleLogin(e, UserType.Coach)} class="flex flex-col gap-4">
                 <div class="form-control">

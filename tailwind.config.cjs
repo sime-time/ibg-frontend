@@ -12,6 +12,7 @@ module.exports = {
           primary: "#c72323",
           secondary: "#225ad5",
           accent: "yellow",
+          background: "@apply bg-base-100"
         }
       }
     ]

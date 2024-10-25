@@ -1,13 +1,12 @@
 import { Title } from "@solidjs/meta";
+import { usePocket } from "~/context/PocketbaseContext";
 
 export default function Home() {
+  const { logout } = usePocket();
   return <>
     <Title>Indy Boxing and Grappling</Title>
-    <main>
-      <button class="btn">Zero</button>
-      <button class="btn btn-primary">One</button>
-      <button class="btn btn-secondary">Two</button>
-      <button class="btn btn-accent btn-outline">Three</button>
+    <main class="flex justify-center items-center ">
+      <button onClick={logout} class="btn btn-accent btn-outline">Log Out</button>
     </main>
   </>
 }

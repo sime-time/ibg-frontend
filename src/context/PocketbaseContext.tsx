@@ -8,6 +8,8 @@ interface PocketbaseContextProps {
   loginMember: (email: string, password: string) => Promise<boolean>,
   loginAdmin: (email: string, password: string) => Promise<boolean>,
   logout: () => void,
+  userIsAdmin: () => boolean,
+  userIsMember: () => boolean,
 }
 
 interface MemberData {
@@ -60,6 +62,14 @@ export function PocketbaseContextProvider(props: ParentProps) {
     return pb.authStore.isValid && pb.authStore.isAdmin;
   };
 
+  const userIsAdmin = () => {
+    return pb.authStore.isValid && pb.authStore.isAdmin;
+  }
+
+  const userIsMember = () => {
+    return pb.authStore.isValid && !pb.authStore.isAdmin;
+  };
+
   const testPocketbase = async () => {
     try {
       console.log('Testing PB connection...');
@@ -72,7 +82,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

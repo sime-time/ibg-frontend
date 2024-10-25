@@ -93,7 +93,7 @@ export default function SignUp() {
 
   return <>
     <Title>Sign Up</Title>
-    <main class="flex items-start justify-center min-h-screen">
+    <main class="flex items-start justify-center min-h-full mt-4">
       <div class="card bg-base-100 shadow-xl w-fit md:w-96">
         <div class="card-body">
           <h1 class="card-title text-2xl font-bold mb-3">Sign Up</h1>

@@ -2,6 +2,8 @@ function NavMenu() {
   return (
     <>
       <li><a href="/">Home</a></li>
+      <li><a href="/member">Member</a></li>
+      <li><a href="/coach">Coach</a></li>
     </>
   );
 }

@@ -10,7 +10,7 @@ The backend is using PocketBase extended with Go to handle Stripe webhooks.
 The frontend code (this repo) is using SolidStart and Typescript to build the web app frontend. 
 This web app helps a coach/owner manage any martial arts gym.
 
-In this program, there are 2 types of users: members and coaches. 
+In this program, there are 2 types of users: coaches and members. 
 Coaches are administrators.
 Members are the customers that pay a monthly subscription to attend the gym. 
 
