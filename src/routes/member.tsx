@@ -15,9 +15,10 @@ export default function Member() {
   const [isSubscribed, setIsSubscribed] = createSignal(user()?.is_subscribed);
 
   onMount(async () => {
-    console.log("Is Subscribed: ", user()?.is_subscribed);
     await refreshMember().then(setIsSubscribed(user()?.is_subscribed))
-    console.log("Is Subscribed: ", user()?.is_subscribed);
+    if (isSubscribed()) {
+      location.reload();
+    }
   });
 
   return <>
