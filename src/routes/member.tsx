@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta";
 import { usePocket } from "~/context/PocketbaseContext";
-import { Switch, Match, onMount } from "solid-js";
+import { Switch, Match, createEffect, createSignal } from "solid-js";
 import { clientOnly } from "@solidjs/start";
 
 const AccessDenied = clientOnly(() => import("~/components/AccessDenied"));
@@ -10,21 +10,19 @@ const MemberDashboard = clientOnly(() => import("~/components/MemberDashboard"))
 
 
 export default function Member() {
-  const { user, userIsMember } = usePocket();
+  const { user, userIsMember, refreshAuth } = usePocket();
   const hasContactInfo: boolean = Boolean(user()?.phone_number);
-  const isSubscribed: boolean = Boolean(user()?.is_subscribed);
+  const [isSubscribed, setIsSubscribed] = createSignal(user()?.is_subscribed);
 
-  onMount(() => {
-    if (!isSubscribed) {
-      location.reload();
-    }
+  createEffect(async () => {
+    refreshAuth().then(setIsSubscribed(user()?.is_subscribed))
   });
 
   return <>
     <Title>Member Dashboard</Title>
     <main class="flex justify-center min-h-full mt-4">
       <Switch>
-        <Match when={hasContactInfo && isSubscribed}>
+        <Match when={hasContactInfo && isSubscribed()}>
           <MemberDashboard />
         </Match>
         <Match when={!userIsMember()}>
@@ -33,7 +31,7 @@ export default function Member() {
         <Match when={!hasContactInfo}>
           <MemberContactInfo />
         </Match>
-        <Match when={!isSubscribed}>
+        <Match when={!isSubscribed()}>
           <MemberSubscribe />
         </Match>
       </Switch>
