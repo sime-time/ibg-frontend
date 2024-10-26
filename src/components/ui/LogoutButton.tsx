@@ -29,7 +29,7 @@ export default function LogoutButton() {
           <form method="dialog">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
           </form>
-          <h3 class="font-bold text-lg">Log Out?</h3>
+          <h3 class="font-bold text-lg">Logout?</h3>
           <p class="py-2">You will be redirected to the login page</p>
           <div class="modal-action">
             <form method="dialog" class="flex gap-4 w-full">

@@ -11,6 +11,7 @@ interface PocketbaseContextProps {
   userIsAdmin: () => boolean,
   userIsMember: () => boolean,
   addContactInfo: (contactInfo: ContactInfo) => Promise<boolean>,
+  refreshAuth: () => Promise<void>,
 }
 
 interface MemberData {
@@ -99,7 +100,11 @@ export function PocketbaseContextProvider(props: ParentProps) {
       console.error("Error adding contact info: ", err);
       return false;
     }
-  }
+  };
+
+  const refreshAuth = async () => {
+    await pb.collection("member").authRefresh();
+  };
 
   const testPocketbase = async () => {
     try {
@@ -113,7 +118,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshAuth, }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

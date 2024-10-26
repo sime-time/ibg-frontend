@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta";
 import { usePocket } from "~/context/PocketbaseContext";
-import { Switch, Match, createEffect, createSignal } from "solid-js";
+import { Switch, Match, onMount } from "solid-js";
 import { clientOnly } from "@solidjs/start";
 
 const AccessDenied = clientOnly(() => import("~/components/AccessDenied"));
@@ -13,6 +13,12 @@ export default function Member() {
   const { user, userIsMember } = usePocket();
   const hasContactInfo: boolean = Boolean(user()?.phone_number);
   const isSubscribed: boolean = Boolean(user()?.is_subscribed);
+
+  onMount(() => {
+    if (!isSubscribed) {
+      location.reload();
+    }
+  });
 
   return <>
     <Title>Member Dashboard</Title>
