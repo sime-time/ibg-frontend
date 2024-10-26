@@ -11,7 +11,7 @@ interface PocketbaseContextProps {
   userIsAdmin: () => boolean,
   userIsMember: () => boolean,
   addContactInfo: (contactInfo: ContactInfo) => Promise<boolean>,
-  refreshAuth: () => Promise<void>,
+  refreshMember: () => Promise<void>,
 }
 
 interface MemberData {
@@ -102,7 +102,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
-  const refreshAuth = async () => {
+  const refreshMember = async () => {
     await pb.collection("member").authRefresh();
   };
 
@@ -118,7 +118,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshAuth, }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

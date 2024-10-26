@@ -10,12 +10,12 @@ const MemberDashboard = clientOnly(() => import("~/components/MemberDashboard"))
 
 
 export default function Member() {
-  const { user, userIsMember, refreshAuth } = usePocket();
+  const { user, userIsMember, refreshMember } = usePocket();
   const hasContactInfo: boolean = Boolean(user()?.phone_number);
   const [isSubscribed, setIsSubscribed] = createSignal(user()?.is_subscribed);
 
   createEffect(async () => {
-    refreshAuth().then(setIsSubscribed(user()?.is_subscribed))
+    refreshMember().then(setIsSubscribed(user()?.is_subscribed))
   });
 
   return <>
