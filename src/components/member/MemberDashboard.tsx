@@ -3,7 +3,8 @@ import { usePocket } from "~/context/PocketbaseContext";
 import { BsCreditCard2BackFill } from 'solid-icons/bs';
 import { RiDesignEditFill } from 'solid-icons/ri';
 import { FaRegularCalendarDays } from 'solid-icons/fa';
-import LogoutButton from "./ui/LogoutButton";
+import LogoutButton from "../ui/LogoutButton";
+import MemberEdit from "./MemberEdit";
 
 export default function MemberDashboard() {
   const { user, logout } = usePocket();
@@ -41,7 +42,7 @@ export default function MemberDashboard() {
         <h1 class="card-title text-2xl font-bold">{`Welcome, ${user()?.name}`}</h1>
         <button disabled={buttonsDisabled()} class="btn btn-accent"><FaRegularCalendarDays class="size-5" /> Class Schedule</button>
         <button onClick={handleManageSubscription} disabled={buttonsDisabled()} class="btn btn-accent"><BsCreditCard2BackFill class="size-5" /> Manage Subscription</button>
-        <button disabled={buttonsDisabled()} class="btn btn-accent"><RiDesignEditFill class="size-5" /> Edit Profile</button>
+        <MemberEdit />
         <LogoutButton />
       </div>
     </div>

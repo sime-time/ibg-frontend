@@ -2,8 +2,6 @@ import { usePocket } from "~/context/PocketbaseContext";
 import { useNavigate } from "@solidjs/router";
 import { Accessor } from "solid-js";
 
-
-
 export default function LogoutButton() {
   const { logout } = usePocket();
   const navigate = useNavigate();

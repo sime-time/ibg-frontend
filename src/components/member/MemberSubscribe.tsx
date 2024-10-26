@@ -1,6 +1,6 @@
 import { createSignal, For, Show } from "solid-js";
 import { usePocket } from "~/context/PocketbaseContext";
-import { Radio, RadioGroup } from "./ui/Radio";
+import { Radio, RadioGroup } from "../ui/Radio";
 
 interface CheckoutSessionResponse {
   url: string;

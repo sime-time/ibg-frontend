@@ -4,9 +4,9 @@ import { Switch, Match, createEffect, createSignal } from "solid-js";
 import { clientOnly } from "@solidjs/start";
 
 const AccessDenied = clientOnly(() => import("~/components/AccessDenied"));
-const MemberContactInfo = clientOnly(() => import("~/components/MemberContactInfo"));
-const MemberSubscribe = clientOnly(() => import("~/components/MemberSubscribe"));
-const MemberDashboard = clientOnly(() => import("~/components/MemberDashboard"));
+const MemberContactInfo = clientOnly(() => import("~/components/member/MemberContactInfo"));
+const MemberSubscribe = clientOnly(() => import("~/components/member/MemberSubscribe"));
+const MemberDashboard = clientOnly(() => import("~/components/member/MemberDashboard"));
 
 
 export default function Member() {

@@ -12,6 +12,7 @@ interface PocketbaseContextProps {
   userIsMember: () => boolean,
   addContactInfo: (contactInfo: ContactInfo) => Promise<boolean>,
   refreshMember: () => Promise<void>,
+  getEmergencyContact: () => Promise<{ phone: string; name: string; }>
 }
 
 interface MemberData {
@@ -102,8 +103,23 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
+  const getEmergencyContact = async () => {
+    const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${user()?.id}`);
+    return {
+      phone: String(emergencyRecord.phone_number),
+      name: String(emergencyRecord.description)
+    };
+  };
+
   const refreshMember = async () => {
-    await pb.collection("member").authRefresh();
+    // requires a valid record auth to be set 
+    try {
+      if (pb.authStore.isValid) {
+        await pb.collection("member").authRefresh();
+      }
+    } catch (err) {
+      console.error("Auth refresh error: ", err)
+    }
   };
 
   const testPocketbase = async () => {
@@ -118,7 +134,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, }} >
       {props.children}
     </PocketbaseContext.Provider>
   );
