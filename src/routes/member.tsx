@@ -10,16 +10,20 @@ const MemberDashboard = clientOnly(() => import("~/components/member/MemberDashb
 
 export default function Member() {
   const { user, userIsMember, refreshMember } = usePocket();
-  refreshMember().then(() => console.log("Auth refreshed"));
 
   const hasContactInfo: boolean = Boolean(user()?.phone_number);
-  const isSubscribed = Boolean(user()?.is_subscribed);
+  const [isSubscribed, setIsSubscribed] = createSignal(user()?.is_subscribed);
+
+  refreshMember().then(() => {
+    setIsSubscribed(user()?.is_subscribed);
+    console.log("User subbed: ", isSubscribed());
+  });
 
   return <>
     <Title>Member Dashboard</Title>
     <main class="flex justify-center min-h-full mt-4">
       <Switch>
-        <Match when={hasContactInfo && isSubscribed}>
+        <Match when={hasContactInfo && isSubscribed()}>
           <MemberDashboard />
         </Match>
         <Match when={!userIsMember()}>
@@ -28,7 +32,7 @@ export default function Member() {
         <Match when={!hasContactInfo}>
           <MemberContactInfo />
         </Match>
-        <Match when={!isSubscribed}>
+        <Match when={!isSubscribed()}>
           <MemberSubscribe />
         </Match>
       </Switch>
