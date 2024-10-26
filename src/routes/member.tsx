@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta";
 import { usePocket } from "~/context/PocketbaseContext";
-import { Switch, Match, createEffect, createSignal } from "solid-js";
+import { Switch, Match, createEffect, createSignal, onMount } from "solid-js";
 import { clientOnly } from "@solidjs/start";
 
 const AccessDenied = clientOnly(() => import("~/components/AccessDenied"));
@@ -14,8 +14,10 @@ export default function Member() {
   const hasContactInfo: boolean = Boolean(user()?.phone_number);
   const [isSubscribed, setIsSubscribed] = createSignal(user()?.is_subscribed);
 
-  createEffect(async () => {
-    refreshMember().then(setIsSubscribed(user()?.is_subscribed))
+  onMount(async () => {
+    console.log("Is Subscribed: ", user()?.is_subscribed);
+    await refreshMember().then(setIsSubscribed(user()?.is_subscribed))
+    console.log("Is Subscribed: ", user()?.is_subscribed);
   });
 
   return <>

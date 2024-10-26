@@ -115,6 +115,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
     // requires a valid record auth to be set 
     try {
       if (pb.authStore.isValid) {
+        await testPocketbase()
         await pb.collection("member").authRefresh();
       }
     } catch (err) {
