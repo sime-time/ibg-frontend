@@ -2,7 +2,6 @@ import { Accessor, createContext, useContext, createSignal, createEffect, Parent
 import Pocketbase, { AuthModel } from "pocketbase";
 
 interface PocketbaseContextProps {
-  pb: Pocketbase,
   token: Accessor<string>,
   user: Accessor<AuthModel>,
   signup: (newMember: MemberData) => Promise<boolean>,
@@ -114,7 +113,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ pb, token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

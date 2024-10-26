@@ -11,7 +11,7 @@ module.exports = {
           ...require("daisyui/src/theming/themes")["dracula"],
           primary: "#c72323",
           secondary: "#225ad5",
-          accent: "yellow",
+          accent: "white",
           background: "@apply bg-base-100"
         }
       }
