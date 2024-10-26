@@ -8,24 +8,18 @@ const MemberContactInfo = clientOnly(() => import("~/components/member/MemberCon
 const MemberSubscribe = clientOnly(() => import("~/components/member/MemberSubscribe"));
 const MemberDashboard = clientOnly(() => import("~/components/member/MemberDashboard"));
 
-
 export default function Member() {
   const { user, userIsMember, refreshMember } = usePocket();
-  const hasContactInfo: boolean = Boolean(user()?.phone_number);
-  const [isSubscribed, setIsSubscribed] = createSignal(user()?.is_subscribed);
+  refreshMember().then(() => console.log("Auth refreshed"));
 
-  onMount(async () => {
-    await refreshMember().then(setIsSubscribed(user()?.is_subscribed))
-    if (isSubscribed()) {
-      location.reload();
-    }
-  });
+  const hasContactInfo: boolean = Boolean(user()?.phone_number);
+  const isSubscribed = Boolean(user()?.is_subscribed);
 
   return <>
     <Title>Member Dashboard</Title>
     <main class="flex justify-center min-h-full mt-4">
       <Switch>
-        <Match when={hasContactInfo && isSubscribed()}>
+        <Match when={hasContactInfo && isSubscribed}>
           <MemberDashboard />
         </Match>
         <Match when={!userIsMember()}>
@@ -34,7 +28,7 @@ export default function Member() {
         <Match when={!hasContactInfo}>
           <MemberContactInfo />
         </Match>
-        <Match when={!isSubscribed()}>
+        <Match when={!isSubscribed}>
           <MemberSubscribe />
         </Match>
       </Switch>
