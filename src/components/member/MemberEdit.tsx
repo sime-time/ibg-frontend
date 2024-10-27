@@ -134,7 +134,7 @@ export default function MemberEdit() {
           case "oldPassword":
             updatedValues.oldPassword = field.value;
             break;
-          case "newPasssword":
+          case "newPassword":
             updatedValues.newPassword = field.value;
             break;
         }
