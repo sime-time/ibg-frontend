@@ -12,7 +12,8 @@ interface PocketbaseContextProps {
   userIsMember: () => boolean,
   addContactInfo: (contactInfo: ContactInfo) => Promise<boolean>,
   refreshMember: () => Promise<void>,
-  getEmergencyContact: () => Promise<{ phone: string; name: string; }>
+  getEmergencyContact: () => Promise<{ phone: string; name: string; }>,
+  updateMember: (updatedData: UpdateMemberData) => Promise<void>,
 }
 
 interface MemberData {
@@ -27,6 +28,17 @@ interface ContactInfo {
   phone: string,
   emergencyName: string,
   emergencyPhone: string,
+}
+
+export interface UpdateMemberData {
+  name?: string,
+  email?: string,
+  password?: string,
+  passwordConfirm?: string,
+  oldPassword?: string,
+  phone?: string,
+  emergencyName?: string,
+  emergencyPhone?: string,
 }
 
 const PocketbaseContext = createContext<PocketbaseContextProps>();
@@ -104,11 +116,37 @@ export function PocketbaseContextProvider(props: ParentProps) {
   };
 
   const getEmergencyContact = async () => {
-    const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${user()?.id}`);
+    const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${user()?.id}"`);
     return {
       phone: String(emergencyRecord.phone_number),
       name: String(emergencyRecord.description)
     };
+  };
+
+  const updateMember = async (updatedData: UpdateMemberData) => {
+
+    const updateMemberRecord = {
+      "name": updatedData.name,
+      "oldPassword": updatedData.oldPassword,
+      "password": updatedData.password,
+      "passwordConfirm": updatedData.passwordConfirm,
+      "phone_number": updatedData.phone,
+    }
+
+    const updateEmergencyRecord = {
+      "phone_number": updatedData.emergencyPhone,
+      "description": updatedData.emergencyName,
+    }
+
+    try {
+      await pb.collection("member").update(user()?.id, updateMemberRecord);
+
+      const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${user()?.id}"`);
+      await pb.collection("member_emergency").update(emergencyRecord.id, updateEmergencyRecord);
+
+    } catch (err) {
+      console.error("Error updating member: ", err)
+    }
   };
 
   const refreshMember = async () => {
@@ -137,7 +175,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, updateMember, }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

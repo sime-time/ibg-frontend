@@ -11,12 +11,11 @@ const MemberDashboard = clientOnly(() => import("~/components/member/MemberDashb
 export default function Member() {
   const { user, userIsMember, refreshMember } = usePocket();
 
-  const hasContactInfo: boolean = Boolean(user()?.phone_number);
+  const hasContactInfo = Boolean(user()?.phone_number);
   const [isSubscribed, setIsSubscribed] = createSignal(user()?.is_subscribed);
 
   refreshMember().then(() => {
     setIsSubscribed(user()?.is_subscribed);
-    console.log("User subbed: ", isSubscribed());
   });
 
   return <>

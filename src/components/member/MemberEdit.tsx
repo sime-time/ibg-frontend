@@ -1,4 +1,4 @@
-import { usePocket } from "~/context/PocketbaseContext";
+import { usePocket, type UpdateMemberData } from "~/context/PocketbaseContext";
 import { createEffect, createSignal, Accessor, onMount } from "solid-js";
 import { createStore } from "solid-js/store";
 import { FaSolidUser } from "solid-icons/fa";
@@ -6,45 +6,98 @@ import { BiSolidEdit, BiSolidEditAlt } from "solid-icons/bi";
 import { IoClose } from "solid-icons/io";
 
 export default function MemberEdit() {
-  const { user, getEmergencyContact } = usePocket();
+  const { user, getEmergencyContact, updateMember } = usePocket();
+  const [saveDisabled, setSaveDisabled] = createSignal(false);
+  const [originalEmergencyPhone, setOriginalEmergencyPhone] = createSignal("");
+  const [originalEmergencyName, setOriginalEmergencyName] = createSignal("");
+
   const [member, setMember] = createStore({
     name: {
       value: user()?.name,
-      isDisabled: true,
+      isUnchanged: true,
     },
     email: {
       value: user()?.email,
-      isDisabled: true,
+      isUnchanged: true,
     },
     phone: {
       value: user()?.phone_number,
-      isDisabled: true,
+      isUnchanged: true,
     },
     emergencyName: {
       value: "",
-      isDisabled: true,
+      isUnchanged: true,
     },
     emergencyPhone: {
       value: "",
-      isDisabled: true,
+      isUnchanged: true,
     },
     password: {
       value: "",
-      isDisabled: true,
+      isUnchanged: true,
     }
   });
 
-  onMount(async () => {
-    const emergency = await getEmergencyContact();
+  getEmergencyContact().then((emergency) => {
     setMember("emergencyName", "value", emergency.name);
     setMember("emergencyPhone", "value", emergency.phone);
-    console.log(member.emergencyName.value);
+    setOriginalEmergencyName(emergency.name);
+    setOriginalEmergencyPhone(emergency.phone);
   });
-
 
   const openModal = () => {
     const dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
     dialog.showModal();
+  };
+
+  const setAllUnchanged = (value: boolean) => {
+    type MemberKey = keyof typeof member;
+    Object.entries(member).forEach(([key, field]) => {
+      setMember(key as MemberKey, "isUnchanged", value);
+    });
+  };
+
+  const handleSave = async (e: Event) => {
+    setSaveDisabled(true);
+    let updatedValues: UpdateMemberData = {}
+
+    Object.entries(member).forEach(([key, field]) => {
+      // if field has changed...
+      // update the corresponding member value 
+      if (!field.isUnchanged) {
+        switch (key) {
+          case "name":
+            updatedValues.name = field.value;
+            break;
+          case "email":
+            updatedValues.email = field.value;
+            break;
+          case "phone":
+            updatedValues.phone = field.value;
+            break;
+          case "emergencyName":
+            updatedValues.emergencyName = field.value;
+            break;
+          case "emergencyPhone":
+            updatedValues.emergencyPhone = field.value;
+            break;
+        }
+        console.log("Updated: ", key, field.value, field.isUnchanged);
+      }
+    });
+
+    console.log("updatedValues: ", updatedValues);
+
+    updateMember(updatedValues).then(() => {
+      // clean up 
+      setAllUnchanged(true);
+      setOriginalEmergencyName(member.emergencyName.value);
+      setOriginalEmergencyPhone(member.emergencyPhone.value);
+      setSaveDisabled(false);
+      const dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
+      dialog.close();
+    });
+
   };
 
   return (
@@ -77,27 +130,127 @@ export default function MemberEdit() {
                   class="grow"
                   placeholder={member.name.value}
                   value={member.name.value}
-                  disabled={member.name.isDisabled}
+                  disabled={member.name.isUnchanged}
                   id="name-input"
                 />
               </label>
               <button onClick={() => {
-                if (member.name.isDisabled === false) {
-                  // if you re-disable the input, change the value to its default value
+                if (member.name.isUnchanged === false) {
                   const nameInput = document.getElementById("name-input") as HTMLInputElement;
                   nameInput.value = user()?.name;
                 }
-                setMember("name", "isDisabled", !member.name.isDisabled);
+                setMember("name", "isUnchanged", !member.name.isUnchanged);
                 setMember("name", "value", user()?.name);
               }}>
-                {member.name.isDisabled ? <BiSolidEdit class="size-6" /> : <IoClose class="size-6" />}
+                {member.name.isUnchanged ? <BiSolidEdit class="size-6" /> : <IoClose class="size-6" />}
               </button>
             </div>
           </div>
 
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Phone Number</span>
+            </label>
+            <div class="flex gap-3 w-full">
+              <label class="input input-bordered flex items-center gap-2 grow border-secondary">
+                <FaSolidUser class="w-4 h-4 opacity-70" />
+                <input
+                  onInput={(event) => {
+                    setMember("phone", "value", event.currentTarget.value)
+                  }}
+                  type="text"
+                  class="grow"
+                  placeholder={member.phone.value}
+                  value={member.phone.value}
+                  disabled={member.phone.isUnchanged}
+                  id="phone-input"
+                />
+              </label>
+              <button onClick={() => {
+                if (member.phone.isUnchanged === false) {
+                  const input = document.getElementById("phone-input") as HTMLInputElement;
+                  input.value = user()?.phone_number;
+                }
+                setMember("phone", "isUnchanged", !member.phone.isUnchanged);
+                setMember("phone", "value", user()?.phone_number);
+              }}>
+                {member.phone.isUnchanged ? <BiSolidEdit class="size-6" /> : <IoClose class="size-6" />}
+              </button>
+            </div>
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Emergency Contact Name</span>
+            </label>
+            <div class="flex gap-3 w-full">
+              <label class="input input-bordered flex items-center gap-2 grow border-secondary">
+                <FaSolidUser class="w-4 h-4 opacity-70" />
+                <input
+                  onInput={(event) => {
+                    setMember("emergencyName", "value", event.currentTarget.value)
+                  }}
+                  type="text"
+                  class="grow"
+                  placeholder={member.emergencyName.value}
+                  value={member.emergencyName.value}
+                  disabled={member.emergencyName.isUnchanged}
+                  id="emergencyName-input"
+                />
+              </label>
+              <button onClick={() => {
+                if (member.emergencyName.isUnchanged === false) {
+                  // return to the original value before isUnchanged is set to true again
+                  const input = document.getElementById("emergencyName-input") as HTMLInputElement;
+                  input.value = originalEmergencyName();
+                }
+                setMember("emergencyName", "isUnchanged", !member.emergencyName.isUnchanged);
+                setMember("emergencyName", "value", member.emergencyName.value);
+              }}>
+                {member.emergencyName.isUnchanged ? <BiSolidEdit class="size-6" /> : <IoClose class="size-6" />}
+              </button>
+            </div>
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Emergency Phone Number</span>
+            </label>
+            <div class="flex gap-3 w-full">
+              <label class="input input-bordered flex items-center gap-2 grow border-secondary">
+                <FaSolidUser class="w-4 h-4 opacity-70" />
+                <input
+                  onInput={(event) => {
+                    setMember("emergencyPhone", "value", event.currentTarget.value)
+                  }}
+                  type="text"
+                  class="grow"
+                  placeholder={member.emergencyPhone.value}
+                  value={member.emergencyPhone.value}
+                  disabled={member.emergencyPhone.isUnchanged}
+                  id="emergencyPhone-input"
+                />
+              </label>
+              <button onClick={() => {
+                if (member.emergencyPhone.isUnchanged === false) {
+                  // return to the original value before isUnchanged is set to true again
+                  const input = document.getElementById("emergencyPhone-input") as HTMLInputElement;
+                  input.value = originalEmergencyPhone();
+                }
+                setMember("emergencyPhone", "isUnchanged", !member.emergencyPhone.isUnchanged);
+                setMember("emergencyPhone", "value", member.emergencyPhone.value);
+              }}>
+                {member.emergencyPhone.isUnchanged ? <BiSolidEdit class="size-6" /> : <IoClose class="size-6" />}
+              </button>
+            </div>
+          </div>
+
+
           <div class="modal-action">
             <form method="dialog" class="flex gap-4 w-full">
-              <button class="btn btn-secondary flex-1">Save Changes</button>
+              <button onClick={handleSave} disabled={saveDisabled()} class="btn btn-secondary flex-1">
+                {saveDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Save Changes"}
+              </button>
               <button class="btn flex-1">Cancel</button>
             </form>
           </div>
