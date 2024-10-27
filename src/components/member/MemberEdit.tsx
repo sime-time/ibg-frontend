@@ -26,16 +26,16 @@ const MemberEditSchema = v.pipe(
       v.maxLength(20, 'The phone number must not exceed 20 characters.'),
       v.nonEmpty("Your emergency contact's phone number cannot be blank."),
     )),
+    newPassword: v.optional(v.pipe(
+      v.string('Your new password must be a string of characters.'),
+      v.nonEmpty('Your new password cannot be blank'),
+      v.minLength(8, 'Your new password must have 8 characters or more.')
+    )),
     oldPassword: v.optional(v.pipe(
       v.string('Your password must be a string of characters.'),
       v.nonEmpty('Your password cannot be blank.'),
       v.minLength(8, 'Your password must have 8 characters or more.')
     )),
-    newPassword: v.optional(v.pipe(
-      v.string('Your password must be a string of characters.'),
-      v.nonEmpty('Your password cannot be blank'),
-      v.minLength(8, 'Your password must have 8 characters or more.')
-    ))
   }),
   v.forward(
     v.partialCheck(
@@ -43,7 +43,7 @@ const MemberEditSchema = v.pipe(
       (input) => input.newPassword != input.oldPassword,
       'Your new password cannot be the same as your old password.'
     ),
-    ['newPassword']
+    ['oldPassword']
   ),
 );
 
@@ -78,14 +78,14 @@ export default function MemberEdit() {
       value: "",
       isUnchanged: true,
     },
+    newPassword: {
+      value: "",
+      isUnchanged: true,
+    },
     oldPassword: {
       value: "",
       isUnchanged: true,
     },
-    newPassword: {
-      value: "",
-      isUnchanged: true,
-    }
   });
 
   getEmergencyContact().then((emergency) => {
@@ -153,6 +153,7 @@ export default function MemberEdit() {
         setAllUnchanged(true);
         setOriginalEmergencyName(member.emergencyName.value);
         setOriginalEmergencyPhone(member.emergencyPhone.value);
+        member.newPassword.value = "";
         const dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
         dialog.close();
       });
@@ -373,7 +374,7 @@ export default function MemberEdit() {
           </Show>
 
           <Show when={error()}>
-            <p class="text-error">{error()}</p>
+            <p class="text-error mt-3">{error()}</p>
           </Show>
 
           <div class="modal-action">

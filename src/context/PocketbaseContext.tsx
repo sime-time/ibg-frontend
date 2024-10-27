@@ -137,14 +137,19 @@ export function PocketbaseContextProvider(props: ParentProps) {
       "description": updatedData.emergencyName,
     }
 
+    // update member 
     try {
       await pb.collection("member").update(user()?.id, updateMemberRecord);
-
-      const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${user()?.id}"`);
-      await pb.collection("member_emergency").update(emergencyRecord.id, updateEmergencyRecord);
-
     } catch (err) {
       console.error("Error updating member: ", err)
+    }
+
+    // update emergency contact 
+    try {
+      const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${user()?.id}"`);
+      await pb.collection("member_emergency").update(emergencyRecord.id, updateEmergencyRecord);
+    } catch (err) {
+      console.error("Error updating emergency contact: ", err)
     }
   };
 
