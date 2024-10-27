@@ -6,7 +6,7 @@ import * as v from "valibot";
 const ContactSchema = v.pipe(v.object({
   phone: v.pipe(
     v.string('You must include your phone number.'),
-    v.maxLength(30, 'The phone number must not exceed 30 characters.'),
+    v.maxLength(20, 'The phone number must not exceed 20 characters.'),
     v.nonEmpty('Please enter your phone number.'),
   ),
   emergencyName: v.pipe(
@@ -15,7 +15,7 @@ const ContactSchema = v.pipe(v.object({
   ),
   emergencyPhone: v.pipe(
     v.string("You must include your emergency contact's phone number."),
-    v.maxLength(30, 'The phone number must not exceed 30 characters.'),
+    v.maxLength(20, 'The phone number must not exceed 20 characters.'),
     v.nonEmpty("Please enter your emergency contact's phone number."),
   ),
 }),

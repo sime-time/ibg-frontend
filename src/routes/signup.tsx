@@ -57,7 +57,7 @@ export default function SignUp() {
     setSubmitDisabled(true);
     setError(""); // clear previous errors
 
-    const signUpData = {
+    const signUpData: SignUpData = {
       name: name(),
       email: email(),
       emailVisibility: true,

@@ -1,15 +1,61 @@
 import { usePocket, type UpdateMemberData } from "~/context/PocketbaseContext";
-import { createEffect, createSignal, Accessor, onMount } from "solid-js";
+import { createEffect, createSignal, Accessor, onMount, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { FaSolidUser } from "solid-icons/fa";
 import { BiSolidEdit, BiSolidEditAlt } from "solid-icons/bi";
 import { IoClose } from "solid-icons/io";
+import * as v from "valibot";
+
+const MemberEditSchema = v.pipe(
+  v.object({
+    name: v.optional(v.pipe(
+      v.string('Your name must be in text.'),
+      v.nonEmpty('Your name cannot be blank.'),
+    )),
+    phone: v.optional(v.pipe(
+      v.string('You must include your phone number.'),
+      v.maxLength(20, 'The phone number must not exceed 20 characters.'),
+      v.nonEmpty('Your phone number cannot be blank.'),
+    )),
+    emergencyName: v.optional(v.pipe(
+      v.string('The name must be in text.'),
+      v.nonEmpty("The emergency contact's name cannot be blank"),
+    )),
+    emergencyPhone: v.optional(v.pipe(
+      v.string("You must include your emergency contact's phone number."),
+      v.maxLength(20, 'The phone number must not exceed 20 characters.'),
+      v.nonEmpty("Your emergency contact's phone number cannot be blank."),
+    )),
+    oldPassword: v.optional(v.pipe(
+      v.string('Your password must be a string of characters.'),
+      v.nonEmpty('Your password cannot be blank.'),
+      v.minLength(8, 'Your password must have 8 characters or more.')
+    )),
+    newPassword: v.optional(v.pipe(
+      v.string('Your password must be a string of characters.'),
+      v.nonEmpty('Your password cannot be blank'),
+      v.minLength(8, 'Your password must have 8 characters or more.')
+    ))
+  }),
+  v.forward(
+    v.partialCheck(
+      [['newPassword'], ['oldPassword']],
+      (input) => input.newPassword != input.oldPassword,
+      'Your new password cannot be the same as your old password.'
+    ),
+    ['newPassword']
+  ),
+);
+
+type MemberEditData = v.InferOutput<typeof MemberEditSchema>;
+
 
 export default function MemberEdit() {
   const { user, getEmergencyContact, updateMember } = usePocket();
   const [saveDisabled, setSaveDisabled] = createSignal(false);
   const [originalEmergencyPhone, setOriginalEmergencyPhone] = createSignal("");
   const [originalEmergencyName, setOriginalEmergencyName] = createSignal("");
+  const [error, setError] = createSignal("");
 
   const [member, setMember] = createStore({
     name: {
@@ -32,7 +78,11 @@ export default function MemberEdit() {
       value: "",
       isUnchanged: true,
     },
-    password: {
+    oldPassword: {
+      value: "",
+      isUnchanged: true,
+    },
+    newPassword: {
       value: "",
       isUnchanged: true,
     }
@@ -58,8 +108,11 @@ export default function MemberEdit() {
   };
 
   const handleSave = async (e: Event) => {
+    e.preventDefault();
     setSaveDisabled(true);
-    let updatedValues: UpdateMemberData = {}
+    setError("");
+
+    let updatedValues: MemberEditData = {}
 
     Object.entries(member).forEach(([key, field]) => {
       // if field has changed...
@@ -68,9 +121,6 @@ export default function MemberEdit() {
         switch (key) {
           case "name":
             updatedValues.name = field.value;
-            break;
-          case "email":
-            updatedValues.email = field.value;
             break;
           case "phone":
             updatedValues.phone = field.value;
@@ -81,6 +131,12 @@ export default function MemberEdit() {
           case "emergencyPhone":
             updatedValues.emergencyPhone = field.value;
             break;
+          case "oldPassword":
+            updatedValues.oldPassword = field.value;
+            break;
+          case "newPasssword":
+            updatedValues.newPassword = field.value;
+            break;
         }
         console.log("Updated: ", key, field.value, field.isUnchanged);
       }
@@ -88,16 +144,27 @@ export default function MemberEdit() {
 
     console.log("updatedValues: ", updatedValues);
 
-    updateMember(updatedValues).then(() => {
-      // clean up 
-      setAllUnchanged(true);
-      setOriginalEmergencyName(member.emergencyName.value);
-      setOriginalEmergencyPhone(member.emergencyPhone.value);
-      setSaveDisabled(false);
-      const dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
-      dialog.close();
-    });
+    try {
+      // validate user input  
+      const validValues = v.parse(MemberEditSchema, updatedValues);
 
+      updateMember(validValues).then(() => {
+        // clean up 
+        setAllUnchanged(true);
+        setOriginalEmergencyName(member.emergencyName.value);
+        setOriginalEmergencyPhone(member.emergencyPhone.value);
+        const dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
+        dialog.close();
+      });
+    } catch (err) {
+      if (err instanceof v.ValiError) {
+        setError(err.issues[0].message);
+      } else {
+        setError("Unexpected error occured.");
+      }
+    } finally {
+      setSaveDisabled(false);
+    }
   };
 
   return (
@@ -158,7 +225,7 @@ export default function MemberEdit() {
                   onInput={(event) => {
                     setMember("phone", "value", event.currentTarget.value)
                   }}
-                  type="text"
+                  type="tel"
                   class="grow"
                   placeholder={member.phone.value}
                   value={member.phone.value}
@@ -223,7 +290,7 @@ export default function MemberEdit() {
                   onInput={(event) => {
                     setMember("emergencyPhone", "value", event.currentTarget.value)
                   }}
-                  type="text"
+                  type="tel"
                   class="grow"
                   placeholder={member.emergencyPhone.value}
                   value={member.emergencyPhone.value}
@@ -245,6 +312,69 @@ export default function MemberEdit() {
             </div>
           </div>
 
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">New Password</span>
+            </label>
+            <div class="flex gap-3 w-full">
+              <label class="input input-bordered flex items-center gap-2 grow border-secondary">
+                <FaSolidUser class="w-4 h-4 opacity-70" />
+                <input
+                  onInput={(event) => {
+                    setMember("newPassword", "value", event.currentTarget.value)
+                  }}
+                  type="password"
+                  class="grow"
+                  value=""
+                  disabled={member.newPassword.isUnchanged}
+                  id="newPassword-input"
+                />
+              </label>
+              <button onClick={() => {
+                if (member.newPassword.isUnchanged === false) {
+                  // return to the original value before isUnchanged is set to true again
+                  const input = document.getElementById("newPassword-input") as HTMLInputElement;
+                  input.value = "";
+
+                  const oldInput = document.getElementById("oldPassword-input") as HTMLInputElement;
+                  oldInput.value = "";
+                }
+                setMember("newPassword", "isUnchanged", !member.newPassword.isUnchanged);
+                setMember("newPassword", "value", member.newPassword.value);
+
+                setMember("oldPassword", "isUnchanged", !member.oldPassword.isUnchanged);
+                setMember("oldPassword", "value", member.oldPassword.value);
+              }}>
+                {member.newPassword.isUnchanged ? <BiSolidEdit class="size-6" /> : <IoClose class="size-6" />}
+              </button>
+            </div>
+          </div>
+
+          <Show when={member.newPassword.isUnchanged == false} >
+            <div class="form-control pr-5 md:pr-9">
+              <label class="label">
+                <span class="label-text">Current Password</span>
+              </label>
+              <div class="flex gap-3 w-full">
+                <label class="input input-bordered flex items-center gap-2 grow border-primary">
+                  <FaSolidUser class="w-4 h-4 opacity-70" />
+                  <input
+                    onInput={(event) => {
+                      setMember("oldPassword", "value", event.currentTarget.value)
+                    }}
+                    type="password"
+                    class="grow"
+                    value=""
+                    id="oldPassword-input"
+                  />
+                </label>
+              </div>
+            </div>
+          </Show>
+
+          <Show when={error()}>
+            <p class="text-error">{error()}</p>
+          </Show>
 
           <div class="modal-action">
             <form method="dialog" class="flex gap-4 w-full">

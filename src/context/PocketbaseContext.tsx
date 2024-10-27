@@ -33,8 +33,7 @@ interface ContactInfo {
 export interface UpdateMemberData {
   name?: string,
   email?: string,
-  password?: string,
-  passwordConfirm?: string,
+  newPassword?: string,
   oldPassword?: string,
   phone?: string,
   emergencyName?: string,
@@ -128,8 +127,8 @@ export function PocketbaseContextProvider(props: ParentProps) {
     const updateMemberRecord = {
       "name": updatedData.name,
       "oldPassword": updatedData.oldPassword,
-      "password": updatedData.password,
-      "passwordConfirm": updatedData.passwordConfirm,
+      "password": updatedData.newPassword,
+      "passwordConfirm": updatedData.newPassword,
       "phone_number": updatedData.phone,
     }
 
