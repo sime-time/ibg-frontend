@@ -148,6 +148,8 @@ export default function MemberEdit() {
       // validate user input  
       const validValues = v.parse(MemberEditSchema, updatedValues);
 
+      console.log("validValues: ", validValues);
+
       updateMember(validValues).then(() => {
         // clean up 
         setAllUnchanged(true);
