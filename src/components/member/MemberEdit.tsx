@@ -40,7 +40,7 @@ const MemberEditSchema = v.pipe(
   v.forward(
     v.partialCheck(
       [['newPassword'], ['oldPassword']],
-      (input) => input.newPassword != input.oldPassword,
+      (input) => !input.oldPassword || input.newPassword != input.oldPassword,
       'Your new password cannot be the same as your old password.'
     ),
     ['oldPassword']
@@ -155,7 +155,7 @@ export default function MemberEdit() {
         setAllUnchanged(true);
         setOriginalEmergencyName(member.emergencyName.value);
         setOriginalEmergencyPhone(member.emergencyPhone.value);
-        member.newPassword.value = "";
+        setMember("newPassword", "value", "");
         const dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
         dialog.close();
       });
@@ -356,7 +356,7 @@ export default function MemberEdit() {
           <Show when={member.newPassword.isUnchanged == false} >
             <div class="form-control pr-5 md:pr-9">
               <label class="label">
-                <span class="label-text">Current Password</span>
+                <span class="label-text">Old Password</span>
               </label>
               <div class="flex gap-3 w-full">
                 <label class="input input-bordered flex items-center gap-2 grow border-primary">

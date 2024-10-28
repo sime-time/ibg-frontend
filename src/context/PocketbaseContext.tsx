@@ -160,10 +160,12 @@ export function PocketbaseContextProvider(props: ParentProps) {
         await testPocketbase()
         await pb.collection("member").authRefresh();
       } else {
-        throw new Error("auth store invalid");
+        throw new Error("Auth store invalid");
       }
     } catch (err) {
-      console.error("Auth refresh error: ", err)
+      console.log("Auth store: ", pb.authStore)
+      console.log("Is Auth store valid: ", pb.authStore.isValid)
+      console.error(err)
     }
   };
 

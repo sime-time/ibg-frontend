@@ -40,8 +40,10 @@ export default function MemberDashboard() {
     <div class="card bg-base-100 shadow-xl mx-4 my-1 w-full md:w-96">
       <div class="card-body flex flex-col gap-5">
         <h1 class="card-title text-2xl font-bold">{`Welcome, ${user()?.name}`}</h1>
-        <button disabled={buttonsDisabled()} class="btn btn-accent"><FaRegularCalendarDays class="size-5" /> Class Schedule</button>
-        <button onClick={handleManageSubscription} disabled={buttonsDisabled()} class="btn btn-accent"><BsCreditCard2BackFill class="size-5" /> Manage Subscription</button>
+        <button class="btn btn-accent"><FaRegularCalendarDays class="size-5" /> Class Schedule</button>
+        <button onClick={handleManageSubscription} disabled={buttonsDisabled()} class="btn btn-accent">
+          {buttonsDisabled() ? <span class="loading loading-spinner loading-md"></span> : <><BsCreditCard2BackFill class="size-5" /> Manage Subscription</>}
+        </button>
         <MemberEdit />
         <LogoutButton />
       </div>
