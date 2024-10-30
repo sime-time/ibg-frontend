@@ -1,5 +1,5 @@
-import { Accessor, createContext, useContext, createSignal, createEffect, ParentProps } from "solid-js";
-import Pocketbase, { AuthModel } from "pocketbase";
+import { Accessor, createContext, useContext, createSignal, createEffect, ParentProps, createResource } from "solid-js";
+import Pocketbase, { AuthModel, RecordModel, RecordListOptions, RecordFullListOptions } from "pocketbase";
 
 interface PocketbaseContextProps {
   token: Accessor<string>,
@@ -14,6 +14,7 @@ interface PocketbaseContextProps {
   refreshMember: () => Promise<void>,
   getEmergencyContact: () => Promise<{ phone: string; name: string; }>,
   updateMember: (updatedData: UpdateMemberData) => Promise<void>,
+  getMembers: () => Promise<MemberRecord[]>
 }
 
 interface MemberData {
@@ -38,6 +39,16 @@ export interface UpdateMemberData {
   phone?: string,
   emergencyName?: string,
   emergencyPhone?: string,
+}
+
+export interface MemberRecord extends RecordModel {
+  name: string;
+  email: string;
+  is_subscribed: string;
+  program: string;
+  phone_number: string;
+  emergency_name?: string;
+  emergency_phone?: string;
 }
 
 const PocketbaseContext = createContext<PocketbaseContextProps>();
@@ -98,7 +109,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
       const emergencyContact = {
         "phone_number": contactInfo.emergencyPhone,
-        "description": contactInfo.emergencyName,
+        "name": contactInfo.emergencyName,
         "member_id": user()?.id
       }
 
@@ -118,7 +129,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
     const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${user()?.id}"`);
     return {
       phone: String(emergencyRecord.phone_number),
-      name: String(emergencyRecord.description)
+      name: String(emergencyRecord.name)
     };
   };
 
@@ -134,7 +145,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
     const updateEmergencyRecord = {
       "phone_number": updatedData.emergencyPhone,
-      "description": updatedData.emergencyName,
+      "name": updatedData.emergencyName,
     }
 
     // update member 
@@ -169,6 +180,19 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
+  const getMembers = async () => {
+    const members = await pb.collection("member").getFullList<MemberRecord>();
+
+    // attach the emergency contacts to each member 
+    for (let i = 0; i < members.length; i++) {
+      const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${members[i].id}"`);
+      members[i].emergency_name = emergencyRecord.name;
+      members[i].emergency_phone = emergencyRecord.phone_number;
+    }
+
+    return members;
+  };
+
   const testPocketbase = async () => {
     try {
       console.log('Testing PB connection...');
@@ -181,7 +205,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, updateMember, }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, updateMember, getMembers }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

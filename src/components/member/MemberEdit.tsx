@@ -1,5 +1,5 @@
-import { usePocket, type UpdateMemberData } from "~/context/PocketbaseContext";
-import { createEffect, createSignal, Accessor, onMount, Show } from "solid-js";
+import { usePocket } from "~/context/PocketbaseContext";
+import { createSignal, Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import { FaSolidUser } from "solid-icons/fa";
 import { BiSolidEdit, BiSolidEditAlt } from "solid-icons/bi";
