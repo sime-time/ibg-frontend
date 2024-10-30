@@ -13,6 +13,7 @@ interface PocketbaseContextProps {
   addContactInfo: (contactInfo: ContactInfo) => Promise<boolean>,
   refreshMember: () => Promise<void>,
   getEmergencyContact: () => Promise<{ phone: string; name: string; }>,
+  getMemberEmergencyContact: (memberId: string) => Promise<{ phone: string; name: string; }>,
   updateMember: (updatedData: UpdateMemberData) => Promise<void>,
   getMembers: () => Promise<MemberRecord[]>
 }
@@ -42,13 +43,12 @@ export interface UpdateMemberData {
 }
 
 export interface MemberRecord extends RecordModel {
+  id: string;
   name: string;
   email: string;
   is_subscribed: string;
   program: string;
   phone_number: string;
-  emergency_name?: string;
-  emergency_phone?: string;
 }
 
 const PocketbaseContext = createContext<PocketbaseContextProps>();
@@ -133,6 +133,14 @@ export function PocketbaseContextProvider(props: ParentProps) {
     };
   };
 
+  const getMemberEmergencyContact = async (memberId: string) => {
+    const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}"`);
+    return {
+      phone: String(emergencyRecord.phone_number),
+      name: String(emergencyRecord.name)
+    };
+  }
+
   const updateMember = async (updatedData: UpdateMemberData) => {
 
     const updateMemberRecord = {
@@ -182,16 +190,12 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const getMembers = async () => {
     const members = await pb.collection("member").getFullList<MemberRecord>();
-
-    // attach the emergency contacts to each member 
-    for (let i = 0; i < members.length; i++) {
-      const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${members[i].id}"`);
-      members[i].emergency_name = emergencyRecord.name;
-      members[i].emergency_phone = emergencyRecord.phone_number;
-    }
-
     return members;
   };
+
+  const deleteMember = async () => {
+
+  }
 
   const testPocketbase = async () => {
     try {
@@ -205,7 +209,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, updateMember, getMembers }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

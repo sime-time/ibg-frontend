@@ -43,6 +43,8 @@ type SignUpData = v.InferOutput<typeof SignUpSchema>;
 
 export default function SignUp() {
   const [name, setName] = createSignal("");
+  const [firstName, setFirstName] = createSignal("");
+  const [lastName, setLastName] = createSignal("");
   const [email, setEmail] = createSignal("");
   const [password, setPassword] = createSignal("");
   const [passwordConfirm, setPasswordConfirm] = createSignal("");
@@ -58,7 +60,7 @@ export default function SignUp() {
     setError(""); // clear previous errors
 
     const signUpData: SignUpData = {
-      name: name(),
+      name: firstName() + " " + lastName(),
       email: email(),
       emailVisibility: true,
       password: password(),
@@ -96,27 +98,47 @@ export default function SignUp() {
     <main class="flex items-start justify-center min-h-full mt-4">
       <div class="card bg-base-100 shadow-xl w-fit md:w-96">
         <div class="card-body">
-          <h1 class="card-title text-2xl font-bold">Sign Up</h1>
-          <form onSubmit={handleSignUp} class="flex flex-col gap-4">
+          <h1 class="card-title text-2xl font-bold mb-3">Sign Up</h1>
 
+          <SocialAuth />
+          <div class="divider">OR</div>
+
+          <form onSubmit={handleSignUp} class="flex flex-col gap-4">
             <div class="form-control">
               <label class="label">
-                <span class="label-text">Name</span>
+                <span class="label-text">First Name</span>
               </label>
               <label class="input input-bordered flex items-center gap-2">
                 <FaSolidUser class="w-4 h-4 opacity-70" />
                 <input
                   onInput={(event) => {
-                    setName(event.currentTarget.value)
+                    setFirstName(event.currentTarget.value)
                   }}
                   type="text"
                   class="grow"
-                  placeholder="Full name"
-                  value={name()}
+                  placeholder="First"
+                  value={firstName()}
                 />
               </label>
             </div>
 
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Last Name</span>
+              </label>
+              <label class="input input-bordered flex items-center gap-2">
+                <FaSolidUser class="w-4 h-4 opacity-70" />
+                <input
+                  onInput={(event) => {
+                    setLastName(event.currentTarget.value)
+                  }}
+                  type="text"
+                  class="grow"
+                  placeholder="Last"
+                  value={lastName()}
+                />
+              </label>
+            </div>
             <div class="form-control">
               <label class="label">
                 <span class="label-text">Email</span>
@@ -181,9 +203,6 @@ export default function SignUp() {
               </button>
             </div>
           </form>
-
-          <div class="divider">OR</div>
-          <SocialAuth />
 
         </div>
       </div>
