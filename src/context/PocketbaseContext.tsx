@@ -15,7 +15,8 @@ interface PocketbaseContextProps {
   getEmergencyContact: () => Promise<{ phone: string; name: string; }>,
   getMemberEmergencyContact: (memberId: string) => Promise<{ phone: string; name: string; }>,
   updateMember: (updatedData: UpdateMemberData) => Promise<void>,
-  getMembers: () => Promise<MemberRecord[]>
+  getMembers: () => Promise<MemberRecord[]>,
+  deleteMember: (memberId: string) => Promise<void>,
 }
 
 interface MemberData {
@@ -193,9 +194,51 @@ export function PocketbaseContextProvider(props: ParentProps) {
     return members;
   };
 
-  const deleteMember = async () => {
+  const deleteMember = async (memberId: string) => {
+    try {
+      if (!userIsAdmin()) {
+        throw new Error("Deletion cancelled. User is not admin.");
+      }
 
-  }
+      // cancel stripe subscription 
+      const member = await pb.collection("member").getOne(memberId);
+      if (member.is_subscribed) {
+        const cancelled = await cancelSubscription(member.stripe_customer_id);
+        if (!cancelled) {
+          throw new Error("Active subscription was not cancelled. Member not deleted.")
+        }
+      }
+      await pb.collection("member").delete(memberId);
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const cancelSubscription = async (stripeCustomerId: string) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_POCKETBASE_URL}/cancel-subscription`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          customerId: stripeCustomerId
+        }),
+      });
+
+      console.log("Response: ", response);
+
+      if (response.ok) {
+        return true;
+      }
+    } catch (error) {
+      console.error("Error cancelling subscription: ", error);
+    }
+    return false;
+  };
+
+
 
   const testPocketbase = async () => {
     try {
@@ -209,7 +252,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, deleteMember }} >
       {props.children}
     </PocketbaseContext.Provider>
   );
