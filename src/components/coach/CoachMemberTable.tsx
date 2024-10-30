@@ -15,11 +15,11 @@ function TableHeaders() {
       <th>Edit</th>
       <th>Delete</th>
     </tr>
-  </>;
+  </>
 }
 
 export function MemberTable() {
-  const { getMembers } = usePocket();
+  const { getMembers, deleteMember } = usePocket();
   const [members, { mutate, refetch }] = createResource(async () => {
     return getMembers();
   });
@@ -111,7 +111,7 @@ export function MemberTable() {
                     <button class="btn btn-secondary btn-sm"><BiSolidEdit class="size-5" /></button>
                   </td>
                   <td>
-                    <button class="btn btn-primary btn-sm"><FaRegularTrashCan class="size-5" /></button>
+                    <button onClick={() => deleteMember(member.id)} class="btn btn-primary btn-sm"><FaRegularTrashCan class="size-5" /></button>
                   </td>
                 </tr>
               }
