@@ -209,6 +209,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
         }
       }
       await pb.collection("member").delete(memberId);
+      console.log("Deleted: ", member.name);
 
     } catch (err) {
       console.error(err);
