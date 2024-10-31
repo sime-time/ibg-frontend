@@ -213,9 +213,13 @@ export function PocketbaseContextProvider(props: ParentProps) {
         console.log("Member has no active subscription");
       }
 
-      // delete emergency contact 
-      const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}}"`);
-      await pb.collection("member_emergency").delete(emergencyRecord.id);
+      // delete emergency contact if applicable  
+      try {
+        const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}}"`);
+        await pb.collection("member_emergency").delete(emergencyRecord.id);
+      } catch (err) {
+        console.log("No member emergency contact found.")
+      }
 
       // delete member
       await pb.collection("member").delete(memberId);
