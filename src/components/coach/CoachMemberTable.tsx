@@ -25,6 +25,10 @@ export function MemberTable() {
     return getMembers();
   });
 
+  if (members.length <= 0) {
+    return <h1 class="text-2xl font-bold">There are no members</h1>
+  }
+
   const [emergencyName, setEmergencyName] = createSignal("");
   const [emergencyPhone, setEmergencyPhone] = createSignal("");
   const [deleteId, setDeleteId] = createSignal("");
@@ -160,7 +164,7 @@ export function MemberTable() {
                         <p class="text-base"><span class="font-semibold">Program:</span> {deleteProgram() ? deleteProgram() : "N/A"}</p>
                         <div class="modal-action">
                           <form method="dialog" class="flex gap-4 w-full">
-                            <button onClick={(e) => confirmDelete(e, deleteId())} disabled={deleteDisabled()} class="btn btn-primary grow">
+                            <button onClick={(event) => confirmDelete(event, deleteId())} disabled={deleteDisabled()} class="btn btn-primary grow">
                               {deleteDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Delete"}
                             </button>
                             <button class="btn grow">Cancel</button>
