@@ -25,10 +25,6 @@ export function MemberTable() {
     return getMembers();
   });
 
-  if (members.length <= 0) {
-    return <h1 class="text-2xl font-bold">There are no members</h1>
-  }
-
   const [emergencyName, setEmergencyName] = createSignal("");
   const [emergencyPhone, setEmergencyPhone] = createSignal("");
   const [deleteId, setDeleteId] = createSignal("");

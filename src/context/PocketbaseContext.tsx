@@ -96,7 +96,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const userIsAdmin = () => {
     return pb.authStore.isValid && pb.authStore.isAdmin;
-  }
+  };
 
   const userIsMember = () => {
     return pb.authStore.isValid && !pb.authStore.isAdmin;
