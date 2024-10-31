@@ -1,7 +1,7 @@
 import { usePocket } from "~/context/PocketbaseContext";
 import { createSignal, Show } from "solid-js";
 import { createStore } from "solid-js/store";
-import { FaSolidUser } from "solid-icons/fa";
+import { FaSolidUser, FaSolidPhone, FaSolidUserDoctor } from "solid-icons/fa";
 import { BiSolidEdit, BiSolidEditAlt } from "solid-icons/bi";
 import { IoClose } from "solid-icons/io";
 import * as v from "valibot";
@@ -112,7 +112,7 @@ export default function MemberEdit() {
     setSaveDisabled(true);
     setError("");
 
-    let updatedValues: MemberEditData = {}
+    let updatedValues: MemberEditData = {};
 
     Object.entries(member).forEach(([key, field]) => {
       // if field has changed...
@@ -150,7 +150,7 @@ export default function MemberEdit() {
 
       console.log("validValues: ", validValues);
 
-      updateMember(validValues).then(() => {
+      updateMember(user()?.id, validValues).then(() => {
         // clean up 
         setAllUnchanged(true);
         setOriginalEmergencyName(member.emergencyName.value);
@@ -223,7 +223,7 @@ export default function MemberEdit() {
             </label>
             <div class="flex gap-3 w-full">
               <label class="input input-bordered flex items-center gap-2 grow border-secondary">
-                <FaSolidUser class="w-4 h-4 opacity-70" />
+                <FaSolidPhone class="w-4 h-4 opacity-70" />
                 <input
                   onInput={(event) => {
                     setMember("phone", "value", event.currentTarget.value)
@@ -255,7 +255,7 @@ export default function MemberEdit() {
             </label>
             <div class="flex gap-3 w-full">
               <label class="input input-bordered flex items-center gap-2 grow border-secondary">
-                <FaSolidUser class="w-4 h-4 opacity-70" />
+                <FaSolidUserDoctor class="w-4 h-4 opacity-70" />
                 <input
                   onInput={(event) => {
                     setMember("emergencyName", "value", event.currentTarget.value)
@@ -288,7 +288,7 @@ export default function MemberEdit() {
             </label>
             <div class="flex gap-3 w-full">
               <label class="input input-bordered flex items-center gap-2 grow border-secondary">
-                <FaSolidUser class="w-4 h-4 opacity-70" />
+                <FaSolidPhone class="w-4 h-4 opacity-70" />
                 <input
                   onInput={(event) => {
                     setMember("emergencyPhone", "value", event.currentTarget.value)
@@ -321,7 +321,7 @@ export default function MemberEdit() {
             </label>
             <div class="flex gap-3 w-full">
               <label class="input input-bordered flex items-center gap-2 grow border-secondary">
-                <FaSolidUser class="w-4 h-4 opacity-70" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path fill-rule="evenodd" d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z" clip-rule="evenodd" /></svg>
                 <input
                   onInput={(event) => {
                     setMember("newPassword", "value", event.currentTarget.value)
@@ -360,7 +360,7 @@ export default function MemberEdit() {
               </label>
               <div class="flex gap-3 w-full">
                 <label class="input input-bordered flex items-center gap-2 grow border-primary">
-                  <FaSolidUser class="w-4 h-4 opacity-70" />
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path fill-rule="evenodd" d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z" clip-rule="evenodd" /></svg>
                   <input
                     onInput={(event) => {
                       setMember("oldPassword", "value", event.currentTarget.value)

@@ -14,7 +14,8 @@ interface PocketbaseContextProps {
   refreshMember: () => Promise<void>,
   getEmergencyContact: () => Promise<{ phone: string; name: string; }>,
   getMemberEmergencyContact: (memberId: string) => Promise<{ phone: string; name: string; }>,
-  updateMember: (updatedData: UpdateMemberData) => Promise<void>,
+  updateMember: (memberId: string, updatedData: UpdateMemberData) => Promise<void>,
+  getMember: (memberId: string) => Promise<MemberRecord>,
   getMembers: () => Promise<MemberRecord[]>,
   deleteMember: (memberId: string) => Promise<void>,
 }
@@ -142,7 +143,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
     };
   }
 
-  const updateMember = async (updatedData: UpdateMemberData) => {
+  const updateMember = async (memberId: string, updatedData: UpdateMemberData) => {
 
     const updateMemberRecord = {
       "name": updatedData.name,
@@ -159,14 +160,14 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
     // update member 
     try {
-      await pb.collection("member").update(user()?.id, updateMemberRecord);
+      await pb.collection("member").update(memberId, updateMemberRecord);
     } catch (err) {
       console.error("Error updating member: ", err)
     }
 
     // update emergency contact 
     try {
-      const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${user()?.id}"`);
+      const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}"`);
       await pb.collection("member_emergency").update(emergencyRecord.id, updateEmergencyRecord);
     } catch (err) {
       console.error("Error updating emergency contact: ", err)
@@ -187,6 +188,11 @@ export function PocketbaseContextProvider(props: ParentProps) {
       console.log("Is Auth store valid: ", pb.authStore.isValid)
       console.error(err)
     }
+  };
+
+  const getMember = async (memberId: string) => {
+    const member = await pb.collection("member").getOne<MemberRecord>(memberId);
+    return member;
   };
 
   const getMembers = async () => {
@@ -218,7 +224,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
         const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}}"`);
         await pb.collection("member_emergency").delete(emergencyRecord.id);
       } catch (err) {
-        console.log("No member emergency contact found.")
+        console.log("Member has no emergency contact.")
       }
 
       // delete member
@@ -267,7 +273,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, deleteMember }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

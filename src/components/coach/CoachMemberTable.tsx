@@ -1,8 +1,10 @@
 import { createResource, For, Show, createSignal } from "solid-js";
-import { usePocket } from "~/context/PocketbaseContext";
+import { createStore } from "solid-js/store";
+import { MemberRecord, usePocket } from "~/context/PocketbaseContext";
 import { FaRegularTrashCan, FaSolidPhone } from "solid-icons/fa";
 import { BiSolidEdit } from "solid-icons/bi";
 import { HiSolidChatBubbleOvalLeftEllipsis } from 'solid-icons/hi'
+import CoachEditMember from "./CoachEditMember";
 
 function TableHeaders() {
   return <>
@@ -25,27 +27,37 @@ export function MemberTable() {
     return getMembers();
   });
 
+  // emergency functions 
   const [emergencyName, setEmergencyName] = createSignal("");
   const [emergencyPhone, setEmergencyPhone] = createSignal("");
-  const [deleteId, setDeleteId] = createSignal("");
-  const [deleteName, setDeleteName] = createSignal("");
-  const [deleteProgram, setDeleteProgram] = createSignal("");
-  const [deleteDisabled, setDeleteDisabled] = createSignal(false);
-
-  const getContact = async (memberId: string) => {
-    getMemberEmergencyContact(memberId).then((contact) => {
-      setEmergencyName(contact.name);
-      setEmergencyPhone(contact.phone);
-    });
-  };
 
   const openEmergencyModal = async (memberId: string) => {
     setEmergencyName("");
     setEmergencyPhone("");
-    getContact(memberId).then(() => {
+    getMemberEmergencyContact(memberId).then((contact) => {
+      setEmergencyName(contact.name);
+      setEmergencyPhone(contact.phone);
+    }).then(() => {
       const dialog = document.getElementById("emergency-dialog") as HTMLDialogElement;
       dialog.showModal();
     });
+  };
+
+  // delete functions 
+  const [memberToDelete, setMemberToDelete] = createStore({
+    id: "",
+    name: "",
+    program: "",
+  });
+  const [deleteDisabled, setDeleteDisabled] = createSignal(false);
+
+  const openDeleteModal = (memberId: string, memberName: string, memberProgram: string) => {
+    setMemberToDelete("id", memberId);
+    setMemberToDelete("name", memberName);
+    setMemberToDelete("program", memberProgram);
+
+    const dialog = document.getElementById("delete-dialog") as HTMLDialogElement;
+    dialog.showModal();
   };
 
   const confirmDelete = async (e: Event, memberId: string) => {
@@ -63,14 +75,9 @@ export function MemberTable() {
     }
   };
 
-  const openDeleteModal = (memberId: string, memberName: string, memberProgram: string) => {
-    setDeleteId(memberId);
-    setDeleteName(memberName);
-    setDeleteProgram(memberProgram);
+  // edit functions 
 
-    const dialog = document.getElementById("delete-dialog") as HTMLDialogElement;
-    dialog.showModal();
-  };
+
 
   return (
     <div class="overflow-x-auto whitespace-nowrap block">
@@ -142,11 +149,13 @@ export function MemberTable() {
                   </td>
 
                   <td>
-                    <button class="btn btn-secondary btn-sm"><BiSolidEdit class="size-5" /></button>
+
                   </td>
 
                   <td>
-                    <button onClick={() => openDeleteModal(member.id, member.name, member.program)} class="btn btn-primary btn-sm"><FaRegularTrashCan class="size-5" /></button>
+                    <button onClick={() => openDeleteModal(member.id, member.name, member.program)} class="btn btn-primary btn-sm">
+                      <FaRegularTrashCan class="size-5" />
+                    </button>
                     <dialog id="delete-dialog" class="modal">
                       <form method="dialog" class="modal-backdrop">
                         <button>close when clicked outside</button>
@@ -156,11 +165,11 @@ export function MemberTable() {
                           <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                         </form>
                         <h3 class="font-bold text-lg mb-2">Delete Member?</h3>
-                        <p class="text-base"><span class="font-semibold">Name:</span> {deleteName()}</p>
-                        <p class="text-base"><span class="font-semibold">Program:</span> {deleteProgram() ? deleteProgram() : "N/A"}</p>
+                        <p class="text-base"><span class="font-semibold">Name:</span> {memberToDelete.name}</p>
+                        <p class="text-base"><span class="font-semibold">Program:</span> {memberToDelete.program ? memberToDelete.program : "N/A"}</p>
                         <div class="modal-action">
                           <form method="dialog" class="flex gap-4 w-full">
-                            <button onClick={(event) => confirmDelete(event, deleteId())} disabled={deleteDisabled()} class="btn btn-primary grow">
+                            <button onClick={(event) => confirmDelete(event, memberToDelete.id)} disabled={deleteDisabled()} class="btn btn-primary grow">
                               {deleteDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Delete"}
                             </button>
                             <button class="btn grow">Cancel</button>
@@ -180,6 +189,6 @@ export function MemberTable() {
 
         </table>
       </Show>
-    </div>
+    </div >
   );
 }
