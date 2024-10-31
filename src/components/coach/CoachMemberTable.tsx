@@ -19,13 +19,18 @@ function TableHeaders() {
 }
 
 export function MemberTable() {
-  const { getMembers, deleteMember } = usePocket();
+  const { getMemberEmergencyContact, getMembers, deleteMember } = usePocket();
+
   const [members, { mutate, refetch }] = createResource(async () => {
     return getMembers();
   });
-  const { getMemberEmergencyContact } = usePocket();
+
   const [emergencyName, setEmergencyName] = createSignal("");
   const [emergencyPhone, setEmergencyPhone] = createSignal("");
+  const [deleteId, setDeleteId] = createSignal("");
+  const [deleteName, setDeleteName] = createSignal("");
+  const [deleteProgram, setDeleteProgram] = createSignal("");
+  const [deleteDisabled, setDeleteDisabled] = createSignal(false);
 
   const getContact = async (memberId: string) => {
     getMemberEmergencyContact(memberId).then((contact) => {
@@ -34,13 +39,37 @@ export function MemberTable() {
     });
   };
 
-  const openModal = async (id: string) => {
+  const openEmergencyModal = async (memberId: string) => {
     setEmergencyName("");
     setEmergencyPhone("");
-    getContact(id).then(() => {
+    getContact(memberId).then(() => {
       const dialog = document.getElementById("emergency-dialog") as HTMLDialogElement;
       dialog.showModal();
-    })
+    });
+  };
+
+  const confirmDelete = async (e: Event, memberId: string) => {
+    e.preventDefault();
+    setDeleteDisabled(true);
+    const dialog = document.getElementById("delete-dialog") as HTMLDialogElement;
+    try {
+      deleteMember(memberId).then(() => {
+        refetch()
+        setDeleteDisabled(false);
+        dialog.close();
+      });
+    } catch (err) {
+      console.error("Error deleting member: ", err);
+    }
+  };
+
+  const openDeleteModal = (memberId: string, memberName: string, memberProgram: string) => {
+    setDeleteId(memberId);
+    setDeleteName(memberName);
+    setDeleteProgram(memberProgram);
+
+    const dialog = document.getElementById("delete-dialog") as HTMLDialogElement;
+    dialog.showModal();
   };
 
   return (
@@ -70,20 +99,24 @@ export function MemberTable() {
                       </div>
                     </div>
                   </td>
+
                   <td>
                     <span class="badge badge-neutral">{member.program ? member.program : "N/A"}</span>
                   </td>
+
                   <td>
                     {member.is_subscribed
                       ? <span class="badge badge-success">Active</span>
                       : <span class="badge badge-error">Inactive</span>
                     }
                   </td>
+
                   <td>
                     <a href={`sms:${member.phone_number}`} class="btn btn-sm btn-outline btn-secondary text-xs"><HiSolidChatBubbleOvalLeftEllipsis class="size-4" />Text</a>
                   </td>
+
                   <td>
-                    <button onClick={() => openModal(member.id)} class="btn btn-sm btn-outline btn-primary text-xs"><FaSolidPhone class="size-3" /> Call</button>
+                    <button onClick={() => openEmergencyModal(member.id)} class="btn btn-sm btn-outline btn-primary text-xs"><FaSolidPhone class="size-3" /> Call</button>
                     <dialog id="emergency-dialog" class="modal">
                       <form method="dialog" class="modal-backdrop">
                         <button>close when clicked outside</button>
@@ -107,11 +140,34 @@ export function MemberTable() {
                       </div>
                     </dialog>
                   </td>
+
                   <td>
                     <button class="btn btn-secondary btn-sm"><BiSolidEdit class="size-5" /></button>
                   </td>
+
                   <td>
-                    <button onClick={() => deleteMember(member.id)} class="btn btn-primary btn-sm"><FaRegularTrashCan class="size-5" /></button>
+                    <button onClick={() => openDeleteModal(member.id, member.name, member.program)} class="btn btn-primary btn-sm"><FaRegularTrashCan class="size-5" /></button>
+                    <dialog id="delete-dialog" class="modal">
+                      <form method="dialog" class="modal-backdrop">
+                        <button>close when clicked outside</button>
+                      </form>
+                      <div class="modal-box">
+                        <form method="dialog">
+                          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                        </form>
+                        <h3 class="font-bold text-lg mb-2">Delete Member?</h3>
+                        <p class="text-base"><span class="font-semibold">Name:</span> {deleteName()}</p>
+                        <p class="text-base"><span class="font-semibold">Program:</span> {deleteProgram() ? deleteProgram() : "N/A"}</p>
+                        <div class="modal-action">
+                          <form method="dialog" class="flex gap-4 w-full">
+                            <button onClick={(e) => confirmDelete(e, deleteId())} disabled={deleteDisabled()} class="btn btn-primary grow">
+                              {deleteDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Delete"}
+                            </button>
+                            <button class="btn grow">Cancel</button>
+                          </form>
+                        </div>
+                      </div>
+                    </dialog>
                   </td>
                 </tr>
               }

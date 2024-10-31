@@ -206,10 +206,14 @@ export function PocketbaseContextProvider(props: ParentProps) {
         const cancelled = await cancelSubscription(member.stripe_customer_id);
         if (!cancelled) {
           throw new Error("Active subscription was not cancelled. Member not deleted.")
+        } else {
+          console.log("Member subscription cancelled");
         }
+      } else {
+        console.log("Member has no active subscription");
       }
       await pb.collection("member").delete(memberId);
-      console.log("Deleted: ", member.name);
+      console.log("Deleted member: ", member.name);
 
     } catch (err) {
       console.error(err);
