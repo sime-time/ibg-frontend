@@ -1,6 +1,6 @@
 import { createResource, For, Show, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
-import { usePocket } from "~/context/PocketbaseContext";
+import { MemberRecord, usePocket } from "~/context/PocketbaseContext";
 import { FaRegularTrashCan, FaSolidPhone, FaSolidUser, FaSolidUserDoctor } from "solid-icons/fa";
 import { BiSolidEdit } from "solid-icons/bi";
 import { HiSolidChatBubbleOvalLeftEllipsis } from 'solid-icons/hi'
@@ -23,7 +23,7 @@ function TableHeaders() {
 }
 
 export function MemberTable() {
-  const { getMemberEmergencyContact, getMembers, deleteMember, updateMember } = usePocket();
+  const { getMember, getMemberEmergencyContact, getMembers, deleteMember, updateMember } = usePocket();
 
   const [members, { mutate, refetch }] = createResource(async () => {
     return getMembers();
@@ -81,8 +81,14 @@ export function MemberTable() {
   // edit functions 
   const [updateButtonDisabled, setUpdateButtonDisabled] = createSignal(false);
   const [editError, setEditError] = createSignal("");
+  const [defaultName, setDefaultName] = createSignal("");
+  const [defaultPhone, setDefaultPhone] = createSignal("");
 
   const [memberToEdit, setMemberToEdit] = createStore({
+    id: {
+      value: "",
+      readyToEdit: false,
+    },
     name: {
       value: "",
       readyToEdit: false,
@@ -101,10 +107,26 @@ export function MemberTable() {
     },
   });
 
+  const setAllReadyToEdit = (value: boolean) => {
+    type MemberKey = keyof typeof memberToEdit;
+    Object.entries(memberToEdit).forEach(([key, field]) => {
+      setMemberToEdit(key as MemberKey, "readyToEdit", value);
+    });
+  };
+
   const openEditModal = async (memberId: string) => {
     // reset values 
+    setAllReadyToEdit(false);
     setEmergencyName("");
     setEmergencyPhone("");
+    setMemberToEdit("id", "value", memberId);
+
+    getMember(memberId).then((m: MemberRecord) => {
+      setMemberToEdit("name", "value", m.name);
+      setMemberToEdit("phone", "value", m.phone_number);
+      setDefaultName(m.name);
+      setDefaultPhone(m.phone_number);
+    });
 
     getMemberEmergencyContact(memberId).then((contact) => {
       setEmergencyName(contact.name);
@@ -161,6 +183,7 @@ export function MemberTable() {
       }).then(() => {
         const dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
         dialog.close();
+        refetch();
       });
     } catch (err) {
       if (err instanceof v.ValiError) {
@@ -168,8 +191,6 @@ export function MemberTable() {
       } else {
         setEditError("Unexpected error occured.");
       }
-    } finally {
-
     }
   }
 
@@ -283,14 +304,9 @@ export function MemberTable() {
                               />
                             </label>
                             <button onClick={() => {
-                              const nameInput = document.getElementById("name-input") as HTMLInputElement;
-                              // when re-disabled
-                              if (!memberToEdit.name.readyToEdit) {
-                                // return to default value
-                                nameInput.value = member.name;
-                              }
                               setMemberToEdit("name", "readyToEdit", !memberToEdit.name.readyToEdit);
-                              setMemberToEdit("name", "value", nameInput.value);
+                              const nameInput = document.getElementById("name-input") as HTMLInputElement;
+                              nameInput.value = defaultName();
                             }}>
                               {memberToEdit.name.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
                             </button>
@@ -317,12 +333,9 @@ export function MemberTable() {
                               />
                             </label>
                             <button onClick={() => {
-                              const phoneInput = document.getElementById("phone-input") as HTMLInputElement;
-                              if (!memberToEdit.phone.readyToEdit) {
-                                phoneInput.value = member.phone_number;
-                              }
                               setMemberToEdit("phone", "readyToEdit", !memberToEdit.phone.readyToEdit);
-                              setMemberToEdit("phone", "value", phoneInput.value);
+                              const phoneInput = document.getElementById("phone-input") as HTMLInputElement;
+                              phoneInput.value = defaultPhone();
                             }}>
                               {memberToEdit.phone.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
                             </button>
@@ -401,7 +414,7 @@ export function MemberTable() {
 
                         <div class="modal-action">
                           <form method="dialog" class="flex gap-4 w-full">
-                            <button onClick={(event) => confirmEdit(event, member.id)} disabled={updateButtonDisabled()} class="btn btn-secondary flex-1">
+                            <button onClick={(event) => confirmEdit(event, memberToEdit.id.value)} disabled={updateButtonDisabled()} class="btn btn-secondary flex-1">
                               {updateButtonDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Update"}
                             </button>
                             <button class="btn flex-1">Cancel</button>
