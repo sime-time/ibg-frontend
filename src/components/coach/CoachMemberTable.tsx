@@ -2,11 +2,13 @@ import { createResource, For, Show, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { MemberRecord, usePocket } from "~/context/PocketbaseContext";
 import { FaRegularTrashCan, FaSolidPhone, FaSolidUser, FaSolidUserDoctor } from "solid-icons/fa";
+import { CgMoreO } from 'solid-icons/cg'
 import { BiSolidEdit } from "solid-icons/bi";
 import { HiSolidChatBubbleOvalLeftEllipsis } from 'solid-icons/hi'
 import { IoClose } from "solid-icons/io";
 import { CoachEditMemberData, CoachEditMemberSchema } from "~/components/InputValidation";
 import * as v from "valibot";
+import ContactDialog from "../ContactDialog";
 
 function TableHeaders() {
   return <>
@@ -14,9 +16,7 @@ function TableHeaders() {
       <th>Name</th>
       <th>Program</th>
       <th>Subscription</th>
-      <th>Phone</th>
-      <th>Emergency</th>
-      <th>Edit</th>
+      <th>Options</th>
       <th>Delete</th>
     </tr>
   </>
@@ -33,16 +33,22 @@ export function MemberTable() {
   const [emergencyName, setEmergencyName] = createSignal("");
   const [emergencyPhone, setEmergencyPhone] = createSignal("");
 
-  const openEmergencyModal = async (memberId: string) => {
-    setEmergencyName("");
-    setEmergencyPhone("");
-    getMemberEmergencyContact(memberId).then((contact) => {
-      setEmergencyName(contact.name);
-      setEmergencyPhone(contact.phone);
-    }).then(() => {
-      const dialog = document.getElementById("emergency-dialog") as HTMLDialogElement;
-      dialog.showModal();
-    });
+  const openEmergencyDialog = async () => {
+    // close the parent dialog
+    let dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
+    dialog.close();
+    // open the emergency dialog
+    dialog = document.getElementById("emergency-dialog") as HTMLDialogElement;
+    dialog.showModal();
+  };
+
+  const openContactDialog = () => {
+    // close the parent dialog
+    let dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
+    dialog.close();
+    // open the emergency dialog
+    dialog = document.getElementById("contact-dialog") as HTMLDialogElement;
+    dialog.showModal();
   };
 
   // delete functions 
@@ -79,7 +85,7 @@ export function MemberTable() {
   };
 
   // edit functions 
-  const [updateButtonDisabled, setUpdateButtonDisabled] = createSignal(false);
+  const [saveButtonDisabled, setSaveButtonDisabled] = createSignal(false);
   const [editError, setEditError] = createSignal("");
   const [defaultName, setDefaultName] = createSignal("");
   const [defaultPhone, setDefaultPhone] = createSignal("");
@@ -142,7 +148,7 @@ export function MemberTable() {
 
   const confirmEdit = async (e: Event, memberId: string) => {
     e.preventDefault();
-    setUpdateButtonDisabled(true);
+    setSaveButtonDisabled(true);
     setEditError("");
 
     let updatedValues: CoachEditMemberData = {};
@@ -179,7 +185,7 @@ export function MemberTable() {
         // clean up 
         setEmergencyName(memberToEdit.emergencyName.value);
         setEmergencyPhone(memberToEdit.emergencyPhone.value);
-        setUpdateButtonDisabled(false);
+        setSaveButtonDisabled(false);
       }).then(() => {
         const dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
         dialog.close();
@@ -237,41 +243,9 @@ export function MemberTable() {
                     }
                   </td>
 
-                  {/* Text Phone */}
-                  <td>
-                    <a href={`sms:${member.phone_number}`} class="btn btn-sm btn-outline text-xs"><HiSolidChatBubbleOvalLeftEllipsis class="size-4" />Text</a>
-                  </td>
-
-                  {/* Emergency Contact */}
-                  <td>
-                    <button onClick={() => openEmergencyModal(member.id)} class="btn btn-sm btn-outline btn-primary text-xs"><FaSolidPhone class="size-3" /> Call</button>
-                    <dialog id="emergency-dialog" class="modal">
-                      <form method="dialog" class="modal-backdrop">
-                        <button>close when clicked outside</button>
-                      </form>
-                      <div class="modal-box">
-                        <form method="dialog">
-                          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-                        </form>
-                        <h3 class="font-bold text-lg mb-2">Emergency Contact</h3>
-                        <Show when={emergencyName() && emergencyPhone()} fallback={<span class="loading loading-spinner loading-md"></span>}>
-                          <p class="text-base"><span class="font-semibold">Name:</span> {emergencyName()} </p>
-                          <p class="text-base"><span class="font-semibold">Phone:</span> {emergencyPhone()} </p>
-                        </Show>
-                        <div class="modal-action">
-                          <form method="dialog" class="flex gap-4 w-full">
-                            <a href={`tel:${emergencyPhone()}`} class="btn btn-primary grow">Call</a>
-                            <a href={`sms:${emergencyPhone()}`} class="btn btn-accent grow">Text</a>
-                            <button class="btn grow">Cancel</button>
-                          </form>
-                        </div>
-                      </div>
-                    </dialog>
-                  </td>
-
                   {/* Update Member */}
                   <td>
-                    <button onClick={() => openEditModal(member.id)} class="btn btn-secondary btn-sm"><BiSolidEdit class="size-5" /></button>
+                    <button onClick={() => openEditModal(member.id)} class="btn btn-secondary btn-sm"><CgMoreO class="size-5" /></button>
                     <dialog id="edit-dialog" class="modal">
                       <form method="dialog" class="modal-backdrop">
                         <button>close when clicked outside</button>
@@ -281,8 +255,17 @@ export function MemberTable() {
                           <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                         </form>
 
-                        <h3 class="font-bold text-lg">Edit Member</h3>
-                        <p class="py-2 text-wrap">Click the edit icon on the right to make changes and press the save button when done.</p>
+                        <h3 class="font-bold text-xl">Contact Member</h3>
+                        <div class="flex gap-4 w-full mb-6 mt-3">
+                          <button onClick={openContactDialog} class="btn btn-outline grow"><FaSolidPhone class="size-3" />Personal</button>
+                          <ContactDialog dialogId="contact-dialog" name={defaultName()} phone={defaultPhone()}>Member Contact</ContactDialog>
+
+                          <button onClick={openEmergencyDialog} class="btn btn-outline btn-primary grow"><FaSolidPhone class="size-3" /> Emergency</button>
+                          <ContactDialog dialogId="emergency-dialog" name={emergencyName()} phone={emergencyPhone()}>Emergency Contact </ContactDialog>
+                        </div>
+
+                        <h3 class="font-bold text-xl">Edit Member</h3>
+                        <p class="py-2 text-wrap">Click the edit icon on the right to make changes and then press the save button when done.</p>
 
                         <div class="form-control">
                           <label class="label">
@@ -414,8 +397,8 @@ export function MemberTable() {
 
                         <div class="modal-action">
                           <form method="dialog" class="flex gap-4 w-full">
-                            <button onClick={(event) => confirmEdit(event, memberToEdit.id.value)} disabled={updateButtonDisabled()} class="btn btn-secondary flex-1">
-                              {updateButtonDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Update"}
+                            <button onClick={(event) => confirmEdit(event, memberToEdit.id.value)} disabled={saveButtonDisabled()} class="btn btn-secondary flex-1">
+                              {saveButtonDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Save"}
                             </button>
                             <button class="btn flex-1">Cancel</button>
                           </form>
