@@ -221,10 +221,10 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
       // delete emergency contact if applicable  
       try {
-        const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}}"`);
+        const emergencyRecord: RecordModel = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}}"`);
         await pb.collection("member_emergency").delete(emergencyRecord.id);
       } catch (err) {
-        console.log("Member has no emergency contact.")
+        console.error("No emergency contact deleted.", err);
       }
 
       // delete member
