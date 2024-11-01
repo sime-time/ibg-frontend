@@ -167,7 +167,9 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
     // update emergency contact 
     try {
+      console.log(memberId);
       const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}"`);
+      console.log(emergencyRecord);
       await pb.collection("member_emergency").update(emergencyRecord.id, updateEmergencyRecord);
     } catch (err) {
       console.error("Error updating emergency contact: ", err)
@@ -221,6 +223,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
       // delete emergency contact if applicable  
       try {
+        console.log("member id: ", memberId);
         const emergencyRecord: RecordModel = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}}"`);
         await pb.collection("member_emergency").delete(emergencyRecord.id);
       } catch (err) {
