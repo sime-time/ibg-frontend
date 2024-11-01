@@ -13,7 +13,7 @@ interface PocketbaseContextProps {
   addContactInfo: (contactInfo: ContactInfo) => Promise<boolean>,
   refreshMember: () => Promise<void>,
   getEmergencyContact: () => Promise<{ phone: string; name: string; }>,
-  getMemberEmergencyContact: (memberId: string) => Promise<{ phone: string; name: string; }>,
+  getMemberEmergencyContact: (memberId: string) => Promise<{ id: string, phone: string; name: string; }>,
   updateMember: (memberId: string, updatedData: UpdateMemberData) => Promise<void>,
   getMember: (memberId: string) => Promise<MemberRecord>,
   getMembers: () => Promise<MemberRecord[]>,
@@ -138,6 +138,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
   const getMemberEmergencyContact = async (memberId: string) => {
     const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}"`);
     return {
+      id: String(emergencyRecord.id),
       phone: String(emergencyRecord.phone_number),
       name: String(emergencyRecord.name)
     };
@@ -221,11 +222,12 @@ export function PocketbaseContextProvider(props: ParentProps) {
         console.log("Member has no active subscription");
       }
 
-      // delete emergency contact if applicable  
+      // delete emergency contact 
       try {
-        console.log("member id: ", memberId);
-        const emergencyRecord: RecordModel = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}}"`);
-        await pb.collection("member_emergency").delete(emergencyRecord.id);
+        const emergencyRecord = await getMemberEmergencyContact(memberId);
+        await pb.collection("member_emergency").delete(emergencyRecord.id).then(() => {
+          console.log("Emergency contact deleted.")
+        });
       } catch (err) {
         console.error("No emergency contact deleted.", err);
       }
