@@ -2,9 +2,9 @@ import { createResource, For, Show, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { MemberRecord, usePocket } from "~/context/PocketbaseContext";
 import { FaRegularTrashCan, FaSolidPhone, FaSolidUser, FaSolidUserDoctor } from "solid-icons/fa";
+import { BsStripe } from 'solid-icons/bs'
 import { CgMoreO } from 'solid-icons/cg'
 import { BiSolidEdit } from "solid-icons/bi";
-import { HiSolidChatBubbleOvalLeftEllipsis } from 'solid-icons/hi'
 import { IoClose } from "solid-icons/io";
 import { CoachEditMemberData, CoachEditMemberSchema } from "~/components/InputValidation";
 import * as v from "valibot";
@@ -14,8 +14,8 @@ function TableHeaders() {
   return <>
     <tr>
       <th>Name</th>
-      <th>Program</th>
-      <th>Subscription</th>
+      <th class="hidden md:table-cell">Program</th>
+      <th class="hidden md:table-cell">Subscription</th>
       <th>Options</th>
       <th>Delete</th>
     </tr>
@@ -87,6 +87,7 @@ export function MemberTable() {
   // edit functions 
   const [saveButtonDisabled, setSaveButtonDisabled] = createSignal(false);
   const [editError, setEditError] = createSignal("");
+  const [memberStripeId, setMemberStripeId] = createSignal("");
   const [defaultName, setDefaultName] = createSignal("");
   const [defaultPhone, setDefaultPhone] = createSignal("");
 
@@ -120,7 +121,7 @@ export function MemberTable() {
     });
   };
 
-  const openEditModal = async (memberId: string) => {
+  const openEditDialog = async (memberId: string) => {
     // reset values 
     setAllReadyToEdit(false);
     setEmergencyName("");
@@ -132,6 +133,7 @@ export function MemberTable() {
       setMemberToEdit("phone", "value", m.phone_number);
       setDefaultName(m.name);
       setDefaultPhone(m.phone_number);
+      setMemberStripeId(m.stripe_customer_id);
     });
 
     getMemberEmergencyContact(memberId).then((contact) => {
@@ -204,7 +206,7 @@ export function MemberTable() {
   return (
     <div class="overflow-x-auto whitespace-nowrap block">
       <Show when={!members.loading} fallback={<span class="loading loading-spinner loading-md"></span>}>
-        <table class="table bg-base-100 ">
+        <table class="table bg-base-100">
           <thead>
             <TableHeaders />
           </thead>
@@ -231,21 +233,23 @@ export function MemberTable() {
                   </td>
 
                   {/* Martial Arts Program */}
-                  <td>
+                  <td class="hidden md:table-cell">
                     <span class="badge badge-neutral">{member.program ? member.program : "N/A"}</span>
                   </td>
 
                   {/* Subscription Active? */}
-                  <td>
-                    {member.is_subscribed
-                      ? <span class="badge badge-success">Active</span>
-                      : <span class="badge badge-error">Inactive</span>
-                    }
+                  <td class="hidden md:table-cell">
+                    <a href={import.meta.env.VITE_STRIPE_CUSTOMER_URL + member.stripe_customer_id}>
+                      {member.is_subscribed
+                        ? <span class="badge badge-success">Active</span>
+                        : <span class="badge badge-error">Inactive</span>
+                      }
+                    </a>
                   </td>
 
                   {/* Update Member */}
                   <td>
-                    <button onClick={() => openEditModal(member.id)} class="btn btn-secondary btn-sm"><CgMoreO class="size-5" /></button>
+                    <button onClick={() => openEditDialog(member.id)} class="btn btn-secondary btn-sm"><CgMoreO class="size-5" /></button>
                     <dialog id="edit-dialog" class="modal">
                       <form method="dialog" class="modal-backdrop">
                         <button>close when clicked outside</button>
@@ -254,6 +258,13 @@ export function MemberTable() {
                         <form method="dialog">
                           <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                         </form>
+                        <h3 class="font-bold text-xl">Subscription Details</h3>
+                        <div class="flex gap-4 w-full mb-6 mt-3">
+                          <a href={import.meta.env.VITE_STRIPE_CUSTOMER_URL + memberStripeId()} class="btn btn-secondary bg-indigo-600 hover:bg-indigo-700 grow">
+                            <BsStripe class="size-4" />
+                            View Finances
+                          </a>
+                        </div>
 
                         <h3 class="font-bold text-xl">Contact Member</h3>
                         <div class="flex gap-4 w-full mb-6 mt-3">

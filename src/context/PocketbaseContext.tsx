@@ -51,6 +51,7 @@ export interface MemberRecord extends RecordModel {
   is_subscribed: string;
   program: string;
   phone_number: string;
+  stripe_customer_id: string;
 }
 
 const PocketbaseContext = createContext<PocketbaseContextProps>();
