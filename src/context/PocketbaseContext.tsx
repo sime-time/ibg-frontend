@@ -20,7 +20,7 @@ interface PocketbaseContextProps {
   deleteMember: (memberId: string) => Promise<void>,
 }
 
-interface MemberData {
+export interface MemberData {
   name: string,
   email: string,
   emailVisibility: boolean,
@@ -28,7 +28,7 @@ interface MemberData {
   passwordConfirm: string
 }
 
-interface ContactInfo {
+export interface ContactInfo {
   phone: string,
   emergencyName: string,
   emergencyPhone: string,
@@ -70,15 +70,17 @@ export function PocketbaseContextProvider(props: ParentProps) {
   });
 
   const logout = () => {
+    console.log("Logging out...");
     pb.authStore.clear();
   };
 
   const signup = async (newMember: MemberData) => {
-    logout();
-    await pb.admins.authWithPassword(
-      import.meta.env.VITE_POCKETBASE_EMAIL,
-      import.meta.env.VITE_POCKETBASE_PASSWORD
-    );
+    if (!userIsAdmin()) {
+      await pb.admins.authWithPassword(
+        import.meta.env.VITE_POCKETBASE_EMAIL,
+        import.meta.env.VITE_POCKETBASE_PASSWORD
+      );
+    }
     await pb.collection("member").create(newMember);
     console.log("New member created: ", newMember.name);
     return await loginMember(newMember.email, newMember.password);

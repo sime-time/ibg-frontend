@@ -6,7 +6,7 @@ import { useNavigate } from "@solidjs/router";
 import * as v from "valibot";
 import { usePocket } from "~/context/PocketbaseContext";
 
-const SignUpSchema = v.pipe(
+export const SignUpSchema = v.pipe(
   v.object({
     name: v.pipe(
       v.string('Your name must be in text.'),
@@ -39,7 +39,7 @@ const SignUpSchema = v.pipe(
   ),
 );
 
-type SignUpData = v.InferOutput<typeof SignUpSchema>;
+export type SignUpData = v.InferOutput<typeof SignUpSchema>;
 
 export default function SignUp() {
   const [name, setName] = createSignal("");

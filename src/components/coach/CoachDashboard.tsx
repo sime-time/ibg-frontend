@@ -1,3 +1,4 @@
+import CoachCreateMember from "./CoachCreateMember";
 import { MemberTable } from "./CoachMemberTable";
 import { FaSolidPlus } from 'solid-icons/fa'
 
@@ -18,7 +19,7 @@ export default function CoachDashboard() {
               clip-rule="evenodd" />
           </svg>
         </label>
-        <button class="btn btn-secondary btn-sm items-center"><FaSolidPlus /> New Member</button>
+        <CoachCreateMember />
       </div>
       <MemberTable />
     </div>

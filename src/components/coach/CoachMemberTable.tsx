@@ -3,8 +3,7 @@ import { createStore } from "solid-js/store";
 import { MemberRecord, usePocket } from "~/context/PocketbaseContext";
 import { FaRegularTrashCan, FaSolidPhone, FaSolidUser, FaSolidUserDoctor } from "solid-icons/fa";
 import { BsStripe } from 'solid-icons/bs'
-import { CgMoreO } from 'solid-icons/cg'
-import { BiSolidEdit } from "solid-icons/bi";
+import { BiSolidEdit, BiRegularMenu } from "solid-icons/bi";
 import { IoClose } from "solid-icons/io";
 import { CoachEditMemberData, CoachEditMemberSchema } from "~/components/InputValidation";
 import * as v from "valibot";
@@ -17,7 +16,7 @@ function TableHeaders() {
       <th class="hidden md:table-cell">Program</th>
       <th class="hidden md:table-cell">Subscription</th>
       <th>Options</th>
-      <th>Delete</th>
+      <th class="hidden md:table-cell">Delete</th>
     </tr>
   </>
 }
@@ -85,6 +84,7 @@ export function MemberTable() {
   };
 
   // edit functions 
+  const [showEdit, setShowEdit] = createSignal(false);
   const [saveButtonDisabled, setSaveButtonDisabled] = createSignal(false);
   const [editError, setEditError] = createSignal("");
   const [memberStripeId, setMemberStripeId] = createSignal("");
@@ -123,6 +123,7 @@ export function MemberTable() {
 
   const openEditDialog = async (memberId: string) => {
     // reset values 
+    setShowEdit(false);
     setAllReadyToEdit(false);
     setEmergencyName("");
     setEmergencyPhone("");
@@ -228,6 +229,15 @@ export function MemberTable() {
                       <div>
                         <div class="font-bold">{member.name}</div>
                         <div class="text-sm opacity-50">{member.email}</div>
+                        <div class="md:hidden flex gap-1 mt-1">
+                          <a href={import.meta.env.VITE_STRIPE_CUSTOMER_URL + member.stripe_customer_id}>
+                            {member.is_subscribed
+                              ? <span class="badge badge-success">Active</span>
+                              : <span class="badge badge-error">Inactive</span>
+                            }
+                          </a>
+                          <span class="badge badge-neutral">{member.program ? member.program : "N/A"}</span>
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -247,9 +257,9 @@ export function MemberTable() {
                     </a>
                   </td>
 
-                  {/* Update Member */}
+                  {/* Options Menu */}
                   <td>
-                    <button onClick={() => openEditDialog(member.id)} class="btn btn-secondary btn-sm"><CgMoreO class="size-5" /></button>
+                    <button onClick={() => openEditDialog(member.id)} class="btn btn-secondary btn-sm"><BiRegularMenu class="size-5" /></button>
                     <dialog id="edit-dialog" class="modal">
                       <form method="dialog" class="modal-backdrop">
                         <button>close when clicked outside</button>
@@ -258,169 +268,174 @@ export function MemberTable() {
                         <form method="dialog">
                           <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                         </form>
-                        <h3 class="font-bold text-xl">Subscription Details</h3>
-                        <div class="flex gap-4 w-full mb-6 mt-3">
-                          <a href={import.meta.env.VITE_STRIPE_CUSTOMER_URL + memberStripeId()} class="btn btn-secondary bg-indigo-600 hover:bg-indigo-700 grow">
-                            <BsStripe class="size-4" />
-                            View Finances
-                          </a>
-                        </div>
 
-                        <h3 class="font-bold text-xl">Contact Member</h3>
-                        <div class="flex gap-4 w-full mb-6 mt-3">
-                          <button onClick={openContactDialog} class="btn btn-outline grow"><FaSolidPhone class="size-3" />Personal</button>
-                          <ContactDialog dialogId="contact-dialog" name={defaultName()} phone={defaultPhone()}>Member Contact</ContactDialog>
+                        <Show when={showEdit()} fallback={<div class="flex flex-col gap-4">
+                          <h3 class="font-bold text-xl">Member Details</h3>
 
-                          <button onClick={openEmergencyDialog} class="btn btn-outline btn-primary grow"><FaSolidPhone class="size-3" /> Emergency</button>
-                          <ContactDialog dialogId="emergency-dialog" name={emergencyName()} phone={emergencyPhone()}>Emergency Contact </ContactDialog>
-                        </div>
+                          <button onClick={() => setShowEdit(true)} class="btn btn-secondary grow w-full">Edit Member</button>
 
-                        <h3 class="font-bold text-xl">Edit Member</h3>
-                        <p class="py-2 text-wrap">Click the edit icon on the right to make changes and then press the save button when done.</p>
-
-                        <div class="form-control">
-                          <label class="label">
-                            <span class="label-text">Name</span>
-                          </label>
-                          <div class="flex gap-3 w-full">
-                            <label class="input input-bordered flex items-center gap-2 grow border-secondary">
-                              <FaSolidUser class="w-4 h-4 opacity-70" />
-                              <input
-                                onInput={(event) => {
-                                  setMemberToEdit("name", "value", event.currentTarget.value)
-                                }}
-                                type="text"
-                                class="grow"
-                                placeholder={memberToEdit.name.value}
-                                value={memberToEdit.name.value}
-                                disabled={!memberToEdit.name.readyToEdit} // disabled when field is not ready to edit
-                                id="name-input"
-                              />
-                            </label>
-                            <button onClick={() => {
-                              setMemberToEdit("name", "readyToEdit", !memberToEdit.name.readyToEdit);
-                              const nameInput = document.getElementById("name-input") as HTMLInputElement;
-                              nameInput.value = defaultName();
-                            }}>
-                              {memberToEdit.name.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
-                            </button>
+                          <div class="flex gap-4 w-full">
+                            <a href={import.meta.env.VITE_STRIPE_CUSTOMER_URL + memberStripeId()} class="btn btn-secondary bg-indigo-600 border-indigo-600 hover:bg-indigo-700 hover:border-indigo-700 grow">
+                              <BsStripe class="size-4" />
+                              Subscription
+                            </a>
                           </div>
-                        </div>
 
-                        <div class="form-control">
-                          <label class="label">
-                            <span class="label-text">Phone Number</span>
-                          </label>
-                          <div class="flex gap-3 w-full">
-                            <label class="input input-bordered flex items-center gap-2 grow border-secondary">
-                              <FaSolidPhone class="w-4 h-4 opacity-70" />
-                              <input
-                                onInput={(event) => {
-                                  setMemberToEdit("phone", "value", event.currentTarget.value)
-                                }}
-                                type="tel"
-                                class="grow"
-                                placeholder={memberToEdit.phone.value}
-                                value={memberToEdit.phone.value}
-                                disabled={!memberToEdit.phone.readyToEdit}
-                                id="phone-input"
-                              />
-                            </label>
-                            <button onClick={() => {
-                              setMemberToEdit("phone", "readyToEdit", !memberToEdit.phone.readyToEdit);
-                              const phoneInput = document.getElementById("phone-input") as HTMLInputElement;
-                              phoneInput.value = defaultPhone();
-                            }}>
-                              {memberToEdit.phone.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
-                            </button>
+                          <div class="flex gap-4 w-full">
+                            <button onClick={openContactDialog} class="btn btn-outline grow"><FaSolidPhone class="size-3" />Personal</button>
+                            <ContactDialog dialogId="contact-dialog" name={defaultName()} phone={defaultPhone()}>Member Contact</ContactDialog>
+
+                            <button onClick={openEmergencyDialog} class="btn btn-outline btn-primary grow"><FaSolidPhone class="size-3" /> Emergency</button>
+                            <ContactDialog dialogId="emergency-dialog" name={emergencyName()} phone={emergencyPhone()}>Emergency Contact </ContactDialog>
                           </div>
-                        </div>
+                        </div>}>
 
-                        <div class="form-control">
-                          <label class="label">
-                            <span class="label-text">Emergency Contact Name</span>
-                          </label>
-                          <div class="flex gap-3 w-full">
-                            <label class="input input-bordered flex items-center gap-2 grow border-secondary">
-                              <FaSolidUserDoctor class="w-4 h-4 opacity-70" />
-                              <input
-                                onInput={(event) => {
-                                  setMemberToEdit("emergencyName", "value", event.currentTarget.value)
-                                }}
-                                type="text"
-                                class="grow"
-                                placeholder={memberToEdit.emergencyName.value}
-                                value={memberToEdit.emergencyName.value}
-                                disabled={!memberToEdit.emergencyName.readyToEdit}
-                                id="emergencyName-input"
-                              />
+                          <h3 class="font-bold text-xl">Edit Member</h3>
+                          <p class="py-2 text-wrap">Click the edit icon on the right to make changes and then press the save button when done.</p>
+
+                          <div class="form-control">
+                            <label class="label">
+                              <span class="label-text">Name</span>
                             </label>
-                            <button onClick={() => {
-                              const input = document.getElementById("emergencyName-input") as HTMLInputElement;
-                              if (!memberToEdit.emergencyName.readyToEdit) {
-                                input.value = emergencyName();
-                              }
-                              setMemberToEdit("emergencyName", "readyToEdit", !memberToEdit.emergencyName.readyToEdit);
-                              setMemberToEdit("emergencyName", "value", input.value);
-                            }}>
-                              {memberToEdit.emergencyName.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
-                            </button>
+                            <div class="flex gap-3 w-full">
+                              <label class="input input-bordered flex items-center gap-2 grow border-secondary">
+                                <FaSolidUser class="w-4 h-4 opacity-70" />
+                                <input
+                                  onInput={(event) => {
+                                    setMemberToEdit("name", "value", event.currentTarget.value)
+                                  }}
+                                  type="text"
+                                  class="grow"
+                                  placeholder={memberToEdit.name.value}
+                                  value={memberToEdit.name.value}
+                                  disabled={!memberToEdit.name.readyToEdit} // disabled when field is not ready to edit
+                                  id="name-input"
+                                />
+                              </label>
+                              <button onClick={() => {
+                                setMemberToEdit("name", "readyToEdit", !memberToEdit.name.readyToEdit);
+                                const nameInput = document.getElementById("name-input") as HTMLInputElement;
+                                nameInput.value = defaultName();
+                              }}>
+                                {memberToEdit.name.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
+                              </button>
+                            </div>
                           </div>
-                        </div>
 
-                        <div class="form-control">
-                          <label class="label">
-                            <span class="label-text">Emergency Phone Number</span>
-                          </label>
-                          <div class="flex gap-3 w-full">
-                            <label class="input input-bordered flex items-center gap-2 grow border-secondary">
-                              <FaSolidPhone class="w-4 h-4 opacity-70" />
-                              <input
-                                onInput={(event) => {
-                                  setMemberToEdit("emergencyPhone", "value", event.currentTarget.value)
-                                }}
-                                type="tel"
-                                class="grow"
-                                placeholder={memberToEdit.emergencyPhone.value}
-                                value={memberToEdit.emergencyPhone.value}
-                                disabled={!memberToEdit.emergencyPhone.readyToEdit}
-                                id="emergencyPhone-input"
-                              />
+                          <div class="form-control">
+                            <label class="label">
+                              <span class="label-text">Phone Number</span>
                             </label>
-                            <button onClick={() => {
-                              // when re-disabled
-                              if (!memberToEdit.emergencyPhone.readyToEdit) {
-                                // input field returns to default 
-                                const input = document.getElementById("emergencyPhone-input") as HTMLInputElement;
-                                input.value = emergencyPhone();
-                              }
-                              setMemberToEdit("emergencyPhone", "readyToEdit", !memberToEdit.emergencyPhone.readyToEdit);
-                              setMemberToEdit("emergencyPhone", "value", memberToEdit.emergencyPhone.value);
-                            }}>
-                              {memberToEdit.emergencyPhone.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
-                            </button>
+                            <div class="flex gap-3 w-full">
+                              <label class="input input-bordered flex items-center gap-2 grow border-secondary">
+                                <FaSolidPhone class="w-4 h-4 opacity-70" />
+                                <input
+                                  onInput={(event) => {
+                                    setMemberToEdit("phone", "value", event.currentTarget.value)
+                                  }}
+                                  type="tel"
+                                  class="grow"
+                                  placeholder={memberToEdit.phone.value}
+                                  value={memberToEdit.phone.value}
+                                  disabled={!memberToEdit.phone.readyToEdit}
+                                  id="phone-input"
+                                />
+                              </label>
+                              <button onClick={() => {
+                                setMemberToEdit("phone", "readyToEdit", !memberToEdit.phone.readyToEdit);
+                                const phoneInput = document.getElementById("phone-input") as HTMLInputElement;
+                                phoneInput.value = defaultPhone();
+                              }}>
+                                {memberToEdit.phone.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
+                              </button>
+                            </div>
                           </div>
-                        </div>
 
-                        <Show when={editError()}>
-                          <p class="text-error mt-3">{editError()}</p>
+                          <div class="form-control">
+                            <label class="label">
+                              <span class="label-text">Emergency Contact Name</span>
+                            </label>
+                            <div class="flex gap-3 w-full">
+                              <label class="input input-bordered flex items-center gap-2 grow border-secondary">
+                                <FaSolidUserDoctor class="w-4 h-4 opacity-70" />
+                                <input
+                                  onInput={(event) => {
+                                    setMemberToEdit("emergencyName", "value", event.currentTarget.value)
+                                  }}
+                                  type="text"
+                                  class="grow"
+                                  placeholder={memberToEdit.emergencyName.value}
+                                  value={memberToEdit.emergencyName.value}
+                                  disabled={!memberToEdit.emergencyName.readyToEdit}
+                                  id="emergencyName-input"
+                                />
+                              </label>
+                              <button onClick={() => {
+                                const input = document.getElementById("emergencyName-input") as HTMLInputElement;
+                                if (!memberToEdit.emergencyName.readyToEdit) {
+                                  input.value = emergencyName();
+                                }
+                                setMemberToEdit("emergencyName", "readyToEdit", !memberToEdit.emergencyName.readyToEdit);
+                                setMemberToEdit("emergencyName", "value", input.value);
+                              }}>
+                                {memberToEdit.emergencyName.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
+                              </button>
+                            </div>
+                          </div>
+
+                          <div class="form-control">
+                            <label class="label">
+                              <span class="label-text">Emergency Phone Number</span>
+                            </label>
+                            <div class="flex gap-3 w-full">
+                              <label class="input input-bordered flex items-center gap-2 grow border-secondary">
+                                <FaSolidPhone class="w-4 h-4 opacity-70" />
+                                <input
+                                  onInput={(event) => {
+                                    setMemberToEdit("emergencyPhone", "value", event.currentTarget.value)
+                                  }}
+                                  type="tel"
+                                  class="grow"
+                                  placeholder={memberToEdit.emergencyPhone.value}
+                                  value={memberToEdit.emergencyPhone.value}
+                                  disabled={!memberToEdit.emergencyPhone.readyToEdit}
+                                  id="emergencyPhone-input"
+                                />
+                              </label>
+                              <button onClick={() => {
+                                // when re-disabled
+                                if (!memberToEdit.emergencyPhone.readyToEdit) {
+                                  // input field returns to default 
+                                  const input = document.getElementById("emergencyPhone-input") as HTMLInputElement;
+                                  input.value = emergencyPhone();
+                                }
+                                setMemberToEdit("emergencyPhone", "readyToEdit", !memberToEdit.emergencyPhone.readyToEdit);
+                                setMemberToEdit("emergencyPhone", "value", memberToEdit.emergencyPhone.value);
+                              }}>
+                                {memberToEdit.emergencyPhone.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
+                              </button>
+                            </div>
+                          </div>
+
+                          <Show when={editError()}>
+                            <p class="text-error mt-3">{editError()}</p>
+                          </Show>
+
+                          <div class="modal-action">
+                            <form method="dialog" class="flex gap-4 w-full">
+                              <button onClick={(event) => confirmEdit(event, memberToEdit.id.value)} disabled={saveButtonDisabled()} class="btn btn-secondary flex-1">
+                                {saveButtonDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Save"}
+                              </button>
+                              <button class="btn flex-1">Cancel</button>
+                            </form>
+                          </div>
                         </Show>
-
-                        <div class="modal-action">
-                          <form method="dialog" class="flex gap-4 w-full">
-                            <button onClick={(event) => confirmEdit(event, memberToEdit.id.value)} disabled={saveButtonDisabled()} class="btn btn-secondary flex-1">
-                              {saveButtonDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Save"}
-                            </button>
-                            <button class="btn flex-1">Cancel</button>
-                          </form>
-                        </div>
-
                       </div>
                     </dialog>
                   </td>
 
                   {/* Delete Member */}
-                  <td>
+                  <td class="hidden md:table-cell">
                     <button onClick={() => openDeleteModal(member.id, member.name, member.program)} class="btn btn-primary btn-sm">
                       <FaRegularTrashCan class="size-5" />
                     </button>

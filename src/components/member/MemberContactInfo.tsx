@@ -3,7 +3,7 @@ import { usePocket } from "~/context/PocketbaseContext";
 import { FaSolidUser, FaSolidPhone, FaSolidUserDoctor } from "solid-icons/fa";
 import * as v from "valibot";
 
-const ContactSchema = v.pipe(v.object({
+export const ContactSchema = v.pipe(v.object({
   phone: v.pipe(
     v.string('You must include your phone number.'),
     v.maxLength(20, 'The phone number must not exceed 20 characters.'),
@@ -29,7 +29,7 @@ const ContactSchema = v.pipe(v.object({
   ),
 );
 
-type ContactData = v.InferOutput<typeof ContactSchema>;
+export type ContactData = v.InferOutput<typeof ContactSchema>;
 
 export default function MemberContactInfo() {
   const [phone, setPhone] = createSignal("");
