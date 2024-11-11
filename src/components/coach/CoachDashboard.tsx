@@ -5,7 +5,7 @@ import { FaSolidPlus } from 'solid-icons/fa'
 export default function CoachDashboard() {
   return (
     <div class="max-w-fit flex flex-col gap-4">
-      <div class="flex justify-between items-end">
+      <div class="flex justify-between items-end gap-4">
         <label class="input input-bordered flex items-center gap-2 input-sm">
           <input type="text" class="grow" placeholder="Search Member" />
           <svg

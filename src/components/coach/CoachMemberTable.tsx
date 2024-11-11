@@ -1,9 +1,9 @@
 import { createResource, For, Show, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { MemberRecord, usePocket } from "~/context/PocketbaseContext";
-import { FaRegularTrashCan, FaSolidPhone, FaSolidUser, FaSolidUserDoctor } from "solid-icons/fa";
-import { BsStripe } from 'solid-icons/bs'
+import { FaRegularTrashCan, FaSolidPhone, FaSolidUser, FaSolidUserDoctor, FaSolidUserPen } from "solid-icons/fa";
 import { BiSolidEdit, BiRegularMenu } from "solid-icons/bi";
+import { AiOutlineDollar } from 'solid-icons/ai'
 import { IoClose } from "solid-icons/io";
 import { CoachEditMemberData, CoachEditMemberSchema } from "~/components/InputValidation";
 import * as v from "valibot";
@@ -16,7 +16,6 @@ function TableHeaders() {
       <th class="hidden md:table-cell">Program</th>
       <th class="hidden md:table-cell">Subscription</th>
       <th>Options</th>
-      <th class="hidden md:table-cell">Delete</th>
     </tr>
   </>
 }
@@ -59,12 +58,14 @@ export function MemberTable() {
     program: "",
   });
 
-  const openDeleteModal = (memberId: string, memberName: string, memberProgram: string) => {
+  const openDeleteModal = (memberId: string, memberName: string) => {
     setMemberToDelete("id", memberId);
     setMemberToDelete("name", memberName);
-    setMemberToDelete("program", memberProgram);
 
-    const dialog = document.getElementById("delete-dialog") as HTMLDialogElement;
+    let dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
+    dialog.close();
+
+    dialog = document.getElementById("delete-dialog") as HTMLDialogElement;
     dialog.showModal();
   };
 
@@ -259,36 +260,67 @@ export function MemberTable() {
 
                   {/* Options Menu */}
                   <td>
-                    <button onClick={() => openEditDialog(member.id)} class="btn btn-secondary btn-sm"><BiRegularMenu class="size-5" /></button>
+                    <button onClick={() => openEditDialog(member.id)} class="btn btn-sm btn-secondary"><BiRegularMenu class="size-6" /></button>
                     <dialog id="edit-dialog" class="modal">
                       <form method="dialog" class="modal-backdrop">
                         <button>close when clicked outside</button>
                       </form>
                       <div class="modal-box">
                         <form method="dialog">
-                          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"><IoClose class="size-4" /></button>
                         </form>
 
                         <Show when={showEdit()} fallback={<div class="flex flex-col gap-4">
                           <h3 class="font-bold text-xl">Member Details</h3>
 
-                          <button onClick={() => setShowEdit(true)} class="btn btn-secondary grow w-full">Edit Member</button>
+                          {/* Stripe Subscription Link */}
+                          <a href={import.meta.env.VITE_STRIPE_CUSTOMER_URL + memberStripeId()} class="btn grow text-green-100 bg-green-600 border-green-600 hover:bg-green-700 hover:border-green-700 ">
+                            <AiOutlineDollar class="size-6" />
+                            View Subscription
+                          </a>
+
+                          <button onClick={() => setShowEdit(true)} class="btn btn-secondary grow w-full">
+                            <FaSolidUserPen class="size-5" />
+                            Edit Member
+                          </button>
 
                           <div class="flex gap-4 w-full">
-                            <a href={import.meta.env.VITE_STRIPE_CUSTOMER_URL + memberStripeId()} class="btn btn-secondary bg-indigo-600 border-indigo-600 hover:bg-indigo-700 hover:border-indigo-700 grow">
-                              <BsStripe class="size-4" />
-                              Subscription
-                            </a>
-                          </div>
-
-                          <div class="flex gap-4 w-full">
-                            <button onClick={openContactDialog} class="btn btn-outline grow"><FaSolidPhone class="size-3" />Personal</button>
+                            <button onClick={openContactDialog} class="btn btn-outline flex-1"><FaSolidPhone class="size-3" />Personal</button>
                             <ContactDialog dialogId="contact-dialog" name={defaultName()} phone={defaultPhone()}>Member Contact</ContactDialog>
 
-                            <button onClick={openEmergencyDialog} class="btn btn-outline btn-primary grow"><FaSolidPhone class="size-3" /> Emergency</button>
+                            <button onClick={openEmergencyDialog} class="btn btn-outline btn-primary flex-1"><FaSolidPhone class="size-3" /> Emergency</button>
                             <ContactDialog dialogId="emergency-dialog" name={emergencyName()} phone={emergencyPhone()}>Emergency Contact </ContactDialog>
                           </div>
-                        </div>}>
+
+                          {/* Delete Member */}
+                          <button onClick={() => openDeleteModal(memberToEdit.id.value, memberToEdit.name.value)} class="btn btn-primary grow w-full">
+                            <FaRegularTrashCan class="size-5" />
+                            Delete Member
+                          </button>
+                          <dialog id="delete-dialog" class="modal">
+                            <form method="dialog" class="modal-backdrop">
+                              <button>close when clicked outside</button>
+                            </form>
+                            <div class="modal-box">
+                              <form method="dialog">
+                                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                              </form>
+                              <h3 class="font-bold text-lg mb-2">Delete Member?</h3>
+                              <p class="text-base"><span class="font-semibold">Name:</span> {memberToDelete.name}</p>
+                              <p class="text-base">Subscription will be cancelled.</p>
+                              <div class="modal-action">
+                                <form method="dialog" class="flex gap-4 w-full">
+                                  <button onClick={(event) => confirmDelete(event, memberToDelete.id)} disabled={deleteDisabled()} class="btn btn-primary grow">
+                                    {deleteDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Delete"}
+                                  </button>
+                                  <button class="btn grow">Cancel</button>
+                                </form>
+                              </div>
+                            </div>
+                          </dialog>
+
+                        </div>
+                        }>
 
                           <h3 class="font-bold text-xl">Edit Member</h3>
                           <p class="py-2 text-wrap">Click the edit icon on the right to make changes and then press the save button when done.</p>
@@ -430,34 +462,6 @@ export function MemberTable() {
                             </form>
                           </div>
                         </Show>
-                      </div>
-                    </dialog>
-                  </td>
-
-                  {/* Delete Member */}
-                  <td class="hidden md:table-cell">
-                    <button onClick={() => openDeleteModal(member.id, member.name, member.program)} class="btn btn-primary btn-sm">
-                      <FaRegularTrashCan class="size-5" />
-                    </button>
-                    <dialog id="delete-dialog" class="modal">
-                      <form method="dialog" class="modal-backdrop">
-                        <button>close when clicked outside</button>
-                      </form>
-                      <div class="modal-box">
-                        <form method="dialog">
-                          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-                        </form>
-                        <h3 class="font-bold text-lg mb-2">Delete Member?</h3>
-                        <p class="text-base"><span class="font-semibold">Name:</span> {memberToDelete.name}</p>
-                        <p class="text-base"><span class="font-semibold">Program:</span> {memberToDelete.program ? memberToDelete.program : "N/A"}</p>
-                        <div class="modal-action">
-                          <form method="dialog" class="flex gap-4 w-full">
-                            <button onClick={(event) => confirmDelete(event, memberToDelete.id)} disabled={deleteDisabled()} class="btn btn-primary grow">
-                              {deleteDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Delete"}
-                            </button>
-                            <button class="btn grow">Cancel</button>
-                          </form>
-                        </div>
                       </div>
                     </dialog>
                   </td>
