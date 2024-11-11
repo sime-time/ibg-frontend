@@ -1,13 +1,12 @@
 import CoachCreateMember from "./CoachCreateMember";
 import { MemberTable } from "./CoachMemberTable";
-import { FaSolidPlus } from 'solid-icons/fa'
 
 export default function CoachDashboard() {
   return (
-    <div class="max-w-fit flex flex-col gap-4">
-      <div class="flex justify-between items-end gap-4">
+    <div class="max-w-fit w-screen flex flex-col gap-4">
+      <div class="flex justify-between">
         <label class="input input-bordered flex items-center gap-2 input-sm">
-          <input type="text" class="grow" placeholder="Search Member" />
+          <input type="text" placeholder="Search Member" />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -19,7 +18,9 @@ export default function CoachDashboard() {
               clip-rule="evenodd" />
           </svg>
         </label>
-        <CoachCreateMember />
+        <div>
+          <CoachCreateMember />
+        </div>
       </div>
       <MemberTable />
     </div>

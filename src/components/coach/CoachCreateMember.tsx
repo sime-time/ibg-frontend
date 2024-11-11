@@ -76,7 +76,7 @@ export default function CoachCreateMember() {
   }
 
   return <>
-    <button onClick={openCreateDialog} class="btn btn-secondary btn-sm items-center"><FaSolidPlus />New Member</button>
+    <button onClick={openCreateDialog} class="btn btn-secondary btn-sm items-center"><FaSolidPlus />Member</button>
     <dialog id="create-dialog" class="modal">
       <form method="dialog" class="modal-backdrop">
         <button>close when clicked outside</button>

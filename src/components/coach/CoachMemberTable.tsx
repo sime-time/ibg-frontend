@@ -207,7 +207,7 @@ export function MemberTable() {
 
   return (
     <div class="overflow-x-auto whitespace-nowrap block">
-      <Show when={!members.loading} fallback={<span class="loading loading-spinner loading-md"></span>}>
+      <Show when={!members.loading} fallback={<div class="flex justify-center"><span class="loading loading-spinner loading-md"></span></div>}>
         <table class="table bg-base-100">
           <thead>
             <TableHeaders />
@@ -271,7 +271,7 @@ export function MemberTable() {
                         </form>
 
                         <Show when={showEdit()} fallback={<div class="flex flex-col gap-4">
-                          <h3 class="font-bold text-xl">Member Details</h3>
+                          <h3 class="font-bold text-xl">{defaultName()}'s Details</h3>
 
                           {/* Stripe Subscription Link */}
                           <a href={import.meta.env.VITE_STRIPE_CUSTOMER_URL + memberStripeId()} class="btn grow text-green-100 bg-green-600 border-green-600 hover:bg-green-700 hover:border-green-700 ">
@@ -288,7 +288,7 @@ export function MemberTable() {
                             <button onClick={openContactDialog} class="btn btn-outline flex-1"><FaSolidPhone class="size-3" />Personal</button>
                             <ContactDialog dialogId="contact-dialog" name={defaultName()} phone={defaultPhone()}>Member Contact</ContactDialog>
 
-                            <button onClick={openEmergencyDialog} class="btn btn-outline btn-primary flex-1"><FaSolidPhone class="size-3" /> Emergency</button>
+                            <button onClick={openEmergencyDialog} class="btn btn-outline btn-error flex-1"><FaSolidPhone class="size-3" /> Emergency</button>
                             <ContactDialog dialogId="emergency-dialog" name={emergencyName()} phone={emergencyPhone()}>Emergency Contact </ContactDialog>
                           </div>
 
