@@ -8,6 +8,7 @@ interface PocketbaseContextProps {
   loginMember: (email: string, password: string) => Promise<boolean>,
   loginAdmin: (email: string, password: string) => Promise<boolean>,
   logout: () => void,
+  loggedIn: () => boolean,
   userIsAdmin: () => boolean,
   userIsMember: () => boolean,
   addContactInfo: (contactInfo: ContactInfo) => Promise<boolean>,
@@ -127,6 +128,10 @@ export function PocketbaseContextProvider(props: ParentProps) {
     logout();
     const response = await pb.admins.authWithPassword(email, password);
     return pb.authStore.isValid && pb.authStore.isAdmin;
+  };
+
+  const loggedIn = () => {
+    return pb.authStore.isValid;
   };
 
   const userIsAdmin = () => {
@@ -310,7 +315,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

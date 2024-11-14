@@ -47,12 +47,18 @@ export default function Nav() {
       </div>
 
       <div class="navbar-end flex gap-3">
-        <Show when={location.pathname === "/member" || location.pathname === "/coach"} fallback={
-          <>
-            <a href="/signup" class="btn btn-primary">Sign Up</a>
-            <a href="/login" class="btn btn-accent">Log In</a>
-          </>
-        }>
+        <Show
+          when={
+            location.pathname === "/member" ||
+            location.pathname === "/coach" ||
+            location.pathname === "/signup-kiosk"
+          }
+          fallback={
+            <>
+              <a href="/signup" class="btn btn-primary">Sign Up</a>
+              <a href="/login" class="btn btn-accent">Log In</a>
+            </>
+          }>
           <LogoutButton />
         </Show>
       </div>
