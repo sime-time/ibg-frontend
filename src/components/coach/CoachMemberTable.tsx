@@ -1,7 +1,7 @@
 import { createResource, For, Show, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import { MemberRecord, usePocket } from "~/context/PocketbaseContext";
-import { FaRegularTrashCan, FaSolidPhone, FaSolidUser, FaSolidUserDoctor, FaSolidUserPen } from "solid-icons/fa";
+import { FaRegularTrashCan, FaSolidPhone, FaSolidUser, FaSolidUserDoctor, FaSolidUserPen, FaSolidPlus } from "solid-icons/fa";
 import { BiSolidEdit, BiRegularMenu } from "solid-icons/bi";
 import { AiOutlineDollar } from 'solid-icons/ai'
 import { IoClose } from "solid-icons/io";
@@ -205,7 +205,26 @@ export function MemberTable() {
   }
 
 
-  return (
+  return (<>
+    <div class="flex justify-between">
+      <label class="input input-bordered flex items-center gap-2 input-sm">
+        <input type="text" placeholder="Search Member" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          class="h-4 w-4 opacity-70">
+          <path
+            fill-rule="evenodd"
+            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+            clip-rule="evenodd" />
+        </svg>
+      </label>
+      <div>
+        <a href="signup-kiosk" class="btn btn-secondary btn-sm items-center"><FaSolidPlus />Member</a>
+      </div>
+    </div>
+
     <div class="overflow-x-auto whitespace-nowrap block">
       <Show when={!members.loading} fallback={<div class="flex justify-center"><span class="loading loading-spinner loading-md"></span></div>}>
         <table class="table bg-base-100">
@@ -477,5 +496,5 @@ export function MemberTable() {
         </table>
       </Show>
     </div >
-  );
+  </>);
 }
