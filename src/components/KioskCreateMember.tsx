@@ -1,4 +1,5 @@
 import { createSignal, Show } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 import { FaSolidUser, FaSolidPhone, FaSolidUserDoctor } from 'solid-icons/fa'
 import * as v from "valibot";
 import { usePocket } from "~/context/PocketbaseContext";
@@ -19,6 +20,7 @@ export default function KioskCreateMember() {
   const [error, setError] = createSignal("");
 
   const { createMember } = usePocket();
+  const navigate = useNavigate();
 
   const handleCreate = async (e: Event) => {
     e.preventDefault();
@@ -48,7 +50,7 @@ export default function KioskCreateMember() {
       const successful: boolean = await createMember(validMember, validContact);
 
       if (successful) {
-        setError(`New member created: ${validMember.name}`);
+        navigate("/qr-login");
       } else {
         throw new Error("server_error");
       }

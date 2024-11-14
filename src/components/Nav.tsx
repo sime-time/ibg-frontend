@@ -51,14 +51,10 @@ export default function Nav() {
           when={
             location.pathname === "/member" ||
             location.pathname === "/coach" ||
-            location.pathname === "/signup-kiosk"
+            location.pathname === "/signup-kiosk" ||
+            location.pathname === "/qr-login"
           }
-          fallback={
-            <>
-              <a href="/signup" class="btn btn-primary">Sign Up</a>
-              <a href="/login" class="btn btn-accent">Log In</a>
-            </>
-          }>
+        >
           <LogoutButton />
         </Show>
       </div>
