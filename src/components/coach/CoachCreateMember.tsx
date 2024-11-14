@@ -2,7 +2,7 @@ import { createSignal, Show } from "solid-js";
 import { FaSolidUser, FaSolidPlus, FaSolidPhone, FaSolidUserDoctor } from 'solid-icons/fa'
 import * as v from "valibot";
 import { usePocket } from "~/context/PocketbaseContext";
-import { SignUpData, SignUpSchema } from "~/routes/signup";
+import { SignUpData, SignUpSchema } from "~/types/ValidationType";
 import { ContactData, ContactSchema } from "../member/MemberContactInfo";
 
 export default function CoachCreateMember() {

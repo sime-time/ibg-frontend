@@ -5,44 +5,10 @@ import { FaSolidUser } from 'solid-icons/fa'
 import { useNavigate } from "@solidjs/router";
 import * as v from "valibot";
 import { usePocket } from "~/context/PocketbaseContext";
-
-export const SignUpSchema = v.pipe(
-  v.object({
-    name: v.pipe(
-      v.string('Your name must be in text.'),
-      v.nonEmpty('Please enter your name.'),
-    ),
-    email: v.pipe(
-      v.string('Your email must be a string of characters.'),
-      v.nonEmpty('Please enter your email.'),
-      v.email('The email address is formatted incorrectly.')
-    ),
-    emailVisibility: v.literal(true),
-    password: v.pipe(
-      v.string('Your password must be a string of characters.'),
-      v.nonEmpty('Please enter your password'),
-      v.minLength(8, 'Your password must have 8 characters or more.')
-    ),
-    passwordConfirm: v.pipe(
-      v.string('Your password must be a string of characters.'),
-      v.nonEmpty('Please enter your password'),
-      v.minLength(8, 'Your password must have 8 characters or more.')
-    )
-  }),
-  v.forward(
-    v.partialCheck(
-      [['password'], ['passwordConfirm']],
-      (input) => input.password === input.passwordConfirm,
-      'The passwords do not match.'
-    ),
-    ['password']
-  ),
-);
-
-export type SignUpData = v.InferOutput<typeof SignUpSchema>;
+import { SignUpData } from "~/types/ValidationType";
+import { SignUpSchema } from "~/types/ValidationType";
 
 export default function SignUp() {
-  const [name, setName] = createSignal("");
   const [firstName, setFirstName] = createSignal("");
   const [lastName, setLastName] = createSignal("");
   const [email, setEmail] = createSignal("");
@@ -99,10 +65,6 @@ export default function SignUp() {
       <div class="card bg-base-100 shadow-xl w-fit md:w-96">
         <div class="card-body">
           <h1 class="card-title text-2xl font-bold mb-3">Sign Up</h1>
-
-          <SocialAuth />
-          <div class="divider">OR</div>
-
           <form onSubmit={handleSignUp} class="flex flex-col gap-4">
             <div class="form-control">
               <label class="label">

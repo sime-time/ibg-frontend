@@ -1,3 +1,7 @@
+import { useLocation } from "@solidjs/router";
+import { Show } from "solid-js";
+import LogoutButton from "./ui/LogoutButton";
+
 function NavMenu() {
   return (
     <>
@@ -9,6 +13,8 @@ function NavMenu() {
 }
 
 export default function Nav() {
+  const location = useLocation();
+
   return (
     <nav class="navbar">
       <div class="navbar-start">
@@ -41,8 +47,16 @@ export default function Nav() {
       </div>
 
       <div class="navbar-end flex gap-3">
-        <a href="/signup" class="btn btn-primary">Sign Up</a>
-        <a href="/login" class="btn btn-outline">Log In</a>
+        <Show
+          when={location.pathname === "/coach" || location.pathname === "/member"}
+          fallback={
+            <>
+              <a href="/signup" class="btn btn-primary">Sign Up</a>
+              <a href="/login" class="btn btn-outline">Log In</a>
+            </>
+          }>
+          <LogoutButton />
+        </Show>
       </div>
     </nav>
   );

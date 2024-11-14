@@ -1,26 +1,12 @@
 import { createSignal, Show, Switch, Match } from "solid-js";
 import { Title } from "@solidjs/meta";
-import { UserType } from "~/enums/UserType";
+import { UserType } from "~/types/UserType";
 import SocialAuth from "~/components/SocialAuth";
 import { useNavigate } from "@solidjs/router";
 import { IoClose } from 'solid-icons/io'
 import { usePocket } from "~/context/PocketbaseContext";
 import * as v from "valibot";
-
-const LoginSchema = v.object({
-  email: v.pipe(
-    v.string('Your email must be a string.'),
-    v.nonEmpty('Please enter your email.'),
-    v.email('The email address is formatted incorrectly.')
-  ),
-  password: v.pipe(
-    v.string('Your password must be a string.'),
-    v.nonEmpty('Please enter your password'),
-    v.minLength(8, 'Your password must have 8 characters or more.')
-  ),
-});
-
-type LoginData = v.InferOutput<typeof LoginSchema>;
+import { LoginSchema, LoginData } from "~/types/ValidationType";
 
 export default function Login() {
   const [memberLogin, setMemberLogin] = createSignal(false);
@@ -99,11 +85,17 @@ export default function Login() {
         <Match when={memberLogin()}>
           <div class="card bg-base-100 shadow-xl w-fit md:w-96">
             <div class="card-body">
+
               <div class="flex justify-between items-center">
-                <h1 class="card-title text-2xl font-bold">Member Log In</h1>
+                <div>
+                  <h1 class="card-title text-2xl font-bold">Member Log In</h1>
+                  <p class="text-sm">Don't have an account? <a href="/signup" class="link link-primary">Sign up</a></p>
+                </div>
                 <button onClick={() => setMemberLogin(false)} class="btn btn-circle"><IoClose class="w-5 h-5" /></button>
               </div>
+
               <form onSubmit={(e: Event) => handleLogin(e, UserType.Member)} class="flex flex-col gap-4">
+
                 <div class="form-control">
                   <label class="label">
                     <span class="label-text">Email</span>
@@ -116,6 +108,7 @@ export default function Login() {
                       type="email" class="grow" placeholder="example@email.com" value={email()} />
                   </label>
                 </div>
+
                 <div class="form-control">
                   <label class="label">
                     <span class="label-text">Password</span>
@@ -131,23 +124,17 @@ export default function Login() {
                     <a href="#" class="label-text-alt link link-hover">Forgot password?</a>
                   </label>
                 </div>
+
                 <Show when={error()}>
                   <p class="text-error">{error()}</p>
                 </Show>
+
                 <div class="form-control">
                   <button type="submit" class="btn btn-primary" disabled={submitDisabled()}>
                     {submitDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Login"}
                   </button>
                 </div>
               </form>
-
-              <div class="divider">OR</div>
-
-              <SocialAuth />
-              <div class="text-center mt-3">
-                <p>Don't have an account?</p>
-                <a href="/signup" class="link link-primary">Sign up now</a>
-              </div>
             </div>
           </div>
         </Match>
@@ -155,11 +142,14 @@ export default function Login() {
         <Match when={coachLogin()}>
           <div class="card bg-base-100 shadow-xl w-fit md:w-96">
             <div class="card-body">
+
               <div class="flex justify-between items-center">
                 <h1 class="card-title text-2xl font-bold">Coach Log In</h1>
                 <button onClick={() => setCoachLogin(false)} class="btn btn-circle"><IoClose class="w-5 h-5" /></button>
               </div>
+
               <form onSubmit={(e: Event) => handleLogin(e, UserType.Coach)} class="flex flex-col gap-4">
+
                 <div class="form-control">
                   <label class="label">
                     <span class="label-text">Email</span>
@@ -172,6 +162,7 @@ export default function Login() {
                       type="email" class="grow" placeholder="example@email.com" value={email()} />
                   </label>
                 </div>
+
                 <div class="form-control">
                   <label class="label">
                     <span class="label-text">Password</span>
@@ -187,9 +178,11 @@ export default function Login() {
                     <a href="#" class="label-text-alt link link-hover">Forgot password?</a>
                   </label>
                 </div>
+
                 <Show when={error()}>
                   <p class="text-error">{error()}</p>
                 </Show>
+
                 <div class="form-control">
                   <button type="submit" class="btn btn-secondary" disabled={submitDisabled()}>
                     {submitDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Login"}
@@ -200,7 +193,6 @@ export default function Login() {
           </div>
         </Match>
       </Switch>
-
     </main>
   </>
 }

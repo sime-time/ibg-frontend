@@ -5,7 +5,7 @@ import { FaRegularTrashCan, FaSolidPhone, FaSolidUser, FaSolidUserDoctor, FaSoli
 import { BiSolidEdit, BiRegularMenu } from "solid-icons/bi";
 import { AiOutlineDollar } from 'solid-icons/ai'
 import { IoClose } from "solid-icons/io";
-import { CoachEditMemberData, CoachEditMemberSchema } from "~/components/InputValidation";
+import { CoachEditMemberData, CoachEditMemberSchema } from "~/types/ValidationType";
 import * as v from "valibot";
 import ContactDialog from "../ContactDialog";
 
