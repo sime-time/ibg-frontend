@@ -45,7 +45,6 @@ export default function MemberDashboard() {
           {buttonsDisabled() ? <span class="loading loading-spinner loading-md"></span> : <><BsCreditCard2BackFill class="size-5" /> Manage Subscription</>}
         </button>
         <MemberEdit />
-        <LogoutButton />
       </div>
     </div>
   );
