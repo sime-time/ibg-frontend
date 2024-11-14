@@ -23,9 +23,8 @@ export default function ContactDialog(props: ContactDialogProps) {
         </Show>
         <div class="modal-action">
           <form method="dialog" class="flex gap-4 w-full">
-            <a href={`tel:${props.phone}`} class="btn btn-primary grow">Call</a>
-            <a href={`sms:${props.phone}`} class="btn btn-accent btn-outline grow">Text</a>
-            <button class="btn grow">Cancel</button>
+            <a href={`tel:${props.phone}`} class="btn btn-primary flex-1">Call</a>
+            <a href={`sms:${props.phone}`} class="btn btn-accent flex-1">Text</a>
           </form>
         </div>
       </div>

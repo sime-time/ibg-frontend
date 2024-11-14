@@ -87,10 +87,8 @@ export default function Login() {
             <div class="card-body">
 
               <div class="flex justify-between items-center">
-                <div>
-                  <h1 class="card-title text-2xl font-bold">Member Log In</h1>
-                  <p class="text-sm">Don't have an account? <a href="/signup" class="link link-primary">Sign up</a></p>
-                </div>
+                <h1 class="card-title text-2xl font-bold">Member Login</h1>
+
                 <button onClick={() => setMemberLogin(false)} class="btn btn-circle"><IoClose class="w-5 h-5" /></button>
               </div>
 
@@ -134,6 +132,12 @@ export default function Login() {
                     {submitDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Login"}
                   </button>
                 </div>
+
+                <div class="text-center text-sm">
+                  <p>Don't have an account?</p>
+                  <a href="/signup" class="link link-primary">Sign up here</a>
+                </div>
+
               </form>
             </div>
           </div>
@@ -144,7 +148,7 @@ export default function Login() {
             <div class="card-body">
 
               <div class="flex justify-between items-center">
-                <h1 class="card-title text-2xl font-bold">Coach Log In</h1>
+                <h1 class="card-title text-2xl font-bold">Coach Login</h1>
                 <button onClick={() => setCoachLogin(false)} class="btn btn-circle"><IoClose class="w-5 h-5" /></button>
               </div>
 

@@ -18,6 +18,7 @@ interface PocketbaseContextProps {
   getMember: (memberId: string) => Promise<MemberRecord>,
   getMembers: () => Promise<MemberRecord[]>,
   deleteMember: (memberId: string) => Promise<void>,
+  createMember: (newMember: MemberData, newContact: ContactInfo) => Promise<boolean>,
 }
 
 export interface MemberData {
@@ -85,6 +86,36 @@ export function PocketbaseContextProvider(props: ParentProps) {
     console.log("New member created: ", newMember.name);
     return await loginMember(newMember.email, newMember.password);
   };
+
+  const createMember = async (newMember: MemberData, newContact: ContactInfo) => {
+    try {
+      if (!userIsAdmin()) {
+        throw new Error("User is not an admin. Cannot create new member.")
+      }
+      const memberCreated = await pb.collection("member").create(newMember)
+      console.log("New member created: ", memberCreated.name);
+
+      const memberPhone = {
+        "phone_number": newContact.phone,
+      }
+
+      const emergencyContact = {
+        "phone_number": newContact.emergencyPhone,
+        "name": newContact.emergencyName,
+        "member_id": memberCreated.id
+      }
+
+      await pb.collection("member").update(memberCreated.id, memberPhone);
+      await pb.collection("member_emergency").create(emergencyContact);
+      console.log("Contact info added to member");
+
+      return true;
+
+    } catch (err) {
+      console.error("Create member cancelled: ", err);
+      return false;
+    }
+  }
 
   const loginMember = async (email: string, password: string) => {
     logout();
@@ -279,7 +310,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember }} >
       {props.children}
     </PocketbaseContext.Provider>
   );
