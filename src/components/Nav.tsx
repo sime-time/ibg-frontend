@@ -49,7 +49,6 @@ export default function Nav() {
       <div class="navbar-end flex gap-3">
         <Show
           when={
-            location.pathname === "/member" ||
             location.pathname === "/coach" ||
             location.pathname === "/signup-kiosk" ||
             location.pathname === "/qr-login"
