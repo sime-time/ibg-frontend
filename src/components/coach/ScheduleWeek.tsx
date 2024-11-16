@@ -1,26 +1,21 @@
 import ScheduleDay from "./ScheduleDay";
-import { For, Index } from "solid-js";
+import { Index } from "solid-js";
 
-export default function ClassScheduler() {
+export default function ScheduleWeek() {
+
   /* render the current week from today's date */
   const loadWeek = () => {
     const today = new Date();
 
-    let yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
+    const week: Date[] = [];
 
-    let tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-
-    // weekday index goes from 0-6
-    // if date is 5, get the first 5 dates (0,4) and the last date (6)
-
-    const week: Date[] = [
-      yesterday,
-      today,
-      tomorrow,
-
-    ];
+    for (let i = 0; i < 7; i++) {
+      const dif = today.getDay() - i;
+      const day = new Date(today);
+      day.setDate(today.getDate() + dif);
+      console.log(today.getDate() + dif);
+      week.push(day);
+    }
 
     return <Index each={week}>
       {(day, index) => (
