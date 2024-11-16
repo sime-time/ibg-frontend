@@ -3,19 +3,19 @@ import { MemberTable } from "./CoachMemberTable";
 import { FaRegularCalendar, FaSolidCalendar } from 'solid-icons/fa'
 import { RiUserFacesGroupLine, RiUserFacesGroupFill } from 'solid-icons/ri'
 import { BsBarChart, BsBarChartFill } from "solid-icons/bs";
-import ClassScheduler from "./ClassScheduler";
+import ScheduleWeek from "./ScheduleWeek";
 
 enum View {
   Members = "members",
   Stats = "stats",
-  Scheduler = "schedule"
+  Scheduler = "scheduler"
 }
 
 export default function CoachDashboard() {
-  const [currentView, setCurrentView] = createSignal(View.Members);
+  const [currentView, setCurrentView] = createSignal(View.Scheduler);
 
   return (
-    <div class="max-w-fit w-screen flex flex-col gap-4">
+    <div class="w-full flex justify-center">
 
       {/* Render based on currentView */}
       <Switch>
@@ -23,7 +23,7 @@ export default function CoachDashboard() {
           <MemberTable />
         </Match>
         <Match when={currentView() === View.Scheduler}>
-          <ClassScheduler />
+          <ScheduleWeek />
         </Match>
         <Match when={currentView() === View.Stats}>
           <div>Stats</div>
