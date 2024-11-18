@@ -1,3 +1,6 @@
+import ScheduleNewClass from './ScheduleNewClass';
+import { FaSolidPlus } from 'solid-icons/fa';
+
 interface ScheduleDayProps {
   date: Date;
 }
@@ -9,11 +12,12 @@ export default function ScheduleDay(props: ScheduleDayProps) {
     <div class="flex flex-col p-4 min-w-max">
       <h2 class="text-xl font-semibold">{days[props.date.getDay()]}</h2>
       <span class="text-gray-500">{props.date.getDate()}</span>
-      <div class="divider" ></div>
+      <div class="divider text-neutral-500"></div>
       <ul class="flex flex-col gap-4 items-center">
         <li class="btn btn-neutral w-full text-secondary-content">BOX - 9:00AM</li>
         <li class="btn btn-neutral w-full text-secondary-content">BJJ - 6:00PM</li>
-        <button class="btn btn-circle btn-secondary">+</button>
+        <button class="btn btn-sm btn-circle btn-secondary"><FaSolidPlus /></button>
+        <ScheduleNewClass targetDay={props.date.getDay()} dialogId={`${days[props.date.getDay()]}-dialog`} />
       </ul>
     </div>
   );

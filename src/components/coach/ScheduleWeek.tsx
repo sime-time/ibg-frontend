@@ -13,7 +13,6 @@ export default function ScheduleWeek() {
       const dif = i - today.getDay();
       const day = new Date(today);
       day.setDate(today.getDate() + dif);
-      console.log(today.getDate() + dif);
       week.push(day);
     }
 
@@ -25,7 +24,7 @@ export default function ScheduleWeek() {
   }
 
   return (
-    <div class="grid grid-cols-1 sm:grid-cols-4 xl:grid-cols-7 gap-3 w-5/6 p-6 card bg-base-100 shadow-xl">
+    <div class="grid grid-cols-1 sm:grid-cols-4 xl:grid-cols-7 gap-3 w-5/6 sm:w-11/12 xl:w-5/6 p-6 card bg-base-100 shadow-xl">
       {loadWeek()}
     </div>
   );
