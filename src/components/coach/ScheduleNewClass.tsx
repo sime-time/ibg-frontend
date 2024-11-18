@@ -5,24 +5,19 @@ import { createSignal } from "solid-js";
 
 interface ScheduleNewClassProps {
   dialogId: string;
-  targetDay: number; // week day index
+  classDate: Date;
 }
 
 export default function ScheduleNewClass(props: ScheduleNewClassProps) {
-  const currentDate = new Date();
-  const currentDay = currentDate.getDay();
-
-  // calculate the difference to the target day (negative for past days)
-  const diff = (props.targetDay - currentDay - 7) % 7;
-
-  // set the new date for this specific class
-  const classDate = new Date();
-  classDate.setDate(currentDate.getDate() + diff);
-
-  const [startTime, setStartTime] = createSignal<Date>(classDate);
-  const [endTime, setEndTime] = createSignal<Date>(classDate);
+  const [startTime, setStartTime] = createSignal<Date>(props.classDate);
+  const [endTime, setEndTime] = createSignal<Date>(props.classDate);
 
   const openDialog = () => {
+    // reset values 
+    setStartTime(props.classDate);
+    setEndTime(props.classDate);
+
+    // open dialog
     const dialog = document.getElementById(props.dialogId) as HTMLDialogElement;
     dialog.showModal();
   }

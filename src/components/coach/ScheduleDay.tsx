@@ -16,8 +16,7 @@ export default function ScheduleDay(props: ScheduleDayProps) {
       <ul class="flex flex-col gap-4 items-center">
         <li class="btn btn-neutral w-full text-secondary-content">BOX - 9:00AM</li>
         <li class="btn btn-neutral w-full text-secondary-content">BJJ - 6:00PM</li>
-        <button class="btn btn-sm btn-circle btn-secondary"><FaSolidPlus /></button>
-        <ScheduleNewClass targetDay={props.date.getDay()} dialogId={`${days[props.date.getDay()]}-dialog`} />
+        <ScheduleNewClass classDate={props.date} dialogId={`${days[props.date.getDay()]}-dialog`} />
       </ul>
     </div>
   );
