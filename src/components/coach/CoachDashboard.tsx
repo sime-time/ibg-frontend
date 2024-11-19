@@ -3,7 +3,7 @@ import { MemberTable } from "./CoachMemberTable";
 import { FaRegularCalendar, FaSolidCalendar } from 'solid-icons/fa'
 import { RiUserFacesGroupLine, RiUserFacesGroupFill } from 'solid-icons/ri'
 import { BsBarChart, BsBarChartFill } from "solid-icons/bs";
-import ScheduleWeek from "./ScheduleWeek";
+import ScheduleWeek from "../schedule/ScheduleWeek";
 
 enum View {
   Members = "members",

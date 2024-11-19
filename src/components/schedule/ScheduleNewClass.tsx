@@ -1,30 +1,13 @@
-import { FaSolidPlus } from "solid-icons/fa";
 import { IoClose } from "solid-icons/io";
-import { TbClock } from "solid-icons/tb";
-import { createSignal } from "solid-js";
+import { Accessor } from "solid-js";
 
 interface ScheduleNewClassProps {
-  dialogId: string;
-  classDate: Date;
+  date: Date;
 }
 
 export default function ScheduleNewClass(props: ScheduleNewClassProps) {
-  const [startTime, setStartTime] = createSignal<Date>(props.classDate);
-  const [endTime, setEndTime] = createSignal<Date>(props.classDate);
-
-  const openDialog = () => {
-    // reset values 
-    setStartTime(props.classDate);
-    setEndTime(props.classDate);
-
-    // open dialog
-    const dialog = document.getElementById(props.dialogId) as HTMLDialogElement;
-    dialog.showModal();
-  }
-
-  return (<>
-    <button onClick={openDialog} class="btn btn-sm btn-circle btn-secondary"><FaSolidPlus /></button>
-    <dialog id={props.dialogId} class="modal">
+  return (
+    <dialog id="new-class-dialog" class="modal">
 
       <form method="dialog" class="modal-backdrop">
         <button>close when clicked outside</button>
@@ -37,7 +20,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"><IoClose class="size-4" /></button>
         </form>
 
-        <h3 class="font-bold text-xl">Create New Class: {props.dialogId}</h3>
+        <h3 class="font-bold text-xl">Create New Class</h3>
         <p class="py-2 text-wrap">Fill in the fields and click save to create a new class.</p>
 
         {/* Start time */}
@@ -45,11 +28,13 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           <label class="label">
             <span class="label-text">Start Time</span>
           </label>
+          <input type="datetime" value={props.date.getDay()}></input>
+
 
         </div>
 
       </div>
 
     </dialog>
-  </>);
+  );
 }
