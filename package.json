@@ -11,6 +11,7 @@
     "@solidjs/router": "^0.14.10",
     "@solidjs/start": "^1.0.9",
     "autoprefixer": "^10.4.19",
+    "flatpickr": "^4.6.13",
     "pocketbase": "^0.21.5",
     "postcss": "^8.4.38",
     "solid-icons": "^1.1.0",
