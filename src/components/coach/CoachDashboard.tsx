@@ -12,7 +12,7 @@ enum View {
 }
 
 export default function CoachDashboard() {
-  const [currentView, setCurrentView] = createSignal(View.Scheduler);
+  const [currentView, setCurrentView] = createSignal(View.Members);
 
   return (
     <div class="w-full flex justify-center mb-20">
