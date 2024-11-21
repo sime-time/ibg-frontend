@@ -72,3 +72,36 @@ export const LoginSchema = v.object({
 });
 export type LoginData = v.InferOutput<typeof LoginSchema>;
 
+export const ClassSchema = v.pipe(
+  v.object({
+    name: v.pipe(
+      v.string('Your name must be in text.'),
+      v.nonEmpty('Please enter your name.'),
+    ),
+    email: v.pipe(
+      v.string('Your email must be a string of characters.'),
+      v.nonEmpty('Please enter your email.'),
+      v.email('The email address is formatted incorrectly.')
+    ),
+    emailVisibility: v.literal(true),
+    password: v.pipe(
+      v.string('Your password must be a string of characters.'),
+      v.nonEmpty('Please enter your password'),
+      v.minLength(8, 'Your password must have 8 characters or more.')
+    ),
+    passwordConfirm: v.pipe(
+      v.string('Your password must be a string of characters.'),
+      v.nonEmpty('Please enter your password'),
+      v.minLength(8, 'Your password must have 8 characters or more.')
+    )
+  }),
+  v.forward(
+    v.partialCheck(
+      [['password'], ['passwordConfirm']],
+      (input) => input.password === input.passwordConfirm,
+      'The passwords do not match.'
+    ),
+    ['password']
+  ),
+);
+export type ClassData = v.InferOutput<typeof ClassSchema>;

@@ -7,6 +7,7 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.css";
 
 export default function ScheduleNewClass() {
+  const [classDate, setClassDate] = createSignal<Date>(new Date());
   const [startHour, setStartHour] = createSignal<number>(0);
   const [startMinute, setStartMinute] = createSignal<number>(0);
   const [endHour, setEndHour] = createSignal<number>(0);
@@ -36,18 +37,18 @@ export default function ScheduleNewClass() {
       appendTo: dialogRef,
       enableTime: true,
       noCalendar: true,
-      dateFormat: "h:i K",
-      minDate: today,
       enableSeconds: false,
+      defaultDate: today.setHours(8, 0),
+      dateFormat: "h:i K",
     });
 
     flatpickr(endRef, {
       appendTo: dialogRef,
       enableTime: true,
       noCalendar: true,
-      dateFormat: "h:i K",
-      minDate: today,
       enableSeconds: false,
+      defaultDate: today.setHours(9, 0),
+      dateFormat: "h:i K",
     });
   });
 
@@ -78,11 +79,16 @@ export default function ScheduleNewClass() {
             <span class="label-text">Program</span>
           </label>
           <div class="flex">
-            <select class="select select-bordered w-full grow">
+            <select
+              class="select select-bordered w-full grow"
+              onChange={(e) => {
+                console.log("Program: ", e.target.value);
+              }}
+            >
               <option disabled selected>Choose a program</option>
-              <option>Boxing</option>
-              <option>Jiu Jitsu</option>
-              <option>MMA</option>
+              <option value="BOX">Boxing</option>
+              <option value="BJJ">Jiu Jitsu</option>
+              <option value="MMA">MMA</option>
             </select>
           </div>
         </div>
@@ -92,7 +98,7 @@ export default function ScheduleNewClass() {
           <label class="label">
             <span class="label-text">Date</span>
           </label>
-          <label class="input input-bordered flex items-center gap-2">
+          <div class="input input-bordered flex items-center gap-2">
             <BsCalendarEvent class="w-4 h-4 opacity-70" />
             <input
               onInput={(event) => {
@@ -100,9 +106,8 @@ export default function ScheduleNewClass() {
               }}
               ref={dateRef}
               type="datetime"
-              class="grow"
             />
-          </label>
+          </div>
         </div>
 
         {/* Start time picker */}
@@ -114,10 +119,10 @@ export default function ScheduleNewClass() {
             <TbClock class="w-4 h-4 opacity-70" />
             <input
               onInput={(event) => {
-                console.log("Start: ", event.currentTarget.value);
+                console.log("Start Time: ", event.currentTarget.value);
               }}
               ref={startRef}
-              type="text"
+              type="datetime"
               class="grow"
             />
           </label>
@@ -132,10 +137,10 @@ export default function ScheduleNewClass() {
             <TbClockX class="w-4 h-4 opacity-70" />
             <input
               onInput={(event) => {
-                console.log("End: ", event.currentTarget.value);
+                console.log("End Time: ", event.currentTarget.value);
               }}
               ref={endRef}
-              type="datetime"
+              type="text"
               class="grow"
             />
           </label>
@@ -147,7 +152,7 @@ export default function ScheduleNewClass() {
             <span class="label-text">Recurring Weekly?</span>
           </label>
           <div class="flex justify-between items-center input input-bordered">
-            <div class="flex items-center gap-4 ">
+            <div class="flex items-center gap-4">
               <FaSolidArrowRotateRight class="w-4 h-4 opacity-70" />
               <input type="checkbox" class="toggle toggle-success" checked={recurring()} onChange={() => setRecurring(!recurring())} />
             </div>

@@ -64,8 +64,11 @@ export default function SignUp() {
     <main class="flex items-start justify-center min-h-full mt-4">
       <div class="card bg-base-100 shadow-xl w-fit md:w-96">
         <div class="card-body">
+
           <h1 class="card-title text-2xl font-bold mb-3">Sign Up</h1>
+
           <form onSubmit={handleSignUp} class="flex flex-col gap-4">
+
             <div class="form-control">
               <label class="label">
                 <span class="label-text">First Name</span>
