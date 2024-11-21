@@ -39,7 +39,9 @@ export default function ScheduleNewClass() {
       noCalendar: true,
       enableSeconds: false,
       defaultDate: today.setHours(8, 0),
-      dateFormat: "h:i K",
+      dateFormat: "H:i",
+      altInput: true,
+      altFormat: "h:i K", // user sees this format 
     });
 
     flatpickr(endRef, {
@@ -48,12 +50,14 @@ export default function ScheduleNewClass() {
       noCalendar: true,
       enableSeconds: false,
       defaultDate: today.setHours(9, 0),
-      dateFormat: "h:i K",
+      dateFormat: "H:i",
+      altInput: true,
+      altFormat: "h:i K", // user sees this format 
     });
   });
 
   const handleSave = () => {
-
+    console.log("Saved date: ", classDate());
   };
 
   return (
@@ -81,8 +85,8 @@ export default function ScheduleNewClass() {
           <div class="flex">
             <select
               class="select select-bordered w-full grow"
-              onChange={(e) => {
-                console.log("Program: ", e.target.value);
+              onChange={(event) => {
+                console.log("Program: ", event.target.value);
               }}
             >
               <option disabled selected>Choose a program</option>
@@ -102,7 +106,16 @@ export default function ScheduleNewClass() {
             <BsCalendarEvent class="w-4 h-4 opacity-70" />
             <input
               onInput={(event) => {
-                console.log(event.currentTarget.value);
+                const input = event.currentTarget.value;
+
+                // convert the input text into a date object 
+                const selectedDate = new Date(input);
+                if (!isNaN(selectedDate.getDate())) {
+                  setClassDate(selectedDate);
+                } else {
+                  console.error("Invalid date");
+                }
+
               }}
               ref={dateRef}
               type="datetime"
@@ -119,7 +132,19 @@ export default function ScheduleNewClass() {
             <TbClock class="w-4 h-4 opacity-70" />
             <input
               onInput={(event) => {
-                console.log("Start Time: ", event.currentTarget.value);
+                const input = event.currentTarget.value;
+
+                // parse the colon -> (hours:minutes)
+                const time = input.split(":");
+                const hour: number = parseInt(time[0], 10);
+                const minute: number = parseInt(time[1], 10);
+
+                if (!isNaN(hour) && !isNaN(minute)) {
+                  setStartHour(hour);
+                  setStartMinute(minute);
+                } else {
+                  console.error("Invalid start time");
+                }
               }}
               ref={startRef}
               type="datetime"
@@ -137,7 +162,19 @@ export default function ScheduleNewClass() {
             <TbClockX class="w-4 h-4 opacity-70" />
             <input
               onInput={(event) => {
-                console.log("End Time: ", event.currentTarget.value);
+                const input = event.currentTarget.value;
+
+                // parse the colon -> (hours:minutes)
+                const time = input.split(":");
+                const hour: number = parseInt(time[0], 10);
+                const minute: number = parseInt(time[1], 10);
+
+                if (!isNaN(hour) && !isNaN(minute)) {
+                  setEndHour(hour);
+                  setEndMinute(minute);
+                } else {
+                  console.error("Invalid end time");
+                }
               }}
               ref={endRef}
               type="text"

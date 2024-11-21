@@ -4,10 +4,7 @@ import { Index, createSignal } from "solid-js";
 import { FaSolidPlus } from "solid-icons/fa";
 
 export default function ScheduleWeek() {
-  const [newClassDate, setNewClassDate] = createSignal<Date>(new Date());
-
-  const openDialog = () => {
-    // open dialog
+  const openNewClass = () => {
     const dialog = document.getElementById("new-class-dialog") as HTMLDialogElement;
     dialog.showModal();
   }
@@ -36,7 +33,7 @@ export default function ScheduleWeek() {
       {loadWeek()}
       <div class="col-span-1 xl:col-span-7 flex flex-col gap-2 items-center justify-center rounded-lg py-6 border border-neutral">
         <h2 class="text-lg font-semibold text-center">New Class</h2>
-        <button onClick={openDialog} class="btn btn-secondary btn-circle btn-lg xl:btn-md"><FaSolidPlus /> </button>
+        <button onClick={openNewClass} class="btn btn-secondary btn-circle btn-lg xl:btn-md"><FaSolidPlus /> </button>
       </div>
     </div>
     <ScheduleNewClass />
