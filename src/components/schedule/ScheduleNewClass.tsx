@@ -1,8 +1,11 @@
 import { IoClose } from "solid-icons/io";
 import { TbClock, TbClockX } from "solid-icons/tb";
-import { FaSolidArrowRotateRight, FaSolidHandFist } from 'solid-icons/fa'
+import { FaSolidArrowRotateRight } from 'solid-icons/fa'
 import { BsCalendarEvent } from 'solid-icons/bs'
-import { Show, onMount, createSignal, createEffect } from "solid-js";
+import { Show, onMount, createSignal } from "solid-js";
+import { usePocket } from "~/context/PocketbaseContext";
+import { ClassData, ClassSchema } from "~/types/ValidationType";
+import * as v from "valibot";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.css";
 
@@ -16,6 +19,10 @@ export default function ScheduleNewClass() {
   const [saveDisabled, setSaveDisabled] = createSignal<boolean>(false);
   const [error, setError] = createSignal("");
 
+  const martialArtShortNames = ["BOX", "BJJ", "MMA"];
+  const { getMartialArtId, createClass } = usePocket();
+  const [martialArt, setMartialArt] = createSignal("");
+
   let dialogRef!: HTMLDialogElement;
   let dateRef!: HTMLInputElement;
   let startRef!: HTMLInputElement;
@@ -23,6 +30,11 @@ export default function ScheduleNewClass() {
 
 
   onMount(() => {
+    resetNewClass();
+  });
+
+  const resetNewClass = () => {
+    setRecurring(true);
     const today = new Date();
     today.setHours(0, 0, 0);
 
@@ -54,10 +66,52 @@ export default function ScheduleNewClass() {
       altInput: true,
       altFormat: "h:i K", // user sees this format 
     });
-  });
+  }
 
-  const handleSave = () => {
-    console.log("Saved date: ", classDate());
+  const handleSave = async (e: Event) => {
+    e.preventDefault()
+    setError("");
+    setSaveDisabled(true);
+
+    const martialArtId = await getMartialArtId(martialArt());
+
+    const newClass: ClassData = {
+      "date": classDate(),
+      "martial_art_id": martialArtId,
+      "is_recurring": recurring(),
+      "active": true,
+      "start_hour": startHour(),
+      "start_minute": startMinute(),
+      "end_hour": endHour(),
+      "end_minute": endMinute(),
+    };
+
+    try {
+      // validate user input 
+      const validClass = v.parse(ClassSchema, newClass);
+
+      const successful: boolean = await createClass(validClass);
+
+      if (successful) {
+        console.log("Class created successfully!");
+        resetNewClass();
+        const dialog = document.getElementById("new-class-dialog") as HTMLDialogElement;
+        dialog.close();
+      } else {
+        throw new Error("server_error");
+      }
+
+    } catch (err) {
+      if (err instanceof v.ValiError) {
+        setError(err.issues[0].message);
+      } else if (err instanceof Error && err.message == "server_error") {
+        setError("Internal server error. Try again later.")
+      } else {
+        setError("New class data is invalid.");
+      }
+    } finally {
+      setSaveDisabled(false);
+    }
   };
 
   return (
@@ -86,13 +140,13 @@ export default function ScheduleNewClass() {
             <select
               class="select select-bordered w-full grow"
               onChange={(event) => {
-                console.log("Program: ", event.target.value);
+                setMartialArt(event.target.value);
               }}
             >
               <option disabled selected>Choose a program</option>
-              <option value="BOX">Boxing</option>
-              <option value="BJJ">Jiu Jitsu</option>
-              <option value="MMA">MMA</option>
+              <option value={martialArtShortNames[0]}>Boxing</option>
+              <option value={martialArtShortNames[1]}>Jiu Jitsu</option>
+              <option value={martialArtShortNames[2]}>MMA</option>
             </select>
           </div>
         </div>

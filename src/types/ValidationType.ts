@@ -74,34 +74,45 @@ export type LoginData = v.InferOutput<typeof LoginSchema>;
 
 export const ClassSchema = v.pipe(
   v.object({
-    name: v.pipe(
-      v.string('Your name must be in text.'),
-      v.nonEmpty('Please enter your name.'),
+    martial_art_id: v.pipe(
+      v.string(),
+      v.nonEmpty('You must choose a program.'),
     ),
-    email: v.pipe(
-      v.string('Your email must be a string of characters.'),
-      v.nonEmpty('Please enter your email.'),
-      v.email('The email address is formatted incorrectly.')
+    date: v.date('You must select a class date'),
+    start_hour: v.pipe(
+      v.number(),
+      v.integer(),
+      v.toMinValue(0),
+      v.toMaxValue(24),
     ),
-    emailVisibility: v.literal(true),
-    password: v.pipe(
-      v.string('Your password must be a string of characters.'),
-      v.nonEmpty('Please enter your password'),
-      v.minLength(8, 'Your password must have 8 characters or more.')
+    start_minute: v.pipe(
+      v.number(),
+      v.integer(),
+      v.toMinValue(0),
+      v.toMaxValue(59),
     ),
-    passwordConfirm: v.pipe(
-      v.string('Your password must be a string of characters.'),
-      v.nonEmpty('Please enter your password'),
-      v.minLength(8, 'Your password must have 8 characters or more.')
-    )
+    end_hour: v.pipe(
+      v.number(),
+      v.integer(),
+      v.minValue(0),
+      v.maxValue(24),
+    ),
+    end_minute: v.pipe(
+      v.number(),
+      v.integer(),
+      v.toMinValue(0),
+      v.toMaxValue(59),
+    ),
+    is_recurring: v.boolean(),
+    active: v.boolean(),
   }),
   v.forward(
     v.partialCheck(
-      [['password'], ['passwordConfirm']],
-      (input) => input.password === input.passwordConfirm,
-      'The passwords do not match.'
+      [['start_hour'], ['end_hour']],
+      (input) => input.start_hour <= input.end_hour,
+      'The class start time must occur before the end time.'
     ),
-    ['password']
+    ['start_hour']
   ),
 );
 export type ClassData = v.InferOutput<typeof ClassSchema>;

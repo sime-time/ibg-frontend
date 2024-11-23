@@ -1,5 +1,6 @@
 import { Accessor, createContext, useContext, createSignal, createEffect, ParentProps, createResource } from "solid-js";
 import Pocketbase, { AuthModel, RecordModel, RecordListOptions, RecordFullListOptions } from "pocketbase";
+import { ClassData } from "~/types/ValidationType";
 
 interface PocketbaseContextProps {
   token: Accessor<string>,
@@ -20,6 +21,8 @@ interface PocketbaseContextProps {
   getMembers: () => Promise<MemberRecord[]>,
   deleteMember: (memberId: string) => Promise<void>,
   createMember: (newMember: MemberData, newContact: ContactInfo) => Promise<boolean>,
+  getMartialArtId: (shortname: string) => Promise<string>,
+  createClass: (newClass: ClassData) => Promise<boolean>,
 }
 
 export interface MemberData {
@@ -301,7 +304,26 @@ export function PocketbaseContextProvider(props: ParentProps) {
     return false;
   };
 
+  // client side needs to use the shortname so the database id is not exposed 
+  const getMartialArtId = async (shortname: string) => {
+    try {
+      const record = await pb.collection("martial_art").getFirstListItem(`shortname="${shortname}"`)
+      return record.id;
+    } catch (err) {
+      console.error("Could not find martial art id: ", err);
+      return "";
+    }
 
+  };
+
+  const createClass = async (newClass: ClassData) => {
+    if (!userIsAdmin()) {
+      return false;
+    }
+    await pb.collection("class").create(newClass);
+    console.log("New class created!");
+    return true;
+  };
 
   const testPocketbase = async () => {
     try {
@@ -315,7 +337,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, createClass }} >
       {props.children}
     </PocketbaseContext.Provider>
   );
