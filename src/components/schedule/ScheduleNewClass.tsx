@@ -40,7 +40,6 @@ export default function ScheduleNewClass() {
 
     flatpickr(dateRef, {
       appendTo: dialogRef,
-      minDate: today,
       defaultDate: today,
       dateFormat: "D F j, Y"
     });
@@ -156,7 +155,7 @@ export default function ScheduleNewClass() {
           <label class="label">
             <span class="label-text">Date</span>
           </label>
-          <div class="input input-bordered flex items-center gap-2">
+          <div class="input input-bordered flex items-center gap-4">
             <BsCalendarEvent class="w-4 h-4 opacity-70" />
             <input
               onInput={(event) => {
@@ -182,7 +181,7 @@ export default function ScheduleNewClass() {
           <label class="label">
             <span class="label-text">Start Time</span>
           </label>
-          <label class="input input-bordered flex items-center gap-2">
+          <div class="input input-bordered flex items-center justify-start">
             <TbClock class="w-4 h-4 opacity-70" />
             <input
               onInput={(event) => {
@@ -204,7 +203,7 @@ export default function ScheduleNewClass() {
               type="datetime"
               class="grow"
             />
-          </label>
+          </div>
         </div>
 
         {/* End time picker */}
@@ -212,7 +211,7 @@ export default function ScheduleNewClass() {
           <label class="label">
             <span class="label-text">End Time</span>
           </label>
-          <label class="input input-bordered flex items-center gap-2">
+          <div class="input input-bordered flex items-center justify-start">
             <TbClockX class="w-4 h-4 opacity-70" />
             <input
               onInput={(event) => {
@@ -234,7 +233,7 @@ export default function ScheduleNewClass() {
               type="text"
               class="grow"
             />
-          </label>
+          </div>
         </div>
 
         {/* Recurring? */}
