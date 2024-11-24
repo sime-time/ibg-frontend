@@ -74,11 +74,17 @@ export type LoginData = v.InferOutput<typeof LoginSchema>;
 
 export const ClassSchema = v.pipe(
   v.object({
-    martial_art_id: v.pipe(
+    martial_art: v.pipe(
       v.string(),
       v.nonEmpty('You must choose a program.'),
     ),
     date: v.date('You must select a class date'),
+    week_day: v.pipe(
+      v.number(),
+      v.integer(),
+      v.toMinValue(0),
+      v.toMaxValue(6),
+    ),
     start_hour: v.pipe(
       v.number(),
       v.integer(),

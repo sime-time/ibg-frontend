@@ -23,6 +23,8 @@ interface PocketbaseContextProps {
   createMember: (newMember: MemberData, newContact: ContactInfo) => Promise<boolean>,
   getMartialArtId: (shortname: string) => Promise<string>,
   createClass: (newClass: ClassData) => Promise<boolean>,
+  getClasses: () => Promise<ClassRecord[]>,
+  getClassesFromDay: (day: number) => Promise<ClassRecord[]>,
 }
 
 export interface MemberData {
@@ -57,6 +59,19 @@ export interface MemberRecord extends RecordModel {
   program: string;
   phone_number: string;
   stripe_customer_id: string;
+}
+
+export interface ClassRecord extends RecordModel {
+  id: string;
+  date: Date;
+  martial_art: string;
+  is_recurring: boolean;
+  active: boolean;
+  start_hour: number;
+  start_minute: number;
+  end_hour: number;
+  end_minute: number;
+  week_day: number;
 }
 
 const PocketbaseContext = createContext<PocketbaseContextProps>();
@@ -307,22 +322,12 @@ export function PocketbaseContextProvider(props: ParentProps) {
   // client side needs to use the shortname so the database id is not exposed 
   const getMartialArtId = async (shortname: string) => {
     try {
-      const record = await pb.collection("martial_art").getFirstListItem(`shortname="${shortname}"`)
+      const record = await pb.collection("martial_art").getFirstListItem(`shortname="${shortname}"`);
       return record.id;
     } catch (err) {
       console.error("Could not find martial art id: ", err);
       return "";
     }
-
-  };
-
-  const createClass = async (newClass: ClassData) => {
-    if (!userIsAdmin()) {
-      return false;
-    }
-    await pb.collection("class").create(newClass);
-    console.log("New class created!");
-    return true;
   };
 
   const testPocketbase = async () => {
@@ -335,9 +340,39 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
+  const createClass = async (newClass: ClassData) => {
+    if (!userIsAdmin()) {
+      return false;
+    }
+    await pb.collection("class").create(newClass);
+    console.log("New class created!");
+    return true;
+  };
+
+  const getClasses = async () => {
+    try {
+      const classes = await pb.collection("class").getFullList<ClassRecord>();
+      return classes;
+    } catch (err) {
+      console.error("Error fetching classes: ", err);
+      return [];
+    }
+  };
+
+  const getClassesFromDay = async (day: number) => {
+    // get all classes that occur on this day of the week
+    try {
+      const classes = await pb.collection("class").getFullList<ClassRecord>(100);
+      return classes;
+    } catch (err) {
+      console.error("Error fetching classes", err);
+      return [];
+    }
+  };
+
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, createClass }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, createClass, getClasses, getClassesFromDay }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

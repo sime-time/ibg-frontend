@@ -9,7 +9,11 @@ import * as v from "valibot";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.css";
 
-export default function ScheduleNewClass() {
+interface ScheduleNewClassProps {
+  refetch: () => void;
+}
+
+export default function ScheduleNewClass(props: ScheduleNewClassProps) {
   const [classDate, setClassDate] = createSignal<Date>(new Date());
   const [startHour, setStartHour] = createSignal<number>(0);
   const [startMinute, setStartMinute] = createSignal<number>(0);
@@ -43,6 +47,7 @@ export default function ScheduleNewClass() {
       defaultDate: today,
       dateFormat: "D F j, Y"
     });
+    setClassDate(today);
 
     flatpickr(startRef, {
       appendTo: dialogRef,
@@ -54,6 +59,8 @@ export default function ScheduleNewClass() {
       altInput: true,
       altFormat: "h:i K", // user sees this format 
     });
+    setStartHour(8);
+    setStartMinute(0);
 
     flatpickr(endRef, {
       appendTo: dialogRef,
@@ -65,6 +72,8 @@ export default function ScheduleNewClass() {
       altInput: true,
       altFormat: "h:i K", // user sees this format 
     });
+    setEndHour(9);
+    setStartMinute(0);
   }
 
   const handleSave = async (e: Event) => {
@@ -72,11 +81,10 @@ export default function ScheduleNewClass() {
     setError("");
     setSaveDisabled(true);
 
-    const martialArtId = await getMartialArtId(martialArt());
-
     const newClass: ClassData = {
       "date": classDate(),
-      "martial_art_id": martialArtId,
+      "week_day": classDate().getDay(),
+      "martial_art": martialArt(),
       "is_recurring": recurring(),
       "active": true,
       "start_hour": startHour(),
@@ -110,6 +118,7 @@ export default function ScheduleNewClass() {
       }
     } finally {
       setSaveDisabled(false);
+      props.refetch();
     }
   };
 
@@ -144,7 +153,7 @@ export default function ScheduleNewClass() {
             >
               <option disabled selected>Choose a program</option>
               <option value={martialArtShortNames[0]}>Boxing</option>
-              <option value={martialArtShortNames[1]}>Jiu Jitsu</option>
+              <option value={martialArtShortNames[1]}>Jiu-Jitsu</option>
               <option value={martialArtShortNames[2]}>MMA</option>
             </select>
           </div>
@@ -236,7 +245,7 @@ export default function ScheduleNewClass() {
           </div>
         </div>
 
-        {/* Recurring? */}
+        {/* Recurring? 
         <div class="form-control">
           <label class="label">
             <span class="label-text">Recurring Weekly?</span>
@@ -249,6 +258,7 @@ export default function ScheduleNewClass() {
             <span class="label-text justify-self-end">{recurring() ? "Every week" : "One-time"}</span>
           </div>
         </div>
+        */}
 
         <Show when={error()}>
           <p class="text-error mt-3">{error()}</p>
