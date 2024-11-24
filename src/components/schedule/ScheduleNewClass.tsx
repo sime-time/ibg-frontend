@@ -243,9 +243,9 @@ export default function ScheduleNewClass() {
             <span class="label-text">Recurring Weekly?</span>
           </label>
           <div class="flex justify-between items-center input input-bordered">
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-5">
               <FaSolidArrowRotateRight class="w-4 h-4 opacity-70" />
-              <input type="checkbox" class="toggle toggle-success" checked={recurring()} onChange={() => setRecurring(!recurring())} />
+              <input type="checkbox" class="checkbox checkbox-success" checked={recurring()} onChange={() => setRecurring(!recurring())} />
             </div>
             <span class="label-text justify-self-end">{recurring() ? "Every week" : "One-time"}</span>
           </div>

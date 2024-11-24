@@ -108,8 +108,16 @@ export const ClassSchema = v.pipe(
   }),
   v.forward(
     v.partialCheck(
-      [['start_hour'], ['end_hour']],
-      (input) => input.start_hour <= input.end_hour,
+      [['start_hour'], ['end_hour'], ['start_minute'], ['end_minute']],
+      (input) => {
+        if (input.start_hour < input.end_hour) {
+          return true
+        } else if (input.start_hour === input.end_hour && input.start_minute <= input.end_minute) {
+          return true
+        } else { // input.start_hour > input.end_hour
+          return false
+        }
+      },
       'The class start time must occur before the end time.'
     ),
     ['start_hour']
