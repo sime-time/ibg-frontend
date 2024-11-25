@@ -1,9 +1,9 @@
 import { IoClose } from "solid-icons/io";
 import { TbClock, TbClockX } from "solid-icons/tb";
-import { FaSolidArrowRotateRight } from 'solid-icons/fa'
-import { BsCalendarEvent } from 'solid-icons/bs'
-import { Show, createSignal, createEffect, Accessor, Setter } from "solid-js";
-import { usePocket } from "~/context/PocketbaseContext";
+import { FaSolidHandFist } from 'solid-icons/fa'
+import { BsCalendarEvent } from 'solid-icons/bs';
+import { For, Show, createSignal, createEffect, Accessor, Setter } from "solid-js";
+import { usePocket, MartialArtRecord } from "~/context/PocketbaseContext";
 import { ClassData, ClassSchema } from "~/types/ValidationType";
 import * as v from "valibot";
 import flatpickr from "flatpickr";
@@ -11,11 +11,20 @@ import "flatpickr/dist/flatpickr.css";
 
 interface ScheduleEditClassProps {
   refetch: () => void;
+  martialArtList: Accessor<MartialArtRecord[]>
   classId: Accessor<string>;
+  openEdit: Accessor<boolean>;
+  setOpenEdit: Setter<boolean>;
 }
 
 export default function ScheduleEditClass(props: ScheduleEditClassProps) {
+  const { getClass, updateClass } = usePocket();
+
+  const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  const [martialArt, setMartialArt] = createSignal("");
   const [classDate, setClassDate] = createSignal<Date>(new Date());
+  const [weekDay, setWeekDay] = createSignal<number>(-1);
   const [startHour, setStartHour] = createSignal<number>(0);
   const [startMinute, setStartMinute] = createSignal<number>(0);
   const [endHour, setEndHour] = createSignal<number>(0);
@@ -23,78 +32,61 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
   const [saveDisabled, setSaveDisabled] = createSignal<boolean>(false);
   const [error, setError] = createSignal("");
 
-  const { createClass } = usePocket();
-
-  const martialArtShortNames = ["BOX", "BJJ", "MMA"];
-  const [martialArt, setMartialArt] = createSignal("");
-
   let dialogRef!: HTMLDialogElement;
-  let dateRef!: HTMLInputElement;
   let startRef!: HTMLInputElement;
   let endRef!: HTMLInputElement;
 
   createEffect(() => {
     // reset dialog form when dialog is opened or closed
-    if (dialogRef) {
-      dialogRef.addEventListener('open', refreshEditClass);
-      dialogRef.addEventListener('close', refreshEditClass);
-
-      // cleanup
-      return () => {
-        dialogRef.removeEventListener('open', refreshEditClass);
-        dialogRef.removeEventListener('close', refreshEditClass);
-      };
+    if (props.openEdit()) {
+      refreshEditClass();
     }
   });
 
-
-  const refreshEditClass = () => {
+  const refreshEditClass = async () => {
+    // use the class id to find the date and time 
+    const classToEdit = await getClass(props.classId());
+    setClassDate(new Date());
     const today = new Date();
     today.setHours(0, 0, 0);
-
-    // use the class id to find the date and time 
-    flatpickr(dateRef, {
-      appendTo: dialogRef,
-      defaultDate: today,
-      dateFormat: "D F j, Y"
-    });
-    setClassDate(today);
+    setStartHour(classToEdit.start_hour);
+    setStartMinute(classToEdit.start_minute);
+    setEndHour(classToEdit.end_hour);
+    setEndMinute(classToEdit.end_minute);
 
     flatpickr(startRef, {
       appendTo: dialogRef,
       enableTime: true,
       noCalendar: true,
       enableSeconds: false,
-      defaultDate: today.setHours(8, 0),
+      defaultDate: today.setHours(startHour(), startMinute()),
       dateFormat: "H:i",
       altInput: true,
       altFormat: "h:i K", // user sees this format 
     });
-    setStartHour(8);
-    setStartMinute(0);
 
     flatpickr(endRef, {
       appendTo: dialogRef,
       enableTime: true,
       noCalendar: true,
       enableSeconds: false,
-      defaultDate: today.setHours(9, 0),
+      defaultDate: classDate().setHours(endHour(), endMinute()),
       dateFormat: "H:i",
       altInput: true,
       altFormat: "h:i K", // user sees this format 
     });
-    setEndHour(9);
-    setStartMinute(0);
   }
 
   const handleSave = async (e: Event) => {
     e.preventDefault()
     setError("");
     setSaveDisabled(true);
+    const today = new Date();
+    today.setHours(0, 0, 0);
 
-    const newClass: ClassData = {
-      "date": classDate(),
-      "week_day": classDate().getDay(),
+    const updatedClass: ClassData = {
+      "date": today,
+      "week_day": weekDay(),
       "martial_art": martialArt(),
       "is_recurring": true,
       "active": true,
@@ -106,17 +98,21 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
 
     try {
       // validate user input 
-      const validClass = v.parse(ClassSchema, newClass);
+      const validClass = v.parse(ClassSchema, updatedClass);
 
-      const successful: boolean = await createClass(validClass);
+      console.log(validClass.week_day);
+
+      const successful: boolean = await updateClass(props.classId(), validClass);
+
       if (successful) {
-        console.log("Class created successfully!");
-        const dialog = document.getElementById("new-class-dialog") as HTMLDialogElement;
+        console.log("Class updated successfully!");
+        props.setOpenEdit(false);
+        const dialog = document.getElementById("edit-class-dialog") as HTMLDialogElement;
         dialog.close();
+        props.refetch();
       } else {
         throw new Error("server_error");
       }
-
     } catch (err) {
       if (err instanceof v.ValiError) {
         setError(err.issues[0].message);
@@ -127,7 +123,6 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
       }
     } finally {
       setSaveDisabled(false);
-      props.refetch();
     }
   };
 
@@ -135,19 +130,19 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
     <dialog id="edit-class-dialog" ref={dialogRef} class="modal">
 
       <form method="dialog" class="modal-backdrop">
-        <button>close when clicked outside</button>
+        <button onClick={() => props.setOpenEdit(false)}>close when clicked outside</button>
       </form>
 
       <div class="modal-box">
 
         {/* Close button */}
         <form method="dialog">
-          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"><IoClose class="size-4" /></button>
+          <button onClick={() => props.setOpenEdit(false)} class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"><IoClose class="size-4" /></button>
         </form>
 
         {/* Title */}
         <h3 class="font-bold text-xl">Edit Class</h3>
-        <p class="py-2 text-wrap">Fill in the fields and click save to make changes to this class.</p>
+        <p class="py-2 text-wrap">Change the field inputs and click save to update this class.</p>
         <p>{props.classId()}</p>
 
         {/* Program selector */}
@@ -155,44 +150,44 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
           <label class="label">
             <span class="label-text">Program</span>
           </label>
-          <div class="flex">
+          <div class="flex items-center input input-bordered">
+            <FaSolidHandFist class="w-4 h-4 opacity-70" />
             <select
-              class="select select-bordered w-full grow"
+              class="select select-ghost w-full grow outline-none focus:outline-none border-none focus:border-none bg-transparent"
               onChange={(event) => {
                 setMartialArt(event.target.value);
               }}
             >
               <option disabled selected>Choose a program</option>
-              <option value={martialArtShortNames[0]}>Boxing</option>
-              <option value={martialArtShortNames[1]}>Jiu-Jitsu</option>
-              <option value={martialArtShortNames[2]}>MMA</option>
+              <For each={props.martialArtList()}>
+                {(ma, index) => (
+                  <option value={ma.shortname}>{ma.name}</option>
+                )}
+              </For>
             </select>
           </div>
         </div>
 
-        {/* Date picker */}
+        {/* Day picker */}
         <div class="form-control">
           <label class="label">
-            <span class="label-text">Date</span>
+            <span class="label-text">Week Day</span>
           </label>
-          <div class="input input-bordered flex items-center gap-4">
+          <div class="flex items-center input input-bordered">
             <BsCalendarEvent class="w-4 h-4 opacity-70" />
-            <input
-              onInput={(event) => {
-                const input = event.currentTarget.value;
-
-                // convert the input text into a date object 
-                const selectedDate = new Date(input);
-                if (!isNaN(selectedDate.getDate())) {
-                  setClassDate(selectedDate);
-                } else {
-                  console.error("Invalid date");
-                }
-
+            <select
+              class="select select-ghost w-full grow outline-none focus:outline-none border-none focus:border-none bg-transparent"
+              onChange={(event) => {
+                setWeekDay(Number(event.target.value));
               }}
-              ref={dateRef}
-              type="datetime"
-            />
+            >
+              <option disabled selected>Choose a week day</option>
+              <For each={weekdays}>
+                {(name, index) => (
+                  <option value={index()}>{name}</option>
+                )}
+              </For>
+            </select>
           </div>
         </div>
 
@@ -204,6 +199,7 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
           <div class="input input-bordered flex items-center justify-start">
             <TbClock class="w-4 h-4 opacity-70" />
             <input
+              class="border-none outline-none focus:border-none focus:outline-none"
               onInput={(event) => {
                 const input = event.currentTarget.value;
 
@@ -220,8 +216,7 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
                 }
               }}
               ref={startRef}
-              type="datetime"
-              class="grow"
+              type="text"
             />
           </div>
         </div>
@@ -234,6 +229,7 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
           <div class="input input-bordered flex items-center justify-start">
             <TbClockX class="w-4 h-4 opacity-70" />
             <input
+              class="border-none outline-none focus:border-none focus:outline-none"
               onInput={(event) => {
                 const input = event.currentTarget.value;
 
@@ -251,7 +247,6 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
               }}
               ref={endRef}
               type="text"
-              class="grow"
             />
           </div>
         </div>

@@ -82,20 +82,20 @@ export const ClassSchema = v.pipe(
     week_day: v.pipe(
       v.number(),
       v.integer(),
-      v.toMinValue(0),
-      v.toMaxValue(6),
+      v.minValue(0, 'You must choose a week day.'),
+      v.maxValue(6),
     ),
     start_hour: v.pipe(
       v.number(),
       v.integer(),
-      v.toMinValue(0),
-      v.toMaxValue(24),
+      v.minValue(0),
+      v.maxValue(24),
     ),
     start_minute: v.pipe(
       v.number(),
       v.integer(),
-      v.toMinValue(0),
-      v.toMaxValue(59),
+      v.minValue(0),
+      v.maxValue(59),
     ),
     end_hour: v.pipe(
       v.number(),
@@ -106,8 +106,8 @@ export const ClassSchema = v.pipe(
     end_minute: v.pipe(
       v.number(),
       v.integer(),
-      v.toMinValue(0),
-      v.toMaxValue(59),
+      v.minValue(0),
+      v.maxValue(59),
     ),
     is_recurring: v.boolean(),
     active: v.boolean(),

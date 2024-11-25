@@ -22,9 +22,12 @@ interface PocketbaseContextProps {
   deleteMember: (memberId: string) => Promise<void>,
   createMember: (newMember: MemberData, newContact: ContactInfo) => Promise<boolean>,
   getMartialArtId: (shortname: string) => Promise<string>,
+  getMartialArts: () => Promise<MartialArtRecord[]>,
   createClass: (newClass: ClassData) => Promise<boolean>,
+  updateClass: (classId: string, updatedClass: ClassData) => Promise<boolean>,
   getClasses: () => Promise<ClassRecord[]>,
   getClassesFromDay: (day: number) => Promise<ClassRecord[]>,
+  getClass: (id: string) => Promise<ClassRecord>,
 }
 
 export interface MemberData {
@@ -72,6 +75,12 @@ export interface ClassRecord extends RecordModel {
   end_hour: number;
   end_minute: number;
   week_day: number;
+}
+
+export interface MartialArtRecord extends RecordModel {
+  id: string;
+  name: string;
+  shortname: string;
 }
 
 const PocketbaseContext = createContext<PocketbaseContextProps>();
@@ -232,6 +241,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
+
   const refreshMember = async () => {
     // requires a valid record auth to be set 
     try {
@@ -330,6 +340,11 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
+  const getMartialArts = async () => {
+    const martialArts = await pb.collection("martial_art").getFullList<MartialArtRecord>();
+    return martialArts;
+  }
+
   const testPocketbase = async () => {
     try {
       console.log('Testing PB connection...');
@@ -347,6 +362,16 @@ export function PocketbaseContextProvider(props: ParentProps) {
     await pb.collection("class").create(newClass);
     console.log("New class created!");
     return true;
+  };
+
+  const updateClass = async (classId: string, updatedClass: ClassData) => {
+    try {
+      await pb.collection("class").update(classId, updatedClass);
+      return true;
+    } catch (err) {
+      console.error("Error updating class: ", err);
+      return false;
+    }
   };
 
   const getClasses = async () => {
@@ -370,9 +395,15 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
+  const getClass = async (id: string) => {
+    const record = await pb.collection("class").getOne<ClassRecord>(id);
+    return record;
+  }
+
+
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, createClass, getClasses, getClassesFromDay }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClassesFromDay, getClass }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

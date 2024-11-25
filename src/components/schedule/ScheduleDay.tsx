@@ -5,6 +5,7 @@ interface ScheduleDayProps {
   date: Date;
   classes: ClassRecord[] | undefined;
   setClassId: Setter<string>;
+  setOpenEdit: Setter<boolean>;
 }
 
 export default function ScheduleDay(props: ScheduleDayProps) {
@@ -23,6 +24,7 @@ export default function ScheduleDay(props: ScheduleDayProps) {
 
   const openEditClass = (id: string) => {
     props.setClassId(id);
+    props.setOpenEdit(true);
     const dialog = document.getElementById("edit-class-dialog") as HTMLDialogElement;
     dialog.showModal();
   };

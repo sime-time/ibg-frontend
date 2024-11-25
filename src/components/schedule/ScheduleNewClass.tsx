@@ -1,9 +1,9 @@
 import { IoClose } from "solid-icons/io";
 import { TbClock, TbClockX } from "solid-icons/tb";
-import { FaSolidArrowRotateRight } from 'solid-icons/fa'
-import { BsCalendarEvent } from 'solid-icons/bs'
-import { Show, onMount, createSignal, createEffect } from "solid-js";
-import { usePocket } from "~/context/PocketbaseContext";
+import { FaSolidHandFist } from 'solid-icons/fa'
+import { BsCalendarEvent } from 'solid-icons/bs';
+import { For, Show, onMount, createSignal, createEffect, Accessor } from "solid-js";
+import { usePocket, MartialArtRecord } from "~/context/PocketbaseContext";
 import { ClassData, ClassSchema } from "~/types/ValidationType";
 import * as v from "valibot";
 import flatpickr from "flatpickr";
@@ -11,24 +11,24 @@ import "flatpickr/dist/flatpickr.css";
 
 interface ScheduleNewClassProps {
   refetch: () => void;
+  martialArtList: Accessor<MartialArtRecord[]>
 }
 
 export default function ScheduleNewClass(props: ScheduleNewClassProps) {
-  const [classDate, setClassDate] = createSignal<Date>(new Date());
+  const { createClass } = usePocket();
+
+  const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  const [martialArt, setMartialArt] = createSignal("");
+  const [weekDay, setWeekDay] = createSignal<number>(-1);
   const [startHour, setStartHour] = createSignal<number>(0);
   const [startMinute, setStartMinute] = createSignal<number>(0);
   const [endHour, setEndHour] = createSignal<number>(0);
   const [endMinute, setEndMinute] = createSignal<number>(0);
-  const [recurring, setRecurring] = createSignal<boolean>(true);
   const [saveDisabled, setSaveDisabled] = createSignal<boolean>(false);
   const [error, setError] = createSignal("");
 
-  const martialArtShortNames = ["BOX", "BJJ", "MMA"];
-  const { getMartialArtId, createClass } = usePocket();
-  const [martialArt, setMartialArt] = createSignal("");
-
   let dialogRef!: HTMLDialogElement;
-  let dateRef!: HTMLInputElement;
   let startRef!: HTMLInputElement;
   let endRef!: HTMLInputElement;
 
@@ -46,22 +46,16 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
     }
   });
 
-  onMount(() => {
+  onMount(async () => {
     resetNewClass();
   });
 
 
   const resetNewClass = () => {
-    setRecurring(true);
+    setError("");
+    setMartialArt("");
     const today = new Date();
     today.setHours(0, 0, 0);
-
-    flatpickr(dateRef, {
-      appendTo: dialogRef,
-      defaultDate: today,
-      dateFormat: "D F j, Y"
-    });
-    setClassDate(today);
 
     flatpickr(startRef, {
       appendTo: dialogRef,
@@ -94,12 +88,14 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
     e.preventDefault()
     setError("");
     setSaveDisabled(true);
+    const today = new Date();
+    today.setHours(0, 0, 0);
 
     const newClass: ClassData = {
-      "date": classDate(),
-      "week_day": classDate().getDay(),
+      "date": today,
+      "week_day": weekDay(),
       "martial_art": martialArt(),
-      "is_recurring": recurring(),
+      "is_recurring": true,
       "active": true,
       "start_hour": startHour(),
       "start_minute": startMinute(),
@@ -111,6 +107,8 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
       // validate user input 
       const validClass = v.parse(ClassSchema, newClass);
 
+      console.log(validClass.week_day);
+
       const successful: boolean = await createClass(validClass);
 
       if (successful) {
@@ -118,10 +116,10 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
         resetNewClass();
         const dialog = document.getElementById("new-class-dialog") as HTMLDialogElement;
         dialog.close();
+        props.refetch();
       } else {
         throw new Error("server_error");
       }
-
     } catch (err) {
       if (err instanceof v.ValiError) {
         setError(err.issues[0].message);
@@ -132,7 +130,6 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
       }
     } finally {
       setSaveDisabled(false);
-      props.refetch();
     }
   };
 
@@ -150,6 +147,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"><IoClose class="size-4" /></button>
         </form>
 
+        {/* Title */}
         <h3 class="font-bold text-xl">Create New Class</h3>
         <p class="py-2 text-wrap">Fill in the fields and click save to create a new class.</p>
 
@@ -158,22 +156,48 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           <label class="label">
             <span class="label-text">Program</span>
           </label>
-          <div class="flex">
+          <div class="flex items-center input input-bordered">
+            <FaSolidHandFist class="w-4 h-4 opacity-70" />
             <select
-              class="select select-bordered w-full grow"
+              class="select select-ghost w-full grow outline-none focus:outline-none border-none focus:border-none bg-transparent"
               onChange={(event) => {
                 setMartialArt(event.target.value);
               }}
             >
               <option disabled selected>Choose a program</option>
-              <option value={martialArtShortNames[0]}>Boxing</option>
-              <option value={martialArtShortNames[1]}>Jiu-Jitsu</option>
-              <option value={martialArtShortNames[2]}>MMA</option>
+              <For each={props.martialArtList()}>
+                {(ma, index) => (
+                  <option value={ma.shortname}>{ma.name}</option>
+                )}
+              </For>
             </select>
           </div>
         </div>
 
-        {/* Date picker */}
+        {/* Day picker */}
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Week Day</span>
+          </label>
+          <div class="flex items-center input input-bordered">
+            <BsCalendarEvent class="w-4 h-4 opacity-70" />
+            <select
+              class="select select-ghost w-full grow outline-none focus:outline-none border-none focus:border-none bg-transparent"
+              onChange={(event) => {
+                setWeekDay(Number(event.target.value));
+              }}
+            >
+              <option disabled selected>Choose a week day</option>
+              <For each={weekdays}>
+                {(name, index) => (
+                  <option value={index()}>{name}</option>
+                )}
+              </For>
+            </select>
+          </div>
+        </div>
+
+        {/* Date picker 
         <div class="form-control">
           <label class="label">
             <span class="label-text">Date</span>
@@ -198,6 +222,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
             />
           </div>
         </div>
+        */}
 
         {/* Start time picker */}
         <div class="form-control">
@@ -207,6 +232,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           <div class="input input-bordered flex items-center justify-start">
             <TbClock class="w-4 h-4 opacity-70" />
             <input
+              class="border-none outline-none focus:border-none focus:outline-none"
               onInput={(event) => {
                 const input = event.currentTarget.value;
 
@@ -223,8 +249,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
                 }
               }}
               ref={startRef}
-              type="datetime"
-              class="grow"
+              type="text"
             />
           </div>
         </div>
@@ -237,6 +262,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           <div class="input input-bordered flex items-center justify-start">
             <TbClockX class="w-4 h-4 opacity-70" />
             <input
+              class="border-none outline-none focus:border-none focus:outline-none"
               onInput={(event) => {
                 const input = event.currentTarget.value;
 
@@ -254,7 +280,6 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
               }}
               ref={endRef}
               type="text"
-              class="grow"
             />
           </div>
         </div>

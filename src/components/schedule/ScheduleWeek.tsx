@@ -1,16 +1,29 @@
 import ScheduleDay from "./ScheduleDay";
 import ScheduleNewClass from "./ScheduleNewClass";
 import ScheduleEditClass from "./ScheduleEditClass";
-import { Index, createSignal } from "solid-js";
+import { Index, createSignal, onMount } from "solid-js";
 import { FaSolidPlus } from "solid-icons/fa";
 import { For, createResource } from 'solid-js';
-import { ClassRecord, usePocket } from '~/context/PocketbaseContext';
+import { ClassRecord, usePocket, MartialArtRecord } from '~/context/PocketbaseContext';
 
 export default function ScheduleWeek() {
-  const { getClasses } = usePocket();
+  const { getClasses, getMartialArts } = usePocket();
+
+  // needs to be instantiated outside both the Sched.EditClass and Sched.Day components
+  const [openEdit, setOpenEdit] = createSignal<boolean>(false);
+
+  // propagate the list of martial arts to be used throughout the dashboard
+  // this prevents repeated database calls
+  const [martialArtList, setMartialArtList] = createSignal<MartialArtRecord[]>([]);
+  onMount(async () => {
+    setMartialArtList(await getMartialArts());
+  });
+
+  // the selected class should be a signal that is used throughout the dashboard
+  // this prevents repeated database calls
   const [classId, setClassId] = createSignal("");
 
-  // return all the classes that happen on this day
+  // return all the classes from the database 
   const [classes, { mutate, refetch }] = createResource(async () => {
     return getClasses();
   });
@@ -54,7 +67,7 @@ export default function ScheduleWeek() {
 
     return <Index each={week}>
       {(day, index) => (
-        <ScheduleDay date={day()} classes={getDayClasses(day())} setClassId={setClassId} />
+        <ScheduleDay date={day()} classes={getDayClasses(day())} setClassId={setClassId} setOpenEdit={setOpenEdit} />
       )}
     </Index>;
   };
@@ -68,7 +81,7 @@ export default function ScheduleWeek() {
         <button onClick={openNewClass} class="btn btn-secondary btn-circle btn-lg xl:btn-md"><FaSolidPlus /> </button>
       </div>
     </div>
-    <ScheduleNewClass refetch={refetch} />
-    <ScheduleEditClass refetch={refetch} classId={classId} />
+    <ScheduleNewClass refetch={refetch} martialArtList={martialArtList} />
+    <ScheduleEditClass refetch={refetch} classId={classId} martialArtList={martialArtList} openEdit={openEdit} setOpenEdit={setOpenEdit} />
   </>);
 }
