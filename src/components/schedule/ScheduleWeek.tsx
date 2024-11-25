@@ -1,5 +1,6 @@
 import ScheduleDay from "./ScheduleDay";
 import ScheduleNewClass from "./ScheduleNewClass";
+import ScheduleEditClass from "./ScheduleEditClass";
 import { Index, createSignal } from "solid-js";
 import { FaSolidPlus } from "solid-icons/fa";
 import { For, createResource } from 'solid-js';
@@ -7,6 +8,7 @@ import { ClassRecord, usePocket } from '~/context/PocketbaseContext';
 
 export default function ScheduleWeek() {
   const { getClasses } = usePocket();
+  const [classId, setClassId] = createSignal("");
 
   // return all the classes that happen on this day
   const [classes, { mutate, refetch }] = createResource(async () => {
@@ -52,7 +54,7 @@ export default function ScheduleWeek() {
 
     return <Index each={week}>
       {(day, index) => (
-        <ScheduleDay date={day()} classes={getDayClasses(day())} />
+        <ScheduleDay date={day()} classes={getDayClasses(day())} setClassId={setClassId} />
       )}
     </Index>;
   };
@@ -67,5 +69,6 @@ export default function ScheduleWeek() {
       </div>
     </div>
     <ScheduleNewClass refetch={refetch} />
+    <ScheduleEditClass refetch={refetch} classId={classId} />
   </>);
 }

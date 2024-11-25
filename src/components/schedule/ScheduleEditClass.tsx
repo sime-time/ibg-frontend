@@ -2,29 +2,30 @@ import { IoClose } from "solid-icons/io";
 import { TbClock, TbClockX } from "solid-icons/tb";
 import { FaSolidArrowRotateRight } from 'solid-icons/fa'
 import { BsCalendarEvent } from 'solid-icons/bs'
-import { Show, onMount, createSignal, createEffect } from "solid-js";
+import { Show, createSignal, createEffect, Accessor, Setter } from "solid-js";
 import { usePocket } from "~/context/PocketbaseContext";
 import { ClassData, ClassSchema } from "~/types/ValidationType";
 import * as v from "valibot";
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.css";
 
-interface ScheduleNewClassProps {
+interface ScheduleEditClassProps {
   refetch: () => void;
+  classId: Accessor<string>;
 }
 
-export default function ScheduleNewClass(props: ScheduleNewClassProps) {
+export default function ScheduleEditClass(props: ScheduleEditClassProps) {
   const [classDate, setClassDate] = createSignal<Date>(new Date());
   const [startHour, setStartHour] = createSignal<number>(0);
   const [startMinute, setStartMinute] = createSignal<number>(0);
   const [endHour, setEndHour] = createSignal<number>(0);
   const [endMinute, setEndMinute] = createSignal<number>(0);
-  const [recurring, setRecurring] = createSignal<boolean>(true);
   const [saveDisabled, setSaveDisabled] = createSignal<boolean>(false);
   const [error, setError] = createSignal("");
 
+  const { createClass } = usePocket();
+
   const martialArtShortNames = ["BOX", "BJJ", "MMA"];
-  const { getMartialArtId, createClass } = usePocket();
   const [martialArt, setMartialArt] = createSignal("");
 
   let dialogRef!: HTMLDialogElement;
@@ -35,27 +36,23 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
   createEffect(() => {
     // reset dialog form when dialog is opened or closed
     if (dialogRef) {
-      dialogRef.addEventListener('open', resetNewClass);
-      dialogRef.addEventListener('close', resetNewClass);
+      dialogRef.addEventListener('open', refreshEditClass);
+      dialogRef.addEventListener('close', refreshEditClass);
 
       // cleanup
       return () => {
-        dialogRef.removeEventListener('open', resetNewClass);
-        dialogRef.removeEventListener('close', resetNewClass);
+        dialogRef.removeEventListener('open', refreshEditClass);
+        dialogRef.removeEventListener('close', refreshEditClass);
       };
     }
   });
 
-  onMount(() => {
-    resetNewClass();
-  });
 
-
-  const resetNewClass = () => {
-    setRecurring(true);
+  const refreshEditClass = () => {
     const today = new Date();
     today.setHours(0, 0, 0);
 
+    // use the class id to find the date and time 
     flatpickr(dateRef, {
       appendTo: dialogRef,
       defaultDate: today,
@@ -99,7 +96,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
       "date": classDate(),
       "week_day": classDate().getDay(),
       "martial_art": martialArt(),
-      "is_recurring": recurring(),
+      "is_recurring": true,
       "active": true,
       "start_hour": startHour(),
       "start_minute": startMinute(),
@@ -112,10 +109,8 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
       const validClass = v.parse(ClassSchema, newClass);
 
       const successful: boolean = await createClass(validClass);
-
       if (successful) {
         console.log("Class created successfully!");
-        resetNewClass();
         const dialog = document.getElementById("new-class-dialog") as HTMLDialogElement;
         dialog.close();
       } else {
@@ -137,7 +132,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
   };
 
   return (
-    <dialog id="new-class-dialog" ref={dialogRef} class="modal">
+    <dialog id="edit-class-dialog" ref={dialogRef} class="modal">
 
       <form method="dialog" class="modal-backdrop">
         <button>close when clicked outside</button>
@@ -150,8 +145,10 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"><IoClose class="size-4" /></button>
         </form>
 
-        <h3 class="font-bold text-xl">Create New Class</h3>
-        <p class="py-2 text-wrap">Fill in the fields and click save to create a new class.</p>
+        {/* Title */}
+        <h3 class="font-bold text-xl">Edit Class</h3>
+        <p class="py-2 text-wrap">Fill in the fields and click save to make changes to this class.</p>
+        <p>{props.classId()}</p>
 
         {/* Program selector */}
         <div class="form-control">
@@ -258,21 +255,6 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
             />
           </div>
         </div>
-
-        {/* Recurring? 
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">Recurring Weekly?</span>
-          </label>
-          <div class="flex justify-between items-center input input-bordered">
-            <div class="flex items-center gap-5">
-              <FaSolidArrowRotateRight class="w-4 h-4 opacity-70" />
-              <input type="checkbox" class="checkbox checkbox-success" checked={recurring()} onChange={() => setRecurring(!recurring())} />
-            </div>
-            <span class="label-text justify-self-end">{recurring() ? "Every week" : "One-time"}</span>
-          </div>
-        </div>
-        */}
 
         <Show when={error()}>
           <p class="text-error mt-3">{error()}</p>
