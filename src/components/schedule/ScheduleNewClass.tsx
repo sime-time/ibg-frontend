@@ -179,7 +179,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           <label class="label">
             <span class="label-text">Week Day</span>
           </label>
-          <div class="flex items-center input input-bordered">
+          <div class="flex items-center input input-bordered gap-4 lg:gap-0">
             <BsCalendarEvent class="w-4 h-4 opacity-70" />
             <select
               class="select select-ghost w-full grow outline-none focus:outline-none border-none focus:border-none bg-transparent"
@@ -229,7 +229,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           <label class="label">
             <span class="label-text">Start Time</span>
           </label>
-          <div class="input input-bordered flex items-center justify-start">
+          <div class="input input-bordered flex items-center justify-start gap-4 lg:gap-0">
             <TbClock class="w-4 h-4 opacity-70" />
             <input
               class="border-none outline-none focus:border-none focus:outline-none"
@@ -259,7 +259,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           <label class="label">
             <span class="label-text">End Time</span>
           </label>
-          <div class="input input-bordered flex items-center justify-start">
+          <div class="input input-bordered flex items-center justify-start gap-4 lg:gap-0">
             <TbClockX class="w-4 h-4 opacity-70" />
             <input
               class="border-none outline-none focus:border-none focus:outline-none"

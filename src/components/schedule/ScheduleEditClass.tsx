@@ -23,7 +23,6 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
   const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const [martialArt, setMartialArt] = createSignal("");
-  const [classDate, setClassDate] = createSignal<Date>(new Date());
   const [weekDay, setWeekDay] = createSignal<number>(-1);
   const [startHour, setStartHour] = createSignal<number>(0);
   const [startMinute, setStartMinute] = createSignal<number>(0);
@@ -35,6 +34,9 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
   let dialogRef!: HTMLDialogElement;
   let startRef!: HTMLInputElement;
   let endRef!: HTMLInputElement;
+  let selectProgramRef!: HTMLSelectElement;
+  let selectDayRef!: HTMLSelectElement;
+
 
   createEffect(() => {
     // reset dialog form when dialog is opened or closed
@@ -44,15 +46,18 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
   });
 
   const refreshEditClass = async () => {
-    // use the class id to find the date and time 
-    const classToEdit = await getClass(props.classId());
-    setClassDate(new Date());
     const today = new Date();
     today.setHours(0, 0, 0);
+
+
+    const classToEdit = await getClass(props.classId());
     setStartHour(classToEdit.start_hour);
     setStartMinute(classToEdit.start_minute);
     setEndHour(classToEdit.end_hour);
     setEndMinute(classToEdit.end_minute);
+
+    selectProgramRef.value = String(classToEdit.martial_art);
+    selectDayRef.value = String(classToEdit.week_day);
 
     flatpickr(startRef, {
       appendTo: dialogRef,
@@ -70,7 +75,7 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
       enableTime: true,
       noCalendar: true,
       enableSeconds: false,
-      defaultDate: classDate().setHours(endHour(), endMinute()),
+      defaultDate: today.setHours(endHour(), endMinute()),
       dateFormat: "H:i",
       altInput: true,
       altFormat: "h:i K", // user sees this format 
@@ -143,7 +148,6 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
         {/* Title */}
         <h3 class="font-bold text-xl">Edit Class</h3>
         <p class="py-2 text-wrap">Change the field inputs and click save to update this class.</p>
-        <p>{props.classId()}</p>
 
         {/* Program selector */}
         <div class="form-control">
@@ -153,6 +157,7 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
           <div class="flex items-center input input-bordered">
             <FaSolidHandFist class="w-4 h-4 opacity-70" />
             <select
+              ref={selectProgramRef}
               class="select select-ghost w-full grow outline-none focus:outline-none border-none focus:border-none bg-transparent"
               onChange={(event) => {
                 setMartialArt(event.target.value);
@@ -176,6 +181,7 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
           <div class="flex items-center input input-bordered">
             <BsCalendarEvent class="w-4 h-4 opacity-70" />
             <select
+              ref={selectDayRef}
               class="select select-ghost w-full grow outline-none focus:outline-none border-none focus:border-none bg-transparent"
               onChange={(event) => {
                 setWeekDay(Number(event.target.value));
@@ -196,7 +202,7 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
           <label class="label">
             <span class="label-text">Start Time</span>
           </label>
-          <div class="input input-bordered flex items-center justify-start">
+          <div class="input input-bordered flex items-center justify-start gap-4 lg:gap-0">
             <TbClock class="w-4 h-4 opacity-70" />
             <input
               class="border-none outline-none focus:border-none focus:outline-none"
@@ -226,7 +232,7 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
           <label class="label">
             <span class="label-text">End Time</span>
           </label>
-          <div class="input input-bordered flex items-center justify-start">
+          <div class="input input-bordered flex items-center justify-start gap-4 lg:gap-0">
             <TbClockX class="w-4 h-4 opacity-70" />
             <input
               class="border-none outline-none focus:border-none focus:outline-none"
