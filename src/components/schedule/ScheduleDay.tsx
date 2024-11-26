@@ -45,6 +45,18 @@ export default function ScheduleDay(props: ScheduleDayProps) {
     });
   });
 
+  const classButtonStyle = (martialArt: string) => {
+    const baseStyle = "w-full btn bg-opacity-50";
+    switch (martialArt) {
+      case "BOX":
+        return `${baseStyle} btn-primary`
+      case "BJJ":
+        return `${baseStyle} btn-secondary`
+      default:
+        return `${baseStyle} btn-neutral`
+    }
+  };
+
   return (
     <div class="flex flex-col p-4 min-w-max">
       <h2 class="text-xl font-semibold">{days[props.date.getDay()]}</h2>
@@ -54,7 +66,10 @@ export default function ScheduleDay(props: ScheduleDayProps) {
         <For each={sortedClasses()}>
           {(classItem, index) =>
             <li class="w-full">
-              <button onClick={() => openClassMenu(classItem.id)} class="btn btn-neutral w-full">
+              <button
+                onClick={() => openClassMenu(classItem.id)}
+                class={classButtonStyle(classItem.martial_art)}
+              >
                 {`${classItem.martial_art} - ${formatTime(classItem.start_hour, classItem.start_minute)}`}
               </button>
             </li>
