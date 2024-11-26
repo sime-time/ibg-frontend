@@ -23,6 +23,7 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
   const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const [martialArt, setMartialArt] = createSignal("");
+  const [classDate, setClassDate] = createSignal<Date>(new Date());
   const [weekDay, setWeekDay] = createSignal<number>(-1);
   const [startHour, setStartHour] = createSignal<number>(0);
   const [startMinute, setStartMinute] = createSignal<number>(0);
@@ -49,15 +50,18 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
     const today = new Date();
     today.setHours(0, 0, 0);
 
-
     const classToEdit = await getClass(props.classId());
+
+    selectProgramRef.value = String(classToEdit.martial_art);
+    selectDayRef.value = String(classToEdit.week_day);
+
+    setMartialArt(classToEdit.martial_art);
+    setWeekDay(classToEdit.week_day);
+    setClassDate(classToEdit.date);
     setStartHour(classToEdit.start_hour);
     setStartMinute(classToEdit.start_minute);
     setEndHour(classToEdit.end_hour);
     setEndMinute(classToEdit.end_minute);
-
-    selectProgramRef.value = String(classToEdit.martial_art);
-    selectDayRef.value = String(classToEdit.week_day);
 
     flatpickr(startRef, {
       appendTo: dialogRef,
@@ -86,11 +90,9 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
     e.preventDefault()
     setError("");
     setSaveDisabled(true);
-    const today = new Date();
-    today.setHours(0, 0, 0);
 
     const updatedClass: ClassData = {
-      "date": today,
+      "date": new Date(classDate()),
       "week_day": weekDay(),
       "martial_art": martialArt(),
       "is_recurring": true,
@@ -104,8 +106,6 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
     try {
       // validate user input 
       const validClass = v.parse(ClassSchema, updatedClass);
-
-      console.log(validClass.week_day);
 
       const successful: boolean = await updateClass(props.classId(), validClass);
 
