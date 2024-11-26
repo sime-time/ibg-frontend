@@ -28,6 +28,7 @@ interface PocketbaseContextProps {
   getClasses: () => Promise<ClassRecord[]>,
   getClassesFromDay: (day: number) => Promise<ClassRecord[]>,
   getClass: (id: string) => Promise<ClassRecord>,
+  deleteClass: (classId: string) => Promise<boolean>,
 }
 
 export interface MemberData {
@@ -374,6 +375,19 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
+  const deleteClass = async (classId: string) => {
+    try {
+      if (!userIsAdmin()) {
+        throw new Error("Deletion cancelled. User is not admin.");
+      }
+      await pb.collection("class").delete(classId);
+      return true;
+    } catch (err) {
+      console.error("Error deleting class: ", err);
+      return false;
+    }
+  }
+
   const getClasses = async () => {
     try {
       const classes = await pb.collection("class").getFullList<ClassRecord>();
@@ -403,7 +417,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClassesFromDay, getClass }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClassesFromDay, getClass, deleteClass }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

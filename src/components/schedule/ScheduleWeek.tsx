@@ -1,6 +1,8 @@
 import ScheduleDay from "./ScheduleDay";
 import ScheduleNewClass from "./ScheduleNewClass";
 import ScheduleEditClass from "./ScheduleEditClass";
+import ScheduleClassMenu from "./ScheduleClassMenu";
+import ScheduleDeleteClass from "./ScheduleDeleteClass";
 import { Index, createSignal, onMount } from "solid-js";
 import { FaSolidPlus } from "solid-icons/fa";
 import { For, createResource } from 'solid-js';
@@ -8,9 +10,6 @@ import { ClassRecord, usePocket, MartialArtRecord } from '~/context/PocketbaseCo
 
 export default function ScheduleWeek() {
   const { getClasses, getMartialArts } = usePocket();
-
-  // needs to be instantiated outside both the Sched.EditClass and Sched.Day components
-  const [openEdit, setOpenEdit] = createSignal<boolean>(false);
 
   // propagate the list of martial arts to be used throughout the dashboard
   // this prevents repeated database calls
@@ -22,6 +21,22 @@ export default function ScheduleWeek() {
   // the selected class should be a signal that is used throughout the dashboard
   // this prevents repeated database calls
   const [classId, setClassId] = createSignal("");
+
+  // needs to be instantiated outside both the Sched.EditClass and Sched.Day components
+  const [openEdit, setOpenEdit] = createSignal<boolean>(false);
+
+  const editClass = (id: string) => {
+    setClassId(id);
+    setOpenEdit(true);
+    const dialog = document.getElementById("edit-class-dialog") as HTMLDialogElement;
+    dialog.showModal();
+  };
+
+  const deleteClass = (id: string) => {
+    setClassId(id);
+    const dialog = document.getElementById("delete-class-dialog") as HTMLDialogElement;
+    dialog.showModal();
+  };
 
   // return all the classes from the database 
   const [classes, { mutate, refetch }] = createResource(async () => {
@@ -83,5 +98,7 @@ export default function ScheduleWeek() {
     </div>
     <ScheduleNewClass refetch={refetch} martialArtList={martialArtList} />
     <ScheduleEditClass refetch={refetch} classId={classId} martialArtList={martialArtList} openEdit={openEdit} setOpenEdit={setOpenEdit} />
+    <ScheduleClassMenu classId={classId} editClass={editClass} deleteClass={deleteClass} />
+    <ScheduleDeleteClass refetch={refetch} classId={classId} />
   </>);
 }

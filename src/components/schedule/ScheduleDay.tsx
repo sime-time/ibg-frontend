@@ -22,10 +22,15 @@ export default function ScheduleDay(props: ScheduleDayProps) {
     }
   };
 
-  const openEditClass = (id: string) => {
-    props.setClassId(id);
+  const openClassMenu = (id: string) => {
+    props.setClassId(id)
+
+    // this will make sure the start and end time are accurate immediately
+    // when user presses edit button
     props.setOpenEdit(true);
-    const dialog = document.getElementById("edit-class-dialog") as HTMLDialogElement;
+    props.setOpenEdit(false);
+
+    const dialog = document.getElementById("manage-class-dialog") as HTMLDialogElement;
     dialog.showModal();
   };
 
@@ -39,7 +44,7 @@ export default function ScheduleDay(props: ScheduleDayProps) {
         <For each={props.classes}>
           {(classItem, index) =>
             <li class="w-full">
-              <button onClick={() => openEditClass(classItem.id)} class="btn btn-neutral w-full">
+              <button onClick={() => openClassMenu(classItem.id)} class="btn btn-neutral w-full">
                 {`${classItem.martial_art} - ${formatTime(classItem.start_hour, classItem.start_minute)}`}
               </button>
             </li>

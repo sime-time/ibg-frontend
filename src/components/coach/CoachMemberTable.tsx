@@ -325,7 +325,7 @@ export function MemberTable() {
                                 </form>
                                 <div class="modal-box">
                                   <form method="dialog">
-                                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"><IoClose class="size-4" /></button>
                                   </form>
                                   <h3 class="font-bold text-lg mb-2">Delete Member?</h3>
                                   <p class="text-base"><span class="font-semibold">Name:</span> {memberToDelete.name}</p>
