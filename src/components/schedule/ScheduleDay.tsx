@@ -35,7 +35,14 @@ export default function ScheduleDay(props: ScheduleDayProps) {
   };
 
   const sortedClasses = createMemo(() => {
-    return props.classes?.sort((a, b) => a.start_hour - b.start_hour);
+    return props.classes?.sort((a, b) => {
+      const hourDiff = a.start_hour - b.start_hour;
+      if (hourDiff !== 0) {
+        return hourDiff;
+      } else {
+        return a.start_minute - b.start_minute;
+      }
+    });
   });
 
   return (
