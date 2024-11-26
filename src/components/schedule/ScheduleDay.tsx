@@ -1,4 +1,4 @@
-import { For, Setter } from "solid-js";
+import { createMemo, createEffect, For, Setter } from "solid-js";
 import { ClassRecord } from "~/context/PocketbaseContext";
 
 interface ScheduleDayProps {
@@ -34,6 +34,9 @@ export default function ScheduleDay(props: ScheduleDayProps) {
     dialog.showModal();
   };
 
+  const sortedClasses = createMemo(() => {
+    return props.classes?.sort((a, b) => a.start_hour - b.start_hour);
+  });
 
   return (
     <div class="flex flex-col p-4 min-w-max">
@@ -41,7 +44,7 @@ export default function ScheduleDay(props: ScheduleDayProps) {
       <span class="text-gray-500">{props.date.getDate()}</span>
       <div class="divider text-neutral-500"></div>
       <ul class="flex flex-col gap-4 items-center">
-        <For each={props.classes}>
+        <For each={sortedClasses()}>
           {(classItem, index) =>
             <li class="w-full">
               <button onClick={() => openClassMenu(classItem.id)} class="btn btn-neutral w-full">

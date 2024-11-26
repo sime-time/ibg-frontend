@@ -67,7 +67,7 @@ export interface MemberRecord extends RecordModel {
 
 export interface ClassRecord extends RecordModel {
   id: string;
-  date?: Date;
+  date: Date;
   martial_art: string;
   is_recurring: boolean;
   active: boolean;
