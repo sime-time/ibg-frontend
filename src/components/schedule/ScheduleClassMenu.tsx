@@ -1,6 +1,6 @@
 import { Accessor, createSignal } from "solid-js";
 import { IoClose } from "solid-icons/io";
-import { FaSolidPenToSquare, FaRegularTrashCan } from "solid-icons/fa";
+import { FaSolidListCheck, FaSolidPenToSquare, FaRegularTrashCan } from "solid-icons/fa";
 
 interface ScheduleClassMenuProps {
   classId: Accessor<string>;
@@ -30,9 +30,14 @@ export default function ScheduleClassMenu(props: ScheduleClassMenuProps) {
 
         <div class="modal-action">
           <form method="dialog" class="flex flex-col gap-4 w-full">
+            {/* Class Attendance */}
+            <button class="btn btn-secondary flex-1">
+              <FaSolidListCheck class="size-5" />
+              Class Attendance
+            </button>
 
             {/* Edit Class */}
-            <button onClick={() => props.editClass(props.classId())} class="btn btn-secondary flex-1">
+            <button onClick={() => props.editClass(props.classId())} class="btn btn-neutral flex-1">
               <FaSolidPenToSquare class="size-5" />
               Edit Class
             </button>

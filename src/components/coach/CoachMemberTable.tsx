@@ -296,12 +296,12 @@ export function MemberTable() {
                               <h3 class="font-bold text-xl">{defaultName()}'s Details</h3>
 
                               {/* Stripe Subscription Link */}
-                              <a href={import.meta.env.VITE_STRIPE_CUSTOMER_URL + memberStripeId()} class="btn grow text-green-100 bg-green-600 border-green-600 hover:bg-green-700 hover:border-green-700 ">
+                              <a href={import.meta.env.VITE_STRIPE_CUSTOMER_URL + memberStripeId()} class="btn grow btn-secondary">
                                 <AiOutlineDollar class="size-6" />
                                 View Subscription
                               </a>
 
-                              <button onClick={() => setShowEdit(true)} class="btn btn-secondary grow w-full">
+                              <button onClick={() => setShowEdit(true)} class="btn btn-neutral grow w-full">
                                 <FaSolidUserPen class="size-5" />
                                 Edit Member
                               </button>

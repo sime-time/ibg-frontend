@@ -31,6 +31,8 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
   let dialogRef!: HTMLDialogElement;
   let startRef!: HTMLInputElement;
   let endRef!: HTMLInputElement;
+  let selectProgramRef!: HTMLSelectElement;
+  let selectDayRef!: HTMLSelectElement;
 
   createEffect(() => {
     // reset dialog form when dialog is opened or closed
@@ -54,6 +56,10 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
   const resetNewClass = () => {
     setError("");
     setMartialArt("");
+    setWeekDay(-1);
+    selectProgramRef.selectedIndex = 0;
+    selectDayRef.selectedIndex = 0;
+
     const today = new Date();
     today.setHours(0, 0, 0);
 
@@ -159,6 +165,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           <div class="flex items-center input input-bordered">
             <FaSolidHandFist class="w-4 h-4 opacity-70" />
             <select
+              ref={selectProgramRef}
               class="select select-ghost w-full grow outline-none focus:outline-none border-none focus:border-none bg-transparent"
               onChange={(event) => {
                 setMartialArt(event.target.value);
@@ -182,6 +189,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           <div class="flex items-center input input-bordered gap-4 lg:gap-0">
             <BsCalendarEvent class="w-4 h-4 opacity-70" />
             <select
+              ref={selectDayRef}
               class="select select-ghost w-full grow outline-none focus:outline-none border-none focus:border-none bg-transparent"
               onChange={(event) => {
                 setWeekDay(Number(event.target.value));
