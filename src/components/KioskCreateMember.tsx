@@ -69,10 +69,10 @@ export default function KioskCreateMember() {
   }
 
   return (
-    <div class="card bg-base-100 shadow-xl w-fit md:w-96">
+    <div class="card bg-base-100 shadow-xl w-5/6">
       <div class="card-body">
         <h1 class="card-title text-2xl font-bold mb-3">New Member</h1>
-        <form onSubmit={handleCreate} class="flex flex-col gap-4">
+        <form onSubmit={handleCreate} class="flex flex-col md:grid md:grid-cols-2 gap-5">
 
           <div class="form-control">
             <label class="label">
@@ -235,10 +235,10 @@ export default function KioskCreateMember() {
           </div>
 
           <Show when={error()}>
-            <p class="text-error mt-3">{error()}</p>
+            <p class="text-error mt-3 col-span-2">{error()}</p>
           </Show>
 
-          <div class="form-control mt-3">
+          <div class="form-control mt-3 col-span-2">
             <button type="submit" class="btn btn-secondary" disabled={submitDisabled()}>
               {submitDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Continue"}
             </button>

@@ -412,9 +412,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
   const getClass = async (id: string) => {
     const record = await pb.collection("class").getOne<ClassRecord>(id);
     return record;
-  }
-
-
+  };
 
   return (
     <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClassesFromDay, getClass, deleteClass }} >

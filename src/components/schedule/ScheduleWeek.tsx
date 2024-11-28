@@ -3,6 +3,7 @@ import ScheduleNewClass from "./ScheduleNewClass";
 import ScheduleEditClass from "./ScheduleEditClass";
 import ScheduleClassMenu from "./ScheduleClassMenu";
 import ScheduleDeleteClass from "./ScheduleDeleteClass";
+import Attendance from "./Attendance";
 import { Index, createSignal, onMount } from "solid-js";
 import { FaSolidPlus } from "solid-icons/fa";
 import { For, createResource } from 'solid-js';
@@ -12,7 +13,7 @@ export default function ScheduleWeek() {
   const { getClasses, getMartialArts } = usePocket();
 
   // propagate the list of martial arts to be used throughout the dashboard
-  // this prevents repeated database calls
+  // this prevents repeated database calls by setting it on the weekly dashboard
   const [martialArtList, setMartialArtList] = createSignal<MartialArtRecord[]>([]);
   onMount(async () => {
     setMartialArtList(await getMartialArts());
@@ -23,12 +24,22 @@ export default function ScheduleWeek() {
   const [classId, setClassId] = createSignal("");
 
   // needs to be instantiated outside both the Sched.EditClass and Sched.Day components
+  // dashboard has to reactively know when this dialog is opened 
   const [openEdit, setOpenEdit] = createSignal<boolean>(false);
-
   const editClass = (id: string) => {
     setClassId(id);
     setOpenEdit(true);
     const dialog = document.getElementById("edit-class-dialog") as HTMLDialogElement;
+    dialog.showModal();
+  };
+
+  // weekly dashboard needs to reactively know which class to take attendance for 
+  // and know when the attendance dialog is open 
+  const [openAttendance, setOpenAttendance] = createSignal<boolean>(false);
+  const trackAttendance = (id: string) => {
+    setClassId(id);
+    setOpenAttendance(true);
+    const dialog = document.getElementById("attendance-dialog") as HTMLDialogElement;
     dialog.showModal();
   };
 
