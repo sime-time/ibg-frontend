@@ -38,7 +38,6 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
   let selectProgramRef!: HTMLSelectElement;
   let selectDayRef!: HTMLSelectElement;
 
-
   createEffect(() => {
     // reset dialog form when dialog is opened or closed
     if (props.openEdit()) {

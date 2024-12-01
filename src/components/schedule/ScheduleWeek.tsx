@@ -3,11 +3,12 @@ import ScheduleNewClass from "./ScheduleNewClass";
 import ScheduleEditClass from "./ScheduleEditClass";
 import ScheduleClassMenu from "./ScheduleClassMenu";
 import ScheduleDeleteClass from "./ScheduleDeleteClass";
-import Attendance from "./Attendance";
+import Attendance from "./ScheduleAttendance";
 import { Index, createSignal, onMount } from "solid-js";
 import { FaSolidPlus } from "solid-icons/fa";
 import { For, createResource } from 'solid-js';
 import { ClassRecord, usePocket, MartialArtRecord } from '~/context/PocketbaseContext';
+import ScheduleAttendance from "./ScheduleAttendance";
 
 export default function ScheduleWeek() {
   const { getClasses, getMartialArts } = usePocket();
@@ -109,7 +110,8 @@ export default function ScheduleWeek() {
     </div>
     <ScheduleNewClass refetch={refetch} martialArtList={martialArtList} />
     <ScheduleEditClass refetch={refetch} classId={classId} martialArtList={martialArtList} openEdit={openEdit} setOpenEdit={setOpenEdit} />
-    <ScheduleClassMenu classId={classId} editClass={editClass} deleteClass={deleteClass} />
+    <ScheduleClassMenu classId={classId} editClass={editClass} deleteClass={deleteClass} trackAttendance={trackAttendance} />
     <ScheduleDeleteClass refetch={refetch} classId={classId} />
+    <ScheduleAttendance classId={classId} openAttendance={openAttendance} setOpenAttendance={setOpenAttendance} />
   </>);
 }
