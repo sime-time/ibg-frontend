@@ -16,7 +16,7 @@ export default function ScheduleAttendance(props: ScheduleAttendanceProps) {
   const [classToAttend, setClassToAttend] = createSignal<ClassRecord>();
   const [attendanceDate, setAttendanceDate] = createSignal<Date>(new Date());
   const [error, setError] = createSignal("");
-  const [openMemberSearch, setOpenMemberSearch] = createSignal<boolean>(false);
+  const [openMemberList, setOpenMemberList] = createSignal<boolean>(false);
 
   let dialogRef!: HTMLDialogElement;
   let dateRef!: HTMLInputElement;
@@ -30,7 +30,7 @@ export default function ScheduleAttendance(props: ScheduleAttendanceProps) {
 
   const refreshClass = async () => {
     setError("");
-    setOpenMemberSearch(false);
+    setOpenMemberList(false);
     const date = new Date();
     const thisClass = await getClass(props.classId());
     const dif = thisClass.week_day - date.getDay();
@@ -51,7 +51,7 @@ export default function ScheduleAttendance(props: ScheduleAttendanceProps) {
 
     // check if date has the same week day as this class
     if (attendanceDate().getDay() === classSession.week_day) {
-      setOpenMemberSearch(true);
+      setOpenMemberList(true);
       setError("move on to next panel")
     } else {
       setError("The selected date does not fall on the same week day as the class.");
@@ -74,11 +74,11 @@ export default function ScheduleAttendance(props: ScheduleAttendanceProps) {
         </form>
 
         <Show
-          when={openMemberSearch()}
+          when={openMemberList()}
           fallback={<>
             {/* Title */}
             <h3 class="font-bold text-xl">Attendance</h3>
-            <p class="py-2 text-wrap">Select the date to take attendance for.</p>
+            <p class="py-2 text-wrap">Select a date that falls within the same week day as the class.</p>
 
             {/* Date picker */}
             <div class="form-control">
@@ -118,21 +118,26 @@ export default function ScheduleAttendance(props: ScheduleAttendanceProps) {
             </div>
           </>}
         >
-          {/* Member Search */}
-          <h3 class="font-bold text-xl">{attendanceDate().toDateString()}</h3>
-          <label class="input input-bordered flex items-center gap-2 input-sm">
-            <input type="text" placeholder="Search Member" />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              class="h-4 w-4 opacity-70">
-              <path
-                fill-rule="evenodd"
-                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                clip-rule="evenodd" />
-            </svg>
-          </label>
+          {/* Member List */}
+          <div class="flex flex-col gap-4">
+
+            <h3 class="font-bold text-xl">{attendanceDate().toDateString()}</h3>
+
+            <label class="input input-bordered flex items-center gap-2">
+              <input type="text" class="grow" placeholder="Search" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                class="h-4 w-4 opacity-70">
+                <path
+                  fill-rule="evenodd"
+                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                  clip-rule="evenodd" />
+              </svg>
+            </label>
+
+          </div>
         </Show>
 
       </div>

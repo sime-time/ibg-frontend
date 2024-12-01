@@ -37,7 +37,7 @@ export default function ScheduleWeek() {
   // weekly dashboard needs to reactively know which class to take attendance for 
   // and know when the attendance dialog is open 
   const [openAttendance, setOpenAttendance] = createSignal<boolean>(false);
-  const trackAttendance = (id: string) => {
+  const viewAttendance = (id: string) => {
     setClassId(id);
     setOpenAttendance(true);
     const dialog = document.getElementById("attendance-dialog") as HTMLDialogElement;
@@ -110,7 +110,7 @@ export default function ScheduleWeek() {
     </div>
     <ScheduleNewClass refetch={refetch} martialArtList={martialArtList} />
     <ScheduleEditClass refetch={refetch} classId={classId} martialArtList={martialArtList} openEdit={openEdit} setOpenEdit={setOpenEdit} />
-    <ScheduleClassMenu classId={classId} editClass={editClass} deleteClass={deleteClass} trackAttendance={trackAttendance} />
+    <ScheduleClassMenu classId={classId} editClass={editClass} deleteClass={deleteClass} viewAttendance={viewAttendance} />
     <ScheduleDeleteClass refetch={refetch} classId={classId} />
     <ScheduleAttendance classId={classId} openAttendance={openAttendance} setOpenAttendance={setOpenAttendance} />
   </>);

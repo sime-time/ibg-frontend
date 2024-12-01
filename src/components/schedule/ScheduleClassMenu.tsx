@@ -6,7 +6,7 @@ interface ScheduleClassMenuProps {
   classId: Accessor<string>;
   editClass: (id: string) => void;
   deleteClass: (id: string) => void;
-  trackAttendance: (id: string) => void;
+  viewAttendance: (id: string) => void;
 }
 
 export default function ScheduleClassMenu(props: ScheduleClassMenuProps) {
@@ -33,9 +33,9 @@ export default function ScheduleClassMenu(props: ScheduleClassMenuProps) {
           <form method="dialog" class="flex flex-col gap-4 w-full">
 
             {/* Class Attendance */}
-            <button onClick={() => props.trackAttendance(props.classId())} class="btn btn-secondary flex-1">
+            <button onClick={() => props.viewAttendance(props.classId())} class="btn btn-secondary flex-1">
               <FaSolidListCheck class="size-5" />
-              Class Attendance
+              View Attendance
             </button>
 
             {/* Edit Class */}

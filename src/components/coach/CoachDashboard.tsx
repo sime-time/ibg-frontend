@@ -1,14 +1,16 @@
 import { createSignal, Match, Switch } from "solid-js";
 import { MemberTable } from "./CoachMemberTable";
-import { FaRegularCalendar, FaSolidCalendar } from 'solid-icons/fa'
+import { FaRegularCalendar, FaSolidCalendar, FaSolidListCheck } from 'solid-icons/fa'
 import { RiUserFacesGroupLine, RiUserFacesGroupFill } from 'solid-icons/ri'
 import { BsBarChart, BsBarChartFill } from "solid-icons/bs";
 import ScheduleWeek from "../schedule/ScheduleWeek";
+import Attendance from "../attendance/Attendance";
 
 enum View {
   Members = "members",
   Stats = "stats",
-  Scheduler = "scheduler"
+  Scheduler = "scheduler",
+  Attendance = "attendance"
 }
 
 export default function CoachDashboard() {
@@ -27,6 +29,9 @@ export default function CoachDashboard() {
         </Match>
         <Match when={currentView() === View.Stats}>
           <div>Stats</div>
+        </Match>
+        <Match when={currentView() === View.Attendance}>
+          <Attendance />
         </Match>
       </Switch>
 
@@ -49,6 +54,12 @@ export default function CoachDashboard() {
           class={currentView() === View.Scheduler ? "active" : ""}
         >
           {currentView() === View.Scheduler ? <FaSolidCalendar class="size-6" /> : <FaRegularCalendar class="size-6" />}
+        </button>
+        <button
+          onClick={() => setCurrentView(View.Attendance)}
+          class={currentView() === View.Attendance ? "active" : ""}
+        >
+          <FaSolidListCheck class="size-5" />
         </button>
       </div>
 
