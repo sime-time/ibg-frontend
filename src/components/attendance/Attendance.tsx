@@ -29,19 +29,18 @@ export default function Attendance() {
       appendTo: calendarRef,
       defaultDate: attendDate(),
       dateFormat: "l, F d",
+      inline: true,
     });
   };
 
   return (
-    <div class="w-11/12 xl:w-fit flex-col gap-4 card bg-base-100 shadow-xl p-8 md:p-10 items-start">
+    <div class="w-11/12 xl:w-fit grid grid-rows-3 md:grid-flow-col md:gap-x-10 card bg-base-100 shadow-xl p-8 md:p-10 items-start">
 
-      {/* Title */}
       <div>
         <h3 class="font-bold text-2xl">Attendance</h3>
         <p class="py-2 text-wrap">Take attendance for all classes on a specific date.</p>
       </div>
 
-      {/* Date Picker */}
       <div class="form-control w-full">
         <div class="input input-bordered flex items-center justify-start gap-4">
           <BsCalendarEvent class="w-4 h-4 opacity-70" />
@@ -68,6 +67,9 @@ export default function Attendance() {
           Continue
         </button>
       </div>
+
+
+      <div class="md:row-span-3" ref={calendarRef}></div>
 
     </div>
   );
