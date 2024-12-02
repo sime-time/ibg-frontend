@@ -34,42 +34,44 @@ export default function Attendance() {
   };
 
   return (
-    <div class="w-11/12 xl:w-fit grid grid-rows-3 md:grid-flow-col md:gap-x-10 card bg-base-100 shadow-xl p-8 md:p-10 items-start">
+    <div class="w-11/12 xl:w-fit flex flex-col md:flex-row gap-5 md:gap-x-10 card bg-base-100 shadow-xl p-9 items-start">
 
-      <div>
-        <h3 class="font-bold text-2xl">Attendance</h3>
-        <p class="py-2 text-wrap">Take attendance for all classes on a specific date.</p>
-      </div>
+      <div class="flex flex-col gap-4 w-full">
+        <div>
+          <h3 class="font-bold text-2xl">Attendance</h3>
+          <p class="py-2 text-wrap">Take attendance for all classes on a specific date.</p>
+        </div>
 
-      <div class="form-control w-full">
-        <div class="input input-bordered flex items-center justify-start gap-4">
-          <BsCalendarEvent class="w-4 h-4 opacity-70" />
-          <input
-            class="border-none outline-none focus:border-none focus:outline-none grow"
-            ref={dateRef}
-            onInput={(event) => {
-              const input = event.currentTarget.value;
-              // convert the input text into a date object 
-              const selectedDate = new Date(input);
-              if (!isNaN(selectedDate.getDate())) {
-                setAttendDate(selectedDate);
-              } else {
-                console.error("Invalid date");
-              }
-            }}
-            type="datetime"
-          />
+        <div class="form-control w-full">
+          <div class="input input-bordered flex items-center justify-start gap-4">
+            <BsCalendarEvent class="w-4 h-4 opacity-70" />
+            <input
+              class="border-none outline-none focus:border-none focus:outline-none grow"
+              ref={dateRef}
+              onInput={(event) => {
+                const input = event.currentTarget.value;
+                // convert the input text into a date object 
+                const selectedDate = new Date(input);
+                if (!isNaN(selectedDate.getDate())) {
+                  setAttendDate(selectedDate);
+                } else {
+                  console.error("Invalid date");
+                }
+              }}
+              type="datetime"
+            />
+          </div>
+        </div>
+
+        <div class="flex">
+          <button onClick={() => setOpenAttendList(true)} class="btn btn-secondary flex-1">
+            Continue
+          </button>
         </div>
       </div>
 
-      <div class="w-full flex">
-        <button onClick={() => setOpenAttendList(true)} class="btn btn-secondary flex-1">
-          Continue
-        </button>
-      </div>
 
-
-      <div class="md:row-span-3" ref={calendarRef}></div>
+      <div ref={calendarRef}></div>
 
     </div>
   );
