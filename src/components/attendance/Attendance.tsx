@@ -1,10 +1,14 @@
-import { createSignal, Show, onMount, createEffect } from "solid-js";
+import { createSignal, Show, createResource, createEffect, For } from "solid-js";
 import { usePocket } from "~/context/PocketbaseContext";
 import { BsCalendarEvent } from "solid-icons/bs";
 import { FaSolidArrowLeft } from "solid-icons/fa";
 import flatpickr from "flatpickr";
 
 export default function Attendance() {
+  const { getMembers } = usePocket();
+  const [members, { mutate, refetch }] = createResource(async () => {
+    return getMembers();
+  });
 
   const [attendDate, setAttendDate] = createSignal<Date>(new Date());
   const [attendListIsOpen, setAttendListIsOpen] = createSignal<boolean>(false);
@@ -85,8 +89,72 @@ export default function Attendance() {
                 clip-rule="evenodd" />
             </svg>
           </label>
+
+          <div class="overflow-x-auto">
+            <table class="table">
+              <thead>
+                <AttendListHeaders />
+              </thead>
+              <tbody>
+                <For each={members()}>
+                  {(member, index) =>
+                    <tr>
+                      {/* Name */}
+                      <td>
+                        <div class="flex items-center gap-3">
+                          <div class="avatar">
+                            <div class="mask mask-squircle h-12 w-12">
+                              <img
+                                src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                                alt="Avatar Tailwind CSS Component" />
+                            </div>
+                          </div>
+                          <div>
+                            <div class="font-bold">{member.name}</div>
+                            <div class="flex gap-1 mt-1">
+                              <div>
+                                {member.is_subscribed
+                                  ? <span class="badge badge-success">Paid</span>
+                                  : <span class="badge badge-error">Not paid</span>
+                                }
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Program */}
+                      <td>
+                        <span class="badge badge-neutral">{member.program ? member.program : "N/A"}</span>
+                      </td>
+
+                      {/* Check-in */}
+                      <td>
+                        <label>
+                          <input type="checkbox" class="checkbox checkbox-success" />
+                        </label>
+                      </td>
+                    </tr>
+                  }
+                </For>
+              </tbody>
+              <tfoot>
+                <AttendListHeaders />
+              </tfoot>
+            </table>
+          </div>
         </div>
       </Show>
     </div>
+  );
+}
+
+function AttendListHeaders() {
+  return (
+    <tr>
+      <th>Name</th>
+      <th></th>
+      <th>Check-in</th>
+    </tr>
   );
 }
