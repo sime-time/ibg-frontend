@@ -33,6 +33,7 @@ export default function Attendance() {
     <div class="w-11/12 xl:w-fit card bg-base-100 shadow-xl p-9">
 
       <Show when={attendListIsOpen()} fallback={<>
+        {/* Attendance Date */}
         <div class="flex flex-col md:flex-row gap-5 md:gap-x-10 items-start">
           <div class="flex flex-col gap-4 w-full">
             <div>
@@ -72,12 +73,18 @@ export default function Attendance() {
         </div>
       </>}>
 
-        {/* Attend List */}
+        {/* Attendance List */}
         <button onClick={() => setAttendListIsOpen(false)} class="btn btn-sm btn-circle btn-ghost absolute left-2 top-2"><FaSolidArrowLeft class="size-4" /></button>
         <div class="flex flex-col gap-4">
           <h2 class="text-2xl font-semibold text-center">{attendDate().toDateString()}</h2>
+
+          {/* Search Members */}
           <label class="input input-bordered flex items-center gap-2">
-            <input type="text" class="grow" placeholder="Type your name" />
+            <input
+              type="text"
+              class="grow"
+              placeholder="Type your name"
+            />
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 16 16"
