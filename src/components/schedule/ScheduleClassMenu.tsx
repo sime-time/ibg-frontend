@@ -32,14 +32,15 @@ export default function ScheduleClassMenu(props: ScheduleClassMenuProps) {
         <div class="modal-action">
           <form method="dialog" class="flex flex-col gap-4 w-full">
 
-            {/* Class Attendance */}
+            {/* Class Attendance 
             <button onClick={() => props.viewAttendance(props.classId())} class="btn btn-secondary flex-1">
               <FaSolidListCheck class="size-5" />
               View Attendance
             </button>
+            */}
 
             {/* Edit Class */}
-            <button onClick={() => props.editClass(props.classId())} class="btn btn-neutral flex-1">
+            <button onClick={() => props.editClass(props.classId())} class="btn btn-secondary flex-1">
               <FaSolidPenToSquare class="size-5" />
               Edit Class
             </button>
