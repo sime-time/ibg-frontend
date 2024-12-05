@@ -158,6 +158,8 @@ export default function MemberEdit() {
         setMember("newPassword", "value", "");
         const dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
         dialog.close();
+      }).then(() => {
+        setSaveDisabled(false);
       });
     } catch (err) {
       if (err instanceof v.ValiError) {
@@ -165,7 +167,6 @@ export default function MemberEdit() {
       } else {
         setError("Unexpected error occured.");
       }
-    } finally {
       setSaveDisabled(false);
     }
   };

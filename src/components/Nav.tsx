@@ -5,7 +5,8 @@ import LogoutButton from "./ui/LogoutButton";
 function NavMenu() {
   return (
     <>
-      <li><a href="/">Home</a></li>
+      <li><a href="/signup">Sign Up</a></li>
+      <li><a href="/login">Log In</a></li>
       <li><a href="/member">Member</a></li>
       <li><a href="/coach">Coach</a></li>
     </>
