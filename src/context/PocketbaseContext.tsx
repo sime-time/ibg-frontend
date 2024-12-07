@@ -29,6 +29,7 @@ interface PocketbaseContextProps {
   getClassesFromDay: (day: number) => Promise<ClassRecord[]>,
   getClass: (id: string) => Promise<ClassRecord>,
   deleteClass: (classId: string) => Promise<boolean>,
+  getAvatarUrl: () => Promise<string>,
 }
 
 export interface MemberData {
@@ -47,6 +48,7 @@ export interface ContactInfo {
 }
 
 export interface UpdateMemberData {
+  avatar?: File | null,
   name?: string,
   email?: string,
   newPassword?: string,
@@ -217,6 +219,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
   const updateMember = async (memberId: string, updatedData: UpdateMemberData) => {
 
     const updateMemberRecord = {
+      "avatar": updatedData.avatar,
       "name": updatedData.name,
       "oldPassword": updatedData.oldPassword,
       "password": updatedData.newPassword,
@@ -421,8 +424,14 @@ export function PocketbaseContextProvider(props: ParentProps) {
     return record;
   };
 
+  const getAvatarUrl = async () => {
+    const member = await pb.collection("member").getOne<MemberRecord>(user()?.id);
+    const avatarUrl = member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp"
+    return avatarUrl;
+  };
+
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClassesFromDay, getClass, deleteClass }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClassesFromDay, getClass, deleteClass, getAvatarUrl }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

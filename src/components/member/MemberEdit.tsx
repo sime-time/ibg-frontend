@@ -1,90 +1,63 @@
 import { usePocket } from "~/context/PocketbaseContext";
-import { createSignal, Show } from "solid-js";
+import { createSignal, Show, onMount } from "solid-js";
 import { createStore } from "solid-js/store";
 import { FaSolidUser, FaSolidPhone, FaSolidUserDoctor } from "solid-icons/fa";
 import { BiSolidEdit, BiSolidEditAlt } from "solid-icons/bi";
 import { IoClose } from "solid-icons/io";
+import { MemberEditData, MemberEditSchema } from "~/types/ValidationType";
 import * as v from "valibot";
 
-const MemberEditSchema = v.pipe(
-  v.object({
-    name: v.optional(v.pipe(
-      v.string('Your name must be in text.'),
-      v.nonEmpty('Your name cannot be blank.'),
-    )),
-    phone: v.optional(v.pipe(
-      v.string('You must include your phone number.'),
-      v.maxLength(20, 'The phone number must not exceed 20 characters.'),
-      v.nonEmpty('Your phone number cannot be blank.'),
-    )),
-    emergencyName: v.optional(v.pipe(
-      v.string('The name must be in text.'),
-      v.nonEmpty("The emergency contact's name cannot be blank"),
-    )),
-    emergencyPhone: v.optional(v.pipe(
-      v.string("You must include your emergency contact's phone number."),
-      v.maxLength(20, 'The phone number must not exceed 20 characters.'),
-      v.nonEmpty("Your emergency contact's phone number cannot be blank."),
-    )),
-    newPassword: v.optional(v.pipe(
-      v.string('Your new password must be a string of characters.'),
-      v.nonEmpty('Your new password cannot be blank'),
-      v.minLength(8, 'Your new password must have 8 characters or more.')
-    )),
-    oldPassword: v.optional(v.pipe(
-      v.string('Your password must be a string of characters.'),
-      v.nonEmpty('Your password cannot be blank.'),
-      v.minLength(8, 'Your password must have 8 characters or more.')
-    )),
-  }),
-  v.forward(
-    v.partialCheck(
-      [['newPassword'], ['oldPassword']],
-      (input) => !input.oldPassword || input.newPassword != input.oldPassword,
-      'Your new password cannot be the same as your old password.'
-    ),
-    ['oldPassword']
-  ),
-);
-
-type MemberEditData = v.InferOutput<typeof MemberEditSchema>;
-
-
 export default function MemberEdit() {
-  const { user, getEmergencyContact, updateMember } = usePocket();
+  const { user, getEmergencyContact, updateMember, getAvatarUrl } = usePocket();
   const [saveDisabled, setSaveDisabled] = createSignal(false);
   const [originalEmergencyPhone, setOriginalEmergencyPhone] = createSignal("");
   const [originalEmergencyName, setOriginalEmergencyName] = createSignal("");
   const [error, setError] = createSignal("");
+  const [avatar, setAvatar] = createSignal<File | undefined>();
+
+  const [avatarUrl, setAvatarUrl] = createSignal("");
+  onMount(async () => {
+    resetAvatarUrl();
+  });
+
+  const resetAvatarUrl = async () => {
+    let url = await getAvatarUrl();
+    setAvatarUrl(url);
+  }
+
 
   const [member, setMember] = createStore({
+    avatar: {
+      value: avatar(),
+      readyToEdit: false,
+    },
     name: {
       value: user()?.name,
-      isUnchanged: true,
+      readyToEdit: false,
     },
     email: {
       value: user()?.email,
-      isUnchanged: true,
+      readyToEdit: false,
     },
     phone: {
       value: user()?.phone_number,
-      isUnchanged: true,
+      readyToEdit: false,
     },
     emergencyName: {
       value: "",
-      isUnchanged: true,
+      readyToEdit: false,
     },
     emergencyPhone: {
       value: "",
-      isUnchanged: true,
+      readyToEdit: false,
     },
     newPassword: {
       value: "",
-      isUnchanged: true,
+      readyToEdit: false,
     },
     oldPassword: {
       value: "",
-      isUnchanged: true,
+      readyToEdit: false,
     },
   });
 
@@ -100,10 +73,10 @@ export default function MemberEdit() {
     dialog.showModal();
   };
 
-  const setAllUnchanged = (value: boolean) => {
+  const setAllReadyToEdit = (value: boolean) => {
     type MemberKey = keyof typeof member;
     Object.entries(member).forEach(([key, field]) => {
-      setMember(key as MemberKey, "isUnchanged", value);
+      setMember(key as MemberKey, "readyToEdit", value);
     });
   };
 
@@ -117,8 +90,11 @@ export default function MemberEdit() {
     Object.entries(member).forEach(([key, field]) => {
       // if field has changed...
       // update the corresponding member value 
-      if (!field.isUnchanged) {
+      if (field.readyToEdit) {
         switch (key) {
+          case "avatar":
+            updatedValues.avatar = avatar();
+            break;
           case "name":
             updatedValues.name = field.value;
             break;
@@ -138,7 +114,7 @@ export default function MemberEdit() {
             updatedValues.newPassword = field.value;
             break;
         }
-        console.log("Updated: ", key, field.value, field.isUnchanged);
+        console.log("Updated: ", key, field.value, field.readyToEdit);
       }
     });
 
@@ -152,9 +128,11 @@ export default function MemberEdit() {
 
       updateMember(user()?.id, validValues).then(() => {
         // clean up 
-        setAllUnchanged(true);
+        setAllReadyToEdit(false);
         setOriginalEmergencyName(member.emergencyName.value);
         setOriginalEmergencyPhone(member.emergencyPhone.value);
+        setAvatar();
+        resetAvatarUrl();
         setMember("newPassword", "value", "");
         const dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
         dialog.close();
@@ -188,6 +166,42 @@ export default function MemberEdit() {
 
           <div class="form-control">
             <label class="label">
+              <span class="label-text">Profile Picture</span>
+            </label>
+
+            <div class="flex gap-3">
+              <div class="avatar">
+                <div class="mask mask-squircle h-12 w-12">
+                  <img
+                    src={avatarUrl()}
+                    alt="Member Avatar" />
+                </div>
+              </div>
+              <input
+                onInput={(event: InputEvent) => {
+                  const target = event.currentTarget as HTMLInputElement;
+                  const file = target.files?.[0]; // File or undefined 
+                  setAvatar(file);
+                  if (file) {
+                    const fileUrl = URL.createObjectURL(file);
+                    setAvatarUrl(fileUrl);
+                    setMember("avatar", "readyToEdit", true);
+                    console.log(fileUrl);
+                  } else {
+                    console.error("No file selected");
+                  }
+                }}
+                type="file"
+                accept="image/*"
+                capture="user"
+                class={`file-input file-input-bordered w-32 flex items-center grow ${member.avatar.readyToEdit ? "border-secondary" : ""}`}
+                id="avatar-input"
+              />
+            </div>
+          </div>
+
+          <div class="form-control">
+            <label class="label">
               <span class="label-text">Name</span>
             </label>
             <div class="flex gap-3 w-full">
@@ -201,19 +215,19 @@ export default function MemberEdit() {
                   class="grow"
                   placeholder={member.name.value}
                   value={member.name.value}
-                  disabled={member.name.isUnchanged}
+                  disabled={!member.name.readyToEdit}
                   id="name-input"
                 />
               </label>
               <button onClick={() => {
-                if (member.name.isUnchanged === false) {
+                if (member.name.readyToEdit === true) {
                   const nameInput = document.getElementById("name-input") as HTMLInputElement;
                   nameInput.value = user()?.name;
                 }
-                setMember("name", "isUnchanged", !member.name.isUnchanged);
+                setMember("name", "readyToEdit", !member.name.readyToEdit);
                 setMember("name", "value", user()?.name);
               }}>
-                {member.name.isUnchanged ? <BiSolidEdit class="size-6" /> : <IoClose class="size-6" />}
+                {member.name.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
               </button>
             </div>
           </div>
@@ -233,19 +247,19 @@ export default function MemberEdit() {
                   class="grow"
                   placeholder={member.phone.value}
                   value={member.phone.value}
-                  disabled={member.phone.isUnchanged}
+                  disabled={!member.phone.readyToEdit}
                   id="phone-input"
                 />
               </label>
               <button onClick={() => {
-                if (member.phone.isUnchanged === false) {
+                if (member.phone.readyToEdit) {
                   const input = document.getElementById("phone-input") as HTMLInputElement;
                   input.value = user()?.phone_number;
                 }
-                setMember("phone", "isUnchanged", !member.phone.isUnchanged);
+                setMember("phone", "readyToEdit", !member.phone.readyToEdit);
                 setMember("phone", "value", user()?.phone_number);
               }}>
-                {member.phone.isUnchanged ? <BiSolidEdit class="size-6" /> : <IoClose class="size-6" />}
+                {member.phone.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
               </button>
             </div>
           </div>
@@ -265,20 +279,20 @@ export default function MemberEdit() {
                   class="grow"
                   placeholder={member.emergencyName.value}
                   value={member.emergencyName.value}
-                  disabled={member.emergencyName.isUnchanged}
+                  disabled={!member.emergencyName.readyToEdit}
                   id="emergencyName-input"
                 />
               </label>
               <button onClick={() => {
-                if (member.emergencyName.isUnchanged === false) {
+                if (member.emergencyName.readyToEdit) {
                   // return to the original value before isUnchanged is set to true again
                   const input = document.getElementById("emergencyName-input") as HTMLInputElement;
                   input.value = originalEmergencyName();
                 }
-                setMember("emergencyName", "isUnchanged", !member.emergencyName.isUnchanged);
+                setMember("emergencyName", "readyToEdit", !member.emergencyName.readyToEdit);
                 setMember("emergencyName", "value", member.emergencyName.value);
               }}>
-                {member.emergencyName.isUnchanged ? <BiSolidEdit class="size-6" /> : <IoClose class="size-6" />}
+                {member.emergencyName.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
               </button>
             </div>
           </div>
@@ -298,20 +312,20 @@ export default function MemberEdit() {
                   class="grow"
                   placeholder={member.emergencyPhone.value}
                   value={member.emergencyPhone.value}
-                  disabled={member.emergencyPhone.isUnchanged}
+                  disabled={!member.emergencyPhone.readyToEdit}
                   id="emergencyPhone-input"
                 />
               </label>
               <button onClick={() => {
-                if (member.emergencyPhone.isUnchanged === false) {
+                if (member.emergencyPhone.readyToEdit) {
                   // return to the original value before isUnchanged is set to true again
                   const input = document.getElementById("emergencyPhone-input") as HTMLInputElement;
                   input.value = originalEmergencyPhone();
                 }
-                setMember("emergencyPhone", "isUnchanged", !member.emergencyPhone.isUnchanged);
+                setMember("emergencyPhone", "readyToEdit", !member.emergencyPhone.readyToEdit);
                 setMember("emergencyPhone", "value", member.emergencyPhone.value);
               }}>
-                {member.emergencyPhone.isUnchanged ? <BiSolidEdit class="size-6" /> : <IoClose class="size-6" />}
+                {member.emergencyPhone.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
               </button>
             </div>
           </div>
@@ -330,12 +344,12 @@ export default function MemberEdit() {
                   type="password"
                   class="grow"
                   value=""
-                  disabled={member.newPassword.isUnchanged}
+                  disabled={!member.newPassword.readyToEdit}
                   id="newPassword-input"
                 />
               </label>
               <button onClick={() => {
-                if (member.newPassword.isUnchanged === false) {
+                if (member.newPassword.readyToEdit) {
                   // return to the original value before isUnchanged is set to true again
                   const input = document.getElementById("newPassword-input") as HTMLInputElement;
                   input.value = "";
@@ -343,18 +357,18 @@ export default function MemberEdit() {
                   const oldInput = document.getElementById("oldPassword-input") as HTMLInputElement;
                   oldInput.value = "";
                 }
-                setMember("newPassword", "isUnchanged", !member.newPassword.isUnchanged);
+                setMember("newPassword", "readyToEdit", !member.newPassword.readyToEdit);
                 setMember("newPassword", "value", member.newPassword.value);
 
-                setMember("oldPassword", "isUnchanged", !member.oldPassword.isUnchanged);
+                setMember("oldPassword", "readyToEdit", !member.oldPassword.readyToEdit);
                 setMember("oldPassword", "value", member.oldPassword.value);
               }}>
-                {member.newPassword.isUnchanged ? <BiSolidEdit class="size-6" /> : <IoClose class="size-6" />}
+                {member.newPassword.readyToEdit ? <IoClose class="size-6" /> : <BiSolidEdit class="size-6" />}
               </button>
             </div>
           </div>
 
-          <Show when={member.newPassword.isUnchanged == false} >
+          <Show when={member.newPassword.readyToEdit} >
             <div class="form-control pr-5 md:pr-9">
               <label class="label">
                 <span class="label-text">Old Password</span>

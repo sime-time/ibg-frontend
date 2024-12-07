@@ -77,9 +77,7 @@ export default function MemberContactInfo() {
               onInput={(event: InputEvent) => {
                 const target = event.currentTarget as HTMLInputElement;
                 const file = target.files?.[0] ?? null; // File or null
-                console.log(file);
                 setAvatar(file);
-                console.log(avatar());
               }}
               type="file"
               accept="image/*"
