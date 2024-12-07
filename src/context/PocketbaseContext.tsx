@@ -48,7 +48,7 @@ export interface ContactInfo {
 }
 
 export interface UpdateMemberData {
-  avatar?: File | null,
+  avatar: File | null,
   name?: string,
   email?: string,
   newPassword?: string,
@@ -56,6 +56,17 @@ export interface UpdateMemberData {
   phone?: string,
   emergencyName?: string,
   emergencyPhone?: string,
+}
+
+// fulfills the properties of the pocketbase update collection function
+export interface UpdateMemberRecord {
+  avatar?: File | null,
+  name?: string,
+  email?: string,
+  password?: string,
+  passwordConfirm?: string,
+  oldPassword?: string,
+  phone_number?: string,
 }
 
 export interface MemberRecord extends RecordModel {
@@ -218,19 +229,24 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const updateMember = async (memberId: string, updatedData: UpdateMemberData) => {
 
-    const updateMemberRecord = {
-      "avatar": updatedData.avatar,
+    // for avatar, use undefined instead of null
+    // because null will delete the previous avatar 
+    let updateMemberRecord: UpdateMemberRecord = {
       "name": updatedData.name,
       "oldPassword": updatedData.oldPassword,
       "password": updatedData.newPassword,
       "passwordConfirm": updatedData.newPassword,
       "phone_number": updatedData.phone,
+    };
+
+    if (updatedData.avatar) {
+      updateMemberRecord["avatar"] = updatedData.avatar;
     }
 
     const updateEmergencyRecord = {
       "phone_number": updatedData.emergencyPhone,
       "name": updatedData.emergencyName,
-    }
+    };
 
     // update member 
     try {

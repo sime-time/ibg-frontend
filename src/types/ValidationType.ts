@@ -171,7 +171,7 @@ export type ContactData = v.InferOutput<typeof ContactSchema>;
 
 export const MemberEditSchema = v.pipe(
   v.object({
-    avatar: v.optional(v.pipe(
+    avatar: v.nullable(v.pipe(
       v.file('Please select an image file or take a photo with your camera.'),
       v.mimeType(['image/png', 'image/jpeg', 'image/heic', 'image/webp'], 'Please select an image file or take a photo with your camera.'),
       v.maxSize(1024 * 1024 * 10, 'Please select a file smaller than 10MB.'),

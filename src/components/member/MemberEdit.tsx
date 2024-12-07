@@ -13,7 +13,7 @@ export default function MemberEdit() {
   const [originalEmergencyPhone, setOriginalEmergencyPhone] = createSignal("");
   const [originalEmergencyName, setOriginalEmergencyName] = createSignal("");
   const [error, setError] = createSignal("");
-  const [avatar, setAvatar] = createSignal<File | undefined>();
+  const [avatar, setAvatar] = createSignal<File | null>(null);
 
   const [avatarUrl, setAvatarUrl] = createSignal("");
   onMount(async () => {
@@ -24,7 +24,6 @@ export default function MemberEdit() {
     let url = await getAvatarUrl();
     setAvatarUrl(url);
   }
-
 
   const [member, setMember] = createStore({
     avatar: {
@@ -85,7 +84,7 @@ export default function MemberEdit() {
     setSaveDisabled(true);
     setError("");
 
-    let updatedValues: MemberEditData = {};
+    let updatedValues: MemberEditData = { avatar: null };
 
     Object.entries(member).forEach(([key, field]) => {
       // if field has changed...
@@ -131,7 +130,7 @@ export default function MemberEdit() {
         setAllReadyToEdit(false);
         setOriginalEmergencyName(member.emergencyName.value);
         setOriginalEmergencyPhone(member.emergencyPhone.value);
-        setAvatar();
+        setAvatar(null);
         resetAvatarUrl();
         setMember("newPassword", "value", "");
         const dialog = document.getElementById("edit-dialog") as HTMLDialogElement;
@@ -181,12 +180,12 @@ export default function MemberEdit() {
                 onInput={(event: InputEvent) => {
                   const target = event.currentTarget as HTMLInputElement;
                   const file = target.files?.[0]; // File or undefined 
-                  setAvatar(file);
                   if (file) {
                     const fileUrl = URL.createObjectURL(file);
+                    setAvatar(file);
                     setAvatarUrl(fileUrl);
                     setMember("avatar", "readyToEdit", true);
-                    console.log(fileUrl);
+                    console.log("Avatar URL: ", fileUrl);
                   } else {
                     console.error("No file selected");
                   }

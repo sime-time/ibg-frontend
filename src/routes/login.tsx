@@ -1,7 +1,6 @@
 import { createSignal, Show, Switch, Match } from "solid-js";
 import { Title } from "@solidjs/meta";
 import { UserType } from "~/types/UserType";
-import SocialAuth from "~/components/SocialAuth";
 import { useNavigate } from "@solidjs/router";
 import { IoClose } from 'solid-icons/io'
 import { usePocket } from "~/context/PocketbaseContext";
