@@ -1,4 +1,4 @@
-import { createSignal, Show } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
 import { usePocket } from "~/context/PocketbaseContext";
 import { BsCreditCard2BackFill } from 'solid-icons/bs';
 import { FaSolidArrowLeft, FaRegularCalendarDays } from 'solid-icons/fa';
@@ -7,9 +7,15 @@ import MemberEdit from "./MemberEdit";
 import MemberSchedule from "./MemberSchedule";
 
 export default function MemberDashboard() {
-  const { user, logout } = usePocket();
+  const { user, logout, getAvatarUrl } = usePocket();
   const [buttonsDisabled, setButtonsDisabled] = createSignal(false);
   const [scheduleIsOpen, setScheduleIsOpen] = createSignal(false);
+  const [avatarUrl, setAvatarUrl] = createSignal("");
+
+  createEffect(async () => {
+    let url: string = await getAvatarUrl();
+    setAvatarUrl(url);
+  })
 
   const handleManageSubscription = (async (e: Event) => {
     e.preventDefault();
@@ -41,7 +47,16 @@ export default function MemberDashboard() {
     <Show when={scheduleIsOpen()} fallback={
       <div class="card bg-base-100 shadow-xl mx-4 my-1 w-full md:w-96">
         <div class="card-body flex flex-col gap-5">
-          <h1 class="card-title text-2xl font-bold">{`Welcome, ${user()?.name}`}</h1>
+          <div class="flex flex-row gap-3">
+            <div class="avatar">
+              <div class="mask mask-squircle h-12 w-12">
+                <img
+                  src={avatarUrl()}
+                  alt="Member Avatar" />
+              </div>
+            </div>
+            <h1 class="card-title text-2xl font-bold">{user()?.name}</h1>
+          </div>
           <button onClick={() => setScheduleIsOpen(true)} class="btn btn-accent">
             <FaRegularCalendarDays class="size-5" /> Class Schedule
           </button>

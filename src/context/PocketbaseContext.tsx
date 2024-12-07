@@ -231,17 +231,13 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
     // for avatar, use undefined instead of null
     // because null will delete the previous avatar 
-    let updateMemberRecord: UpdateMemberRecord = {
+    let updateMemberRecord = {
       "name": updatedData.name,
       "oldPassword": updatedData.oldPassword,
       "password": updatedData.newPassword,
       "passwordConfirm": updatedData.newPassword,
       "phone_number": updatedData.phone,
     };
-
-    if (updatedData.avatar) {
-      updateMemberRecord["avatar"] = updatedData.avatar;
-    }
 
     const updateEmergencyRecord = {
       "phone_number": updatedData.emergencyPhone,
@@ -251,6 +247,12 @@ export function PocketbaseContextProvider(props: ParentProps) {
     // update member 
     try {
       await pb.collection("member").update(memberId, updateMemberRecord);
+      // update the member's avatar if applicable
+      if (updatedData.avatar) {
+        const updateAvatar = new FormData();
+        updateAvatar.append("avatar", updatedData.avatar);
+        await pb.collection("member").update(memberId, updateAvatar);
+      }
     } catch (err) {
       console.error("Error updating member: ", err)
     }

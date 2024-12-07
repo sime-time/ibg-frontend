@@ -4,7 +4,7 @@ export const CoachEditMemberSchema = v.object({
   avatar: v.nullable(v.pipe(
     v.file('Please select an image file or take a photo with your camera.'),
     v.mimeType(['image/png', 'image/jpeg', 'image/heic', 'image/webp'], 'Please select an image file or take a photo with your camera.'),
-    v.maxSize(1024 * 1024 * 10, 'Please select a file smaller than 10MB.'),
+    v.maxSize(1024 * 1024 * 5, 'Please select a file smaller than 5MB.'),
   )),
   name: v.optional(v.pipe(
     v.string('Your name must be in text.'),
@@ -140,7 +140,7 @@ export const ContactSchema = v.pipe(v.object({
   avatar: v.nullable(v.pipe(
     v.file('Please select an image file or take a photo with your camera.'),
     v.mimeType(['image/png', 'image/jpeg', 'image/heic', 'image/webp'], 'Please select an image file or take a photo with your camera.'),
-    v.maxSize(1024 * 1024 * 10, 'Please select a file smaller than 10MB.'),
+    v.maxSize(1024 * 1024 * 5, 'Please select a file smaller than 5MB.'),
   )),
   phone: v.pipe(
     v.string('You must include your phone number.'),
@@ -173,7 +173,7 @@ export const MemberEditSchema = v.pipe(
     avatar: v.nullable(v.pipe(
       v.file('Please select an image file or take a photo with your camera.'),
       v.mimeType(['image/png', 'image/jpeg', 'image/heic', 'image/webp'], 'Please select an image file or take a photo with your camera.'),
-      v.maxSize(1024 * 1024 * 10, 'Please select a file smaller than 10MB.'),
+      v.maxSize(1024 * 1024 * 5, 'Please select a file smaller than 5MB.'),
     )),
     name: v.optional(v.pipe(
       v.string('Your name must be in text.'),
