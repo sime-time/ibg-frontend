@@ -2,37 +2,12 @@ import { createSignal, Show } from "solid-js";
 import { usePocket } from "~/context/PocketbaseContext";
 import { FaSolidUser, FaSolidPhone, FaSolidUserDoctor } from "solid-icons/fa";
 import * as v from "valibot";
+import { ContactSchema, ContactData } from "~/types/ValidationType";
 
-export const ContactSchema = v.pipe(v.object({
-  phone: v.pipe(
-    v.string('You must include your phone number.'),
-    v.maxLength(20, 'The phone number must not exceed 20 characters.'),
-    v.nonEmpty('Please enter your phone number.'),
-  ),
-  emergencyName: v.pipe(
-    v.string('The name must be in text.'),
-    v.nonEmpty('Please enter the name of your emergency contact.'),
-  ),
-  emergencyPhone: v.pipe(
-    v.string("You must include your emergency contact's phone number."),
-    v.maxLength(20, 'The phone number must not exceed 20 characters.'),
-    v.nonEmpty("Please enter your emergency contact's phone number."),
-  ),
-}),
-  v.forward(
-    v.partialCheck(
-      [['phone'], ['emergencyPhone']],
-      (input) => input.phone != input.emergencyPhone,
-      'Your phone number and the emergency number cannot be the same.'
-    ),
-    ['phone']
-  ),
-);
-
-export type ContactData = v.InferOutput<typeof ContactSchema>;
 
 export default function MemberContactInfo() {
   const [phone, setPhone] = createSignal("");
+  const [avatar, setAvatar] = createSignal<File | null>(null);
   const [emergencyName, setEmergencyName] = createSignal("");
   const [emergencyPhone, setEmergencyPhone] = createSignal("");
   const [error, setError] = createSignal("");
@@ -46,6 +21,7 @@ export default function MemberContactInfo() {
     setSubmitDisabled(true);
 
     const contactData: ContactData = {
+      avatar: avatar(),
       phone: phone(),
       emergencyName: emergencyName(),
       emergencyPhone: emergencyPhone(),
@@ -91,6 +67,24 @@ export default function MemberContactInfo() {
               <FaSolidUser class="w-4 h-4 opacity-70" />
               <input type="text" disabled={true} class="grow" placeholder={user()?.name} />
             </label>
+          </div>
+
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Photo of Face</span>
+            </label>
+            <input
+              onInput={(event: InputEvent) => {
+                const target = event.currentTarget as HTMLInputElement;
+                const file = target.files?.[0] ?? null; // File or null
+                console.log(file);
+                setAvatar(file);
+                console.log(avatar());
+              }}
+              type="file"
+              accept="image/*"
+              capture="user"
+              class="file-input file-input-bordered w-full max-w-xs" />
           </div>
 
           <div class="form-control">

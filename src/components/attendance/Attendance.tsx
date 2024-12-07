@@ -112,7 +112,7 @@ export default function Attendance() {
                           <div class="avatar">
                             <div class="mask mask-squircle h-12 w-12">
                               <img
-                                src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                                src={member.avatarUrl}
                                 alt="Avatar Tailwind CSS Component" />
                             </div>
                           </div>

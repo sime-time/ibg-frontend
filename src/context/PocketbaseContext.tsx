@@ -40,6 +40,7 @@ export interface MemberData {
 }
 
 export interface ContactInfo {
+  avatar: File | null,
   phone: string,
   emergencyName: string,
   emergencyPhone: string,
@@ -63,6 +64,7 @@ export interface MemberRecord extends RecordModel {
   program: string;
   phone_number: string;
   stripe_customer_id: string;
+  avatarUrl: string;
 }
 
 export interface ClassRecord extends RecordModel {
@@ -172,7 +174,8 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const addContactInfo = async (contactInfo: ContactInfo) => {
     try {
-      const memberPhone = {
+      const memberData = {
+        "avatar": contactInfo.avatar,
         "phone_number": contactInfo.phone,
       }
 
@@ -182,7 +185,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
         "member_id": user()?.id
       }
 
-      await pb.collection("member").update(user()?.id, memberPhone);
+      await pb.collection("member").update(user()?.id, memberData);
       await pb.collection("member_emergency").create(emergencyContact);
 
       console.log("Contact info added successfully!");
@@ -261,12 +264,16 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const getMember = async (memberId: string) => {
     const member = await pb.collection("member").getOne<MemberRecord>(memberId);
-    return member;
+    const avatarUrl = member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp";
+    return { ...member, avatarUrl };
   };
 
   const getMembers = async () => {
     const members = await pb.collection("member").getFullList<MemberRecord>();
-    return members;
+    return members.map(member => ({
+      ...member,
+      avatarUrl: member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp",
+    }));
   };
 
   const deleteMember = async (memberId: string) => {

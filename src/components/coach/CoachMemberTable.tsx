@@ -243,8 +243,8 @@ export function MemberTable() {
                         <div class="avatar">
                           <div class="mask mask-squircle h-12 w-12">
                             <img
-                              src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                              alt="Avatar Tailwind CSS Component" />
+                              src={member.avatarUrl}
+                              alt="Member Avatar" />
                           </div>
                         </div>
                         <div>

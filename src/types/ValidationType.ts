@@ -1,6 +1,11 @@
 import * as v from "valibot";
 
 export const CoachEditMemberSchema = v.object({
+  avatar: v.optional(v.pipe(
+    v.file('Please select an image file or take a photo with your camera.'),
+    v.mimeType(['image/png', 'image/jpeg', 'image/heic', 'image/webp'], 'Please select an image file or take a photo with your camera.'),
+    v.maxSize(1024 * 1024 * 10, 'Please select a file smaller than 10MB.'),
+  )),
   name: v.optional(v.pipe(
     v.string('Your name must be in text.'),
     v.nonEmpty('Your name cannot be blank.'),
@@ -130,3 +135,36 @@ export const ClassSchema = v.pipe(
   ),
 );
 export type ClassData = v.InferOutput<typeof ClassSchema>;
+
+export const ContactSchema = v.pipe(v.object({
+  avatar: v.nullable(v.pipe(
+    v.file('Please select an image file or take a photo with your camera.'),
+    v.mimeType(['image/png', 'image/jpeg', 'image/heic', 'image/webp'], 'Please select an image file or take a photo with your camera.'),
+    v.maxSize(1024 * 1024 * 10, 'Please select a file smaller than 10MB.'),
+  )),
+  phone: v.pipe(
+    v.string('You must include your phone number.'),
+    v.maxLength(20, 'The phone number must not exceed 20 characters.'),
+    v.nonEmpty('Please enter your phone number.'),
+  ),
+  emergencyName: v.pipe(
+    v.string('The name must be in text.'),
+    v.nonEmpty('Please enter the name of your emergency contact.'),
+  ),
+  emergencyPhone: v.pipe(
+    v.string("You must include your emergency contact's phone number."),
+    v.maxLength(20, 'The phone number must not exceed 20 characters.'),
+    v.nonEmpty("Please enter your emergency contact's phone number."),
+  ),
+}),
+  v.forward(
+    v.partialCheck(
+      [['phone'], ['emergencyPhone']],
+      (input) => input.phone != input.emergencyPhone,
+      'Your phone number and the emergency number cannot be the same.'
+    ),
+    ['phone']
+  ),
+);
+
+export type ContactData = v.InferOutput<typeof ContactSchema>;
