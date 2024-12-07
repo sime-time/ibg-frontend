@@ -4,7 +4,7 @@ import { FaSolidUser, FaSolidPhone, FaSolidUserDoctor } from 'solid-icons/fa'
 import * as v from "valibot";
 import { usePocket } from "~/context/PocketbaseContext";
 import { SignUpData, SignUpSchema } from "~/types/ValidationType";
-import { ContactData, ContactSchema } from "./member/MemberContactInfo";
+import { ContactSchema, ContactData } from "~/types/ValidationType";
 
 export default function KioskCreateMember() {
   const [firstName, setFirstName] = createSignal("");
@@ -36,6 +36,7 @@ export default function KioskCreateMember() {
     };
 
     const contactData: ContactData = {
+      avatar: null, // no profile picture on creation
       phone: phone(),
       emergencyName: emergencyName(),
       emergencyPhone: emergencyPhone(),

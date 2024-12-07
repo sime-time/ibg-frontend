@@ -155,7 +155,7 @@ export function MemberTable() {
     setSaveButtonDisabled(true);
     setEditError("");
 
-    let updatedValues: CoachEditMemberData = {};
+    let updatedValues: CoachEditMemberData = { avatar: null };
 
     Object.entries(memberToEdit).forEach(([key, field]) => {
       if (field.readyToEdit) {
