@@ -29,6 +29,16 @@ export default function Attendance() {
     }
   });
 
+  const formatDate = (date: Date) => {
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    }).format(date);
+
+    return formattedDate;
+  }
+
   return (
     <div class="w-11/12 xl:w-fit card bg-base-100 shadow-xl p-9">
 
@@ -76,7 +86,7 @@ export default function Attendance() {
         {/* Attendance List */}
         <button onClick={() => setAttendListIsOpen(false)} class="btn btn-sm btn-circle btn-ghost absolute left-2 top-2"><FaSolidArrowLeft class="size-4" /></button>
         <div class="flex flex-col gap-4">
-          <h2 class="text-2xl font-semibold text-center">{attendDate().toDateString()}</h2>
+          <h2 class="text-2xl font-semibold text-center">{formatDate(attendDate())}</h2>
 
           {/* Search Members */}
           <label class="input input-bordered flex items-center gap-2">
