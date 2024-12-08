@@ -102,6 +102,11 @@ export default function Attendance() {
                 const input = event.currentTarget.value;
                 setQuery(input);
               }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.currentTarget.blur(); // Remove focus to hide the keyboard
+                }
+              }}
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
