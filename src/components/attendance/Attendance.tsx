@@ -40,10 +40,10 @@ export default function Attendance() {
   }
 
   return (
-    <div class="w-11/12 xl:w-fit card bg-base-100 shadow-xl p-9">
 
-      <Show when={attendListIsOpen()} fallback={<>
-        {/* Attendance Date */}
+    <Show when={attendListIsOpen()} fallback={<>
+      {/* Attendance Date */}
+      <div class="w-11/12 md:w-2/3 xl:w-fit card bg-base-100 shadow-xl p-9">
         <div class="flex flex-col md:flex-row gap-5 md:gap-x-10 items-start">
           <div class="flex flex-col gap-4 w-full">
             <div>
@@ -79,17 +79,20 @@ export default function Attendance() {
             </div>
           </div>
 
-          <div ref={calendarRef}></div>
+          <div ref={calendarRef} class="self-center"></div>
         </div>
-      </>}>
+      </div>
+    </>}>
 
-        {/* Attendance List */}
+      {/* Attendance List */}
+
+      <div class="w-11/12 md:w-1/3 card bg-base-100 shadow-xl p-2">
         <button onClick={() => setAttendListIsOpen(false)} class="btn btn-sm btn-circle btn-ghost absolute left-2 top-2"><FaSolidArrowLeft class="size-4" /></button>
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4 my-8 justify-center mx-4">
           <h2 class="text-2xl font-semibold text-center">{formatDate(attendDate())}</h2>
 
           {/* Search Members */}
-          <label class="input input-bordered flex items-center gap-2">
+          <label class="input input-bordered flex items-center gap-2 mx-2">
             <input
               type="text"
               class="grow"
@@ -107,7 +110,7 @@ export default function Attendance() {
             </svg>
           </label>
 
-          <div class="overflow-x-auto">
+          <div class="overflow-x-auto whitespace-nowrap block">
             <table class="table">
               <thead>
                 <AttendListHeaders />
@@ -129,25 +132,24 @@ export default function Attendance() {
                           <div>
                             <div class="font-bold">{member.name}</div>
                             <div class="flex gap-1 mt-1">
+                              {/* Show if member has paid 
                               <div>
                                 {member.is_subscribed
                                   ? <span class="badge badge-success">Paid</span>
                                   : <span class="badge badge-error">Not paid</span>
                                 }
-                              </div>
+                              </div> */}
+                              {/* Program */}
+                              <span class="badge badge-neutral">{member.program ? member.program : "N/A"}</span>
                             </div>
                           </div>
                         </div>
                       </td>
 
-                      {/* Program */}
-                      <td>
-                        <span class="badge badge-neutral">{member.program ? member.program : "N/A"}</span>
-                      </td>
 
-                      {/* Check-in */}
+                      {/* Checkbox */}
                       <td>
-                        <label>
+                        <label class="w-full flex justify-end">
                           <input type="checkbox" class="checkbox checkbox-success" />
                         </label>
                       </td>
@@ -161,8 +163,8 @@ export default function Attendance() {
             </table>
           </div>
         </div>
-      </Show>
-    </div>
+      </div>
+    </Show>
   );
 }
 
@@ -170,8 +172,7 @@ function AttendListHeaders() {
   return (
     <tr>
       <th>Name</th>
-      <th></th>
-      <th>Check-in</th>
+      <th class="text-end">Check-in</th>
     </tr>
   );
 }
