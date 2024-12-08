@@ -1,5 +1,5 @@
-import { createSignal, Show, createResource, createEffect, For } from "solid-js";
-import { usePocket } from "~/context/PocketbaseContext";
+import { createSignal, Show, createResource, createEffect, For, onMount } from "solid-js";
+import { usePocket, MemberRecord } from "~/context/PocketbaseContext";
 import { BsCalendarEvent } from "solid-icons/bs";
 import { FaSolidArrowLeft } from "solid-icons/fa";
 import flatpickr from "flatpickr";
@@ -7,9 +7,10 @@ import flatpickr from "flatpickr";
 export default function Attendance() {
   const { getMembers } = usePocket();
   const [members, { mutate, refetch }] = createResource(async () => {
-    return getMembers();
+    return await getMembers();
   });
 
+  const [query, setQuery] = createSignal("");
   const [attendDate, setAttendDate] = createSignal<Date>(new Date());
   const [attendListIsOpen, setAttendListIsOpen] = createSignal<boolean>(false);
 
@@ -97,6 +98,10 @@ export default function Attendance() {
               type="text"
               class="grow"
               placeholder="Type your name"
+              onInput={(event) => {
+                const input = event.currentTarget.value;
+                setQuery(input);
+              }}
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -116,7 +121,7 @@ export default function Attendance() {
                 <AttendListHeaders />
               </thead>
               <tbody>
-                <For each={members()}>
+                <For each={members()?.filter((member) => member.name.toLowerCase().includes(query().toLowerCase()))}>
                   {(member, index) =>
                     <tr>
                       {/* Name */}
