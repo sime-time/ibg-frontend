@@ -86,8 +86,8 @@ export default function Attendance() {
 
       {/* Attendance List */}
 
-      <div class="w-11/12 md:w-1/3 card bg-base-100 shadow-xl p-6">
-        <button onClick={() => setAttendListIsOpen(false)} class="btn btn-sm btn-circle btn-ghost absolute left-3 top-6"><FaSolidArrowLeft class="size-4" /></button>
+      <div class="w-11/12 md:w-1/3 card bg-base-100 shadow-xl px-6 pt-9">
+        <button onClick={() => setAttendListIsOpen(false)} class="btn btn-sm btn-circle btn-ghost absolute left-3 top-9"><FaSolidArrowLeft class="size-4" /></button>
         <div class="flex flex-col gap-4 justify-center">
           <h2 class="text-2xl font-semibold text-center">{formatDate(attendDate())}</h2>
 
