@@ -43,7 +43,7 @@ export default function Attendance() {
 
     <Show when={attendListIsOpen()} fallback={<>
       {/* Attendance Date */}
-      <div class="w-11/12 md:w-fit card bg-base-100 shadow-xl p-9">
+      <div class="w-11/12 md:w-fit card bg-base-100 shadow-xl p-8">
         <div class="flex flex-col md:flex-row gap-5 md:gap-x-10 items-start">
           <div class="flex flex-col gap-4 w-full">
             <div>
@@ -86,7 +86,7 @@ export default function Attendance() {
 
       {/* Attendance List */}
 
-      <div class="w-11/12 md:w-5/6 lg:w-2/3 card bg-base-100 shadow-xl px-6 pt-9">
+      <div class="w-11/12 md:w-5/6 lg:w-2/3 card bg-base-100 shadow-xl px-6 pt-8">
         <button onClick={() => setAttendListIsOpen(false)} class="btn btn-sm btn-circle btn-ghost absolute left-3 md:left-6 top-9"><FaSolidArrowLeft class="size-4" /></button>
         <div class="flex flex-col gap-4 justify-center">
           <h2 class="text-2xl font-semibold text-center">{formatDate(attendDate())}</h2>
