@@ -30,6 +30,8 @@ interface PocketbaseContextProps {
   getClass: (id: string) => Promise<ClassRecord>,
   deleteClass: (classId: string) => Promise<boolean>,
   getAvatarUrl: () => Promise<string>,
+  checkIn: (date: Date, memberId: string) => Promise<boolean>,
+  checkOut: (date: Date, memberId: string) => Promise<boolean>,
 }
 
 export interface MemberData {
@@ -448,8 +450,48 @@ export function PocketbaseContextProvider(props: ParentProps) {
     return avatarUrl;
   };
 
+  const checkIn = async (date: Date, memberId: string) => {
+    // do not include time, we are tracking the attendance for the full day 
+    // including time will make it difficult to search for duplicates
+    date.setHours(0, 0, 0, 0);
+    const utcDate = date.toISOString();
+    const checkInData = {
+      "check_in_date": utcDate,
+      "member_id": memberId,
+    };
+
+    try {
+      // prevent duplicate check-ins 
+      const filter = `member_id="${memberId}" && check_in_date="${utcDate.replace("T", " ")}"`;
+      const duplicate = await pb.collection("attendance").getFirstListItem(filter);
+      console.log(`member ${memberId} already checked-in on ${utcDate.replace("T", " ")}`)
+      return false;
+    } catch (err) {
+      console.log("No duplicate attendance check-in found.")
+    }
+    const record = await pb.collection("attendance").create(checkInData);
+    return true;
+  };
+
+  const checkOut = async (date: Date, memberId: string) => {
+    date.setHours(0, 0, 0, 0);
+    const filterDate = date.toISOString().replace("T", " ");
+
+    // remove attendance record if member already checked in on this date.
+    try {
+      const filter = `member_id="${memberId}" && check_in_date="${filterDate}"`;
+      const record = await pb.collection("attendance").getFirstListItem(filter);
+      await pb.collection("attendance").delete(record.id);
+      return true;
+    } catch (err) {
+      console.log("No attendance check-in for this member on ", filterDate);
+      throw err;
+    }
+  };
+
+
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClassesFromDay, getClass, deleteClass, getAvatarUrl }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClassesFromDay, getClass, deleteClass, getAvatarUrl, checkIn, checkOut }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

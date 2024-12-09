@@ -5,7 +5,7 @@ import { FaSolidArrowLeft } from "solid-icons/fa";
 import flatpickr from "flatpickr";
 
 export default function Attendance() {
-  const { getMembers } = usePocket();
+  const { getMembers, checkIn, checkOut } = usePocket();
   const [members, { mutate, refetch }] = createResource(async () => {
     return await getMembers();
   });
@@ -38,10 +38,19 @@ export default function Attendance() {
     }).format(date);
 
     return formattedDate;
-  }
+  };
+
+  const checkInMember = async (id: string) => {
+    const result = await checkIn(attendDate(), id);
+    console.log("Checked in member: ", result);
+  };
+
+  const checkOutMember = async (id: string) => {
+    const result = await checkOut(attendDate(), id);
+    console.log("Checked out member: ", result)
+  };
 
   return (
-
     <Show when={attendListIsOpen()} fallback={<>
       {/* Attendance Date */}
       <div class="w-11/12 md:w-fit card bg-base-100 shadow-xl p-8">
@@ -86,7 +95,6 @@ export default function Attendance() {
     </>}>
 
       {/* Attendance List */}
-
       <div class="w-11/12 md:w-5/6 lg:w-2/3 card bg-base-100 shadow-xl px-6 pt-8">
         <button onClick={() => setAttendListIsOpen(false)} class="btn btn-sm btn-circle btn-ghost absolute left-3 md:left-6 top-8"><FaSolidArrowLeft class="size-4" /></button>
         <div class="flex flex-col gap-4 justify-center">
@@ -104,7 +112,8 @@ export default function Attendance() {
               }}
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
-                  event.currentTarget.blur(); // Remove focus to hide the keyboard
+                  // Remove focus to hide the keyboard on mobile devices
+                  event.currentTarget.blur();
                 }
               }}
             />
@@ -160,7 +169,11 @@ export default function Attendance() {
                       {/* Checkbox */}
                       <td>
                         <label class="w-full flex justify-end">
-                          <input type="checkbox" class="checkbox checkbox-success" />
+                          <input
+                            type="checkbox"
+                            class="checkbox checkbox-success checkbox-lg"
+                            onChange={(e) => e.target.checked ? checkInMember(member.id) : checkOutMember(member.id)}
+                          />
                         </label>
                       </td>
                     </tr>
