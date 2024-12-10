@@ -5,14 +5,15 @@ import { FaSolidArrowLeft } from "solid-icons/fa";
 import flatpickr from "flatpickr";
 
 export default function Attendance() {
-  const { getMembers, checkIn, checkOut } = usePocket();
-  const [members, { mutate, refetch }] = createResource(async () => {
-    return await getMembers();
-  });
+  const { getMemberAttendance, checkIn, checkOut } = usePocket();
 
   const [query, setQuery] = createSignal("");
   const [attendDate, setAttendDate] = createSignal<Date>(new Date());
   const [attendListIsOpen, setAttendListIsOpen] = createSignal<boolean>(false);
+
+  const [members, { mutate, refetch }] = createResource(async () => {
+    return await getMemberAttendance(attendDate());
+  });
 
   let dateRef!: HTMLInputElement;
   let calendarRef!: HTMLDivElement;
@@ -27,6 +28,7 @@ export default function Attendance() {
         altFormat: "l, F d",
         inline: true,
       });
+      refetch();
     }
   });
 
@@ -151,14 +153,6 @@ export default function Attendance() {
                           <div>
                             <div class="font-bold">{member.name}</div>
                             <div class="flex gap-1 mt-1">
-                              {/* Show if member has paid 
-                              <div>
-                                {member.is_subscribed
-                                  ? <span class="badge badge-success">Paid</span>
-                                  : <span class="badge badge-error">Not paid</span>
-                                }
-                              </div> */}
-                              {/* Program */}
                               <span class="badge badge-neutral">{member.program ? member.program : "N/A"}</span>
                             </div>
                           </div>
@@ -173,6 +167,7 @@ export default function Attendance() {
                             type="checkbox"
                             class="checkbox checkbox-success checkbox-lg"
                             onChange={(e) => e.target.checked ? checkInMember(member.id) : checkOutMember(member.id)}
+                            checked={member.checkedIn}
                           />
                         </label>
                       </td>

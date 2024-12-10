@@ -32,6 +32,7 @@ interface PocketbaseContextProps {
   getAvatarUrl: () => Promise<string>,
   checkIn: (date: Date, memberId: string) => Promise<boolean>,
   checkOut: (date: Date, memberId: string) => Promise<boolean>,
+  getMemberAttendance: (date: Date) => Promise<MemberAttendanceRecord[]>,
 }
 
 export interface MemberData {
@@ -99,6 +100,10 @@ export interface MartialArtRecord extends RecordModel {
   id: string;
   name: string;
   shortname: string;
+}
+
+export interface MemberAttendanceRecord extends MemberRecord {
+  checkedIn: boolean;
 }
 
 const PocketbaseContext = createContext<PocketbaseContextProps>();
@@ -299,6 +304,36 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }));
   };
 
+  const getMemberAttendance = async (date: Date): Promise<MemberAttendanceRecord[]> => {
+    date.setHours(0, 0, 0, 0);
+    const filterDate = date.toISOString().slice(0, 10); // Format as "YYYY-MM-DD"
+    const filter = `check_in_date >= "${filterDate} 00:00:00Z" && check_in_date < "${filterDate} 23:59:59Z"`;
+    const attendanceList = await pb.collection("attendance").getFullList({
+      filter: filter,
+    });
+
+    const members = await getMembers();
+
+    // go through members  
+    // if member is in the attendanceList 
+    // add property to member obj -> checkedIn: true 
+    // otherwise add -> checkedIn: false
+    const hasAttended = (memberId: string) => {
+      for (let i = 0; i < attendanceList.length; i++) {
+        if (attendanceList[i].member_id === memberId) {
+          return true;
+        }
+      }
+      return false;
+    }
+    const memberAttendance = members.map(member => ({
+      ...member,
+      checkedIn: hasAttended(member.id)
+    }));
+
+    return memberAttendance;
+  }
+
   const deleteMember = async (memberId: string) => {
     try {
       if (!userIsAdmin()) {
@@ -491,7 +526,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClassesFromDay, getClass, deleteClass, getAvatarUrl, checkIn, checkOut }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClassesFromDay, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance }} >
       {props.children}
     </PocketbaseContext.Provider>
   );
