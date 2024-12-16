@@ -27,7 +27,7 @@ export function MemberTable() {
     return getMembers();
   });
 
-  // emergency functions 
+  // emergency functions
   const [emergencyName, setEmergencyName] = createSignal("");
   const [emergencyPhone, setEmergencyPhone] = createSignal("");
 
@@ -49,7 +49,7 @@ export function MemberTable() {
     dialog.showModal();
   };
 
-  // delete functions 
+  // delete functions
   const [deleteDisabled, setDeleteDisabled] = createSignal(false);
 
   const [memberToDelete, setMemberToDelete] = createStore({
@@ -84,7 +84,7 @@ export function MemberTable() {
     }
   };
 
-  // edit functions 
+  // edit functions
   const [showEdit, setShowEdit] = createSignal(false);
   const [saveButtonDisabled, setSaveButtonDisabled] = createSignal(false);
   const [editError, setEditError] = createSignal("");
@@ -123,7 +123,7 @@ export function MemberTable() {
   };
 
   const openEditDialog = async (memberId: string) => {
-    // reset values 
+    // reset values
     setShowEdit(false);
     setAllReadyToEdit(false);
     setEmergencyName("");
@@ -180,13 +180,13 @@ export function MemberTable() {
     console.log("updatedValues: ", updatedValues);
 
     try {
-      // validate user input  
+      // validate user input
       const validValues = v.parse(CoachEditMemberSchema, updatedValues);
 
       console.log("validValues: ", validValues);
 
       updateMember(memberId, validValues).then(() => {
-        // clean up 
+        // clean up
         setEmergencyName(memberToEdit.emergencyName.value);
         setEmergencyPhone(memberToEdit.emergencyPhone.value);
         setSaveButtonDisabled(false);
@@ -222,7 +222,7 @@ export function MemberTable() {
           </svg>
         </label>
         <div>
-          <a href="signup-kiosk" class="btn btn-secondary btn-sm items-center"><FaSolidPlus />Member</a>
+          <a href="signup-qr" class="btn btn-secondary btn-sm items-center"><FaSolidPlus />Member</a>
         </div>
       </div>
 
@@ -458,7 +458,7 @@ export function MemberTable() {
                                 <button onClick={() => {
                                   // when re-disabled
                                   if (!memberToEdit.emergencyPhone.readyToEdit) {
-                                    // input field returns to default 
+                                    // input field returns to default
                                     const input = document.getElementById("emergencyPhone-input") as HTMLInputElement;
                                     input.value = emergencyPhone();
                                   }
