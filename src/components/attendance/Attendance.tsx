@@ -1,5 +1,5 @@
 import { createSignal, Show, createResource, createEffect, For, onMount } from "solid-js";
-import { usePocket, MemberRecord } from "~/context/PocketbaseContext";
+import { usePocket } from "~/context/PocketbaseContext";
 import { BsCalendarEvent } from "solid-icons/bs";
 import { FaSolidArrowLeft } from "solid-icons/fa";
 import flatpickr from "flatpickr";
@@ -71,7 +71,7 @@ export default function Attendance() {
                   ref={dateRef}
                   onInput={(event) => {
                     const input = event.currentTarget.value;
-                    // convert the input text into a date object 
+                    // convert the input text into a date object
                     const selectedDate = new Date(`${input} 01:00:00`);
                     if (!isNaN(selectedDate.getDate())) {
                       setAttendDate(selectedDate);
@@ -113,7 +113,7 @@ export default function Attendance() {
                 setQuery(input);
               }}
               onKeyDown={(event) => {
-                if (event.key === "Enter") {
+                if (event.key === "Enter" || event.key === "Escape") {
                   // Remove focus to hide the keyboard on mobile devices
                   event.currentTarget.blur();
                 }

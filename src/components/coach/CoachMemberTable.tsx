@@ -26,6 +26,7 @@ export function MemberTable() {
   const [members, { mutate, refetch }] = createResource(async () => {
     return getMembers();
   });
+  const [queryName, setQueryName] = createSignal("");
 
   // emergency functions
   const [emergencyName, setEmergencyName] = createSignal("");
@@ -208,8 +209,22 @@ export function MemberTable() {
   return (
     <div class="w-11/12 xl:w-2/3 flex flex-col gap-4">
       <div class="flex justify-between">
+        {/* Search Member */}
         <label class="input input-bordered flex items-center gap-2 input-sm">
-          <input type="text" placeholder="Search Member" />
+          <input
+            type="text"
+            placeholder="Search Member"
+            onInput={(event) => {
+              const input = event.currentTarget.value;
+              setQueryName(input);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === "Escape") {
+                // Remove focus to close the keyboard on mobile devices
+                event.currentTarget.blur();
+              }
+            }}
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -234,7 +249,7 @@ export function MemberTable() {
             </thead>
 
             <tbody>
-              <For each={members()}>
+              <For each={members()?.filter((member) => member.name.toLowerCase().includes(queryName().toLowerCase()))}>
                 {(member, index) =>
                   <tr>
                     {/* Name, Avatar, Email */}
@@ -298,7 +313,7 @@ export function MemberTable() {
                               {/* Stripe Subscription Link */}
                               <a href={import.meta.env.VITE_STRIPE_CUSTOMER_URL + memberStripeId()} class="btn grow btn-secondary">
                                 <AiOutlineDollar class="size-6" />
-                                View Subscription
+                                Subscription Details
                               </a>
 
                               <button onClick={() => setShowEdit(true)} class="btn btn-neutral grow w-full">
