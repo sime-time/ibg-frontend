@@ -3,7 +3,8 @@ import { TbClock, TbClockX } from "solid-icons/tb";
 import { FaSolidHandFist } from 'solid-icons/fa'
 import { BsCalendarEvent } from 'solid-icons/bs';
 import { For, Show, onMount, createSignal, createEffect, Accessor } from "solid-js";
-import { usePocket, MartialArtRecord } from "~/context/PocketbaseContext";
+import { usePocket } from "~/context/PocketbaseContext";
+import { MartialArtRecord } from "~/types/UserType";
 import { ClassData, ClassSchema } from "~/types/ValidationType";
 import * as v from "valibot";
 import flatpickr from "flatpickr";
@@ -71,7 +72,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
       defaultDate: today.setHours(8, 0),
       dateFormat: "H:i",
       altInput: true,
-      altFormat: "h:i K", // user sees this format 
+      altFormat: "h:i K", // user sees this format
     });
     setStartHour(8);
     setStartMinute(0);
@@ -84,7 +85,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
       defaultDate: today.setHours(9, 0),
       dateFormat: "H:i",
       altInput: true,
-      altFormat: "h:i K", // user sees this format 
+      altFormat: "h:i K", // user sees this format
     });
     setEndHour(9);
     setStartMinute(0);
@@ -110,7 +111,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
     };
 
     try {
-      // validate user input 
+      // validate user input
       const validClass = v.parse(ClassSchema, newClass);
 
       console.log(validClass.week_day);
@@ -205,7 +206,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           </div>
         </div>
 
-        {/* Date picker 
+        {/* Date picker
         <div class="form-control">
           <label class="label">
             <span class="label-text">Date</span>
@@ -216,7 +217,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
               onInput={(event) => {
                 const input = event.currentTarget.value;
 
-                // convert the input text into a date object 
+                // convert the input text into a date object
                 const selectedDate = new Date(input);
                 if (!isNaN(selectedDate.getDate())) {
                   setClassDate(selectedDate);
@@ -292,7 +293,7 @@ export default function ScheduleNewClass(props: ScheduleNewClassProps) {
           </div>
         </div>
 
-        {/* Recurring? 
+        {/* Recurring?
         <div class="form-control">
           <label class="label">
             <span class="label-text">Recurring Weekly?</span>

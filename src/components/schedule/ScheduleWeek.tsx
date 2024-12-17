@@ -3,12 +3,12 @@ import ScheduleNewClass from "./ScheduleNewClass";
 import ScheduleEditClass from "./ScheduleEditClass";
 import ScheduleClassMenu from "./ScheduleClassMenu";
 import ScheduleDeleteClass from "./ScheduleDeleteClass";
-import Attendance from "./ScheduleAttendance";
+import ScheduleAttendance from "./ScheduleAttendance";
 import { Index, createSignal, onMount } from "solid-js";
 import { FaSolidPlus } from "solid-icons/fa";
 import { For, createResource } from 'solid-js';
-import { ClassRecord, usePocket, MartialArtRecord } from '~/context/PocketbaseContext';
-import ScheduleAttendance from "./ScheduleAttendance";
+import { usePocket } from '~/context/PocketbaseContext';
+import { ClassRecord, MartialArtRecord } from "~/types/UserType";
 
 export default function ScheduleWeek() {
   const { getClasses, getMartialArts } = usePocket();
@@ -25,7 +25,7 @@ export default function ScheduleWeek() {
   const [classId, setClassId] = createSignal("");
 
   // needs to be instantiated outside both the Sched.EditClass and Sched.Day components
-  // dashboard has to reactively know when this dialog is opened 
+  // dashboard has to reactively know when this dialog is opened
   const [openEdit, setOpenEdit] = createSignal<boolean>(false);
   const editClass = (id: string) => {
     setClassId(id);
@@ -34,8 +34,8 @@ export default function ScheduleWeek() {
     dialog.showModal();
   };
 
-  // weekly dashboard needs to reactively know which class to take attendance for 
-  // and know when the attendance dialog is open 
+  // weekly dashboard needs to reactively know which class to take attendance for
+  // and know when the attendance dialog is open
   const [openAttendance, setOpenAttendance] = createSignal<boolean>(false);
   const viewAttendance = (id: string) => {
     setClassId(id);
@@ -50,7 +50,7 @@ export default function ScheduleWeek() {
     dialog.showModal();
   };
 
-  // return all the classes from the database 
+  // return all the classes from the database
   const [classes, { mutate, refetch }] = createResource(async () => {
     return getClasses();
   });
@@ -61,8 +61,8 @@ export default function ScheduleWeek() {
   };
 
   const getDayClasses = (date: Date) => {
-    // create an array of all the classes that happen on that day 
-    // append all classes that are recurring on that week day 
+    // create an array of all the classes that happen on that day
+    // append all classes that are recurring on that week day
     let dayClasses: ClassRecord[] = [];
 
     if (classes() != undefined) {

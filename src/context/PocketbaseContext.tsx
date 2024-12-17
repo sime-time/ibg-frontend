@@ -219,21 +219,22 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
-  const getMember = async (memberId: string) => {
+  const getMember = async (memberId: string): Promise<MemberRecord> => {
+    console.log("getting member...");
     const member = await pb.collection("member").getOne<MemberRecord>(memberId);
-    return {
-      ...member,
-      avatarUrl: member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp"
-    };
+    member.avatarUrl = member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp";
+    return member;
   };
 
-  const getMembers = async () => {
+  const getMembers = async (): Promise<MemberRecord[]> => {
     console.log("getting members...");
-    const members = await pb.collection("member").getFullList<MemberRecord>();
+    const members: MemberRecord[] = await pb.collection("member").getFullList<MemberRecord>();
     return members.map(member => ({
       ...member,
-      avatarUrl: member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp",
-    }));
+      avatarUrl: member.avatar
+        ? pb.files.getUrl(member, member.avatar)
+        : "https://www.gravatar.com/avatar/?d=mp",
+    } as MemberRecord));
   };
 
   interface MemberAttendanceRecord extends MemberRecord {
@@ -248,7 +249,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
       filter: filter,
     });
 
-    const members = await getMembers();
+    const members: MemberRecord[] = await getMembers();
 
     // go through members
     // if member is in the attendanceList
@@ -262,12 +263,10 @@ export function PocketbaseContextProvider(props: ParentProps) {
       }
       return false;
     }
-    const memberAttendance = members.map(member => ({
+    return members.map(member => ({
       ...member,
-      checkedIn: hasAttended(member.id)
-    }));
-
-    return memberAttendance;
+      checkedIn: hasAttended(member.id),
+    } as MemberAttendanceRecord));
   }
 
   const deleteMember = async (memberId: string) => {
@@ -417,7 +416,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const getAvatarUrl = async () => {
     const member = await pb.collection("member").getOne<MemberRecord>(user()?.id);
-    const avatarUrl: string = member.avatarUrl ? pb.files.getUrl(member, member.avatarUrl) : "https://www.gravatar.com/avatar/?d=mp"
+    const avatarUrl: string = member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp"
     return avatarUrl;
   };
 

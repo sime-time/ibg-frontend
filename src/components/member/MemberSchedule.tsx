@@ -1,19 +1,20 @@
 import MemberScheduleDay from "./MemberScheduleDay";
 import { Index } from "solid-js";
 import { createResource } from 'solid-js';
-import { ClassRecord, usePocket } from '~/context/PocketbaseContext';
+import { usePocket } from '~/context/PocketbaseContext';
+import { ClassRecord } from "~/types/UserType";
 
 export default function MemberSchedule() {
   const { getClasses } = usePocket();
 
-  // return all the classes from the database 
+  // return all the classes from the database
   const [classes, { mutate, refetch }] = createResource(async () => {
     return getClasses();
   });
 
   const getDayClasses = (date: Date) => {
-    // create an array of all the classes that happen on that day 
-    // append all classes that are recurring on that week day 
+    // create an array of all the classes that happen on that day
+    // append all classes that are recurring on that week day
     let dayClasses: ClassRecord[] = [];
 
     if (classes() != undefined) {
@@ -57,4 +58,3 @@ export default function MemberSchedule() {
     </div>
   );
 }
-

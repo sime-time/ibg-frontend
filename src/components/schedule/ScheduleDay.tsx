@@ -1,5 +1,5 @@
 import { createMemo, createEffect, For, Setter } from "solid-js";
-import { ClassRecord } from "~/context/PocketbaseContext";
+import { ClassRecord } from "~/types/UserType";
 
 interface ScheduleDayProps {
   date: Date;

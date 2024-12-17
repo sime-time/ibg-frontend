@@ -1,6 +1,6 @@
 import { createResource, For, Show, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
-import { MemberRecord, usePocket } from "~/context/PocketbaseContext";
+import { usePocket } from "~/context/PocketbaseContext";
 import { FaRegularTrashCan, FaSolidPhone, FaSolidUser, FaSolidUserDoctor, FaSolidUserPen, FaSolidPlus } from "solid-icons/fa";
 import { BiSolidEdit, BiRegularMenu } from "solid-icons/bi";
 import { AiOutlineDollar } from 'solid-icons/ai'
@@ -8,6 +8,7 @@ import { IoClose } from "solid-icons/io";
 import { CoachEditMemberData, CoachEditMemberSchema } from "~/types/ValidationType";
 import * as v from "valibot";
 import ContactDialog from "../ContactDialog";
+import { MemberRecord } from "~/types/UserType";
 
 function TableHeaders() {
   return <>

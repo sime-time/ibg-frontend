@@ -1,5 +1,5 @@
 import { createMemo, For } from "solid-js";
-import { ClassRecord } from "~/context/PocketbaseContext";
+import { ClassRecord } from "~/types/UserType";
 
 interface MemberScheduleDayProps {
   date: Date;
@@ -63,4 +63,4 @@ export default function MemberScheduleDay(props: MemberScheduleDayProps) {
       </ul>
     </div >
   );
-} 
+}

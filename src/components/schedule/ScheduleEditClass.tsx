@@ -3,7 +3,8 @@ import { TbClock, TbClockX } from "solid-icons/tb";
 import { FaSolidHandFist } from 'solid-icons/fa'
 import { BsCalendarEvent } from 'solid-icons/bs';
 import { For, Show, createSignal, createEffect, Accessor, Setter } from "solid-js";
-import { usePocket, MartialArtRecord } from "~/context/PocketbaseContext";
+import { usePocket } from "~/context/PocketbaseContext";
+import { MartialArtRecord } from "~/types/UserType";
 import { ClassData, ClassSchema } from "~/types/ValidationType";
 import * as v from "valibot";
 import flatpickr from "flatpickr";
@@ -70,7 +71,7 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
       defaultDate: today.setHours(startHour(), startMinute()),
       dateFormat: "H:i",
       altInput: true,
-      altFormat: "h:i K", // user sees this format 
+      altFormat: "h:i K", // user sees this format
     });
 
     flatpickr(endRef, {
@@ -81,7 +82,7 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
       defaultDate: today.setHours(endHour(), endMinute()),
       dateFormat: "H:i",
       altInput: true,
-      altFormat: "h:i K", // user sees this format 
+      altFormat: "h:i K", // user sees this format
     });
   }
 
@@ -103,7 +104,7 @@ export default function ScheduleEditClass(props: ScheduleEditClassProps) {
     };
 
     try {
-      // validate user input 
+      // validate user input
       const validClass = v.parse(ClassSchema, updatedClass);
 
       const successful: boolean = await updateClass(props.classId(), validClass);

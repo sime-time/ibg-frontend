@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta";
 import { usePocket } from "~/context/PocketbaseContext";
-import { Switch, Match, createEffect, createSignal, onMount } from "solid-js";
+import { Switch, Match, createSignal } from "solid-js";
 import { clientOnly } from "@solidjs/start";
 
 const AccessDenied = clientOnly(() => import("~/components/AccessDenied"));
