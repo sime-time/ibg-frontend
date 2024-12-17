@@ -33,7 +33,7 @@ export default function MemberDashboard() {
 
       const data = await response.json();
       if (response.ok && data.url) {
-        // redirect to customer portal link 
+        // redirect to customer portal link
         window.location.href = data.url;
       }
     } catch (error) {
@@ -50,9 +50,11 @@ export default function MemberDashboard() {
           <div class="flex flex-row gap-3">
             <div class="avatar">
               <div class="mask mask-squircle h-12 w-12">
-                <img
-                  src={avatarUrl()}
-                  alt="Member Avatar" />
+                <Show when={avatarUrl()} fallback={<div class="flex items-center justify-center"><span class="loading loading-spinner loading-md"></span></div>}>
+                  <img
+                    src={avatarUrl()}
+                    alt="Member Avatar" />
+                </Show>
               </div>
             </div>
             <h1 class="card-title text-2xl font-bold">{user()?.name}</h1>

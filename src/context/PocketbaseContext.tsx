@@ -27,7 +27,6 @@ interface PocketbaseContextProps {
   createClass: (newClass: ClassData) => Promise<boolean>,
   updateClass: (classId: string, updatedClass: ClassData) => Promise<boolean>,
   getClasses: () => Promise<ClassRecord[]>,
-  getClassesFromDay: (day: number) => Promise<ClassRecord[]>,
   getClass: (id: string) => Promise<ClassRecord>,
   deleteClass: (classId: string) => Promise<boolean>,
   getAvatarUrl: () => Promise<string>,
@@ -220,14 +219,12 @@ export function PocketbaseContextProvider(props: ParentProps) {
   };
 
   const getMember = async (memberId: string): Promise<MemberRecord> => {
-    console.log("getting member...");
     const member = await pb.collection("member").getOne<MemberRecord>(memberId);
     member.avatarUrl = member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp";
     return member;
   };
 
   const getMembers = async (): Promise<MemberRecord[]> => {
-    console.log("getting members...");
     const members: MemberRecord[] = await pb.collection("member").getFullList<MemberRecord>();
     return members.map(member => ({
       ...member,
@@ -241,7 +238,6 @@ export function PocketbaseContextProvider(props: ParentProps) {
     checkedIn: boolean;
   }
   const getMemberAttendance = async (date: Date): Promise<MemberAttendanceRecord[]> => {
-    console.log("getting member attendance...");
     date.setHours(0, 0, 0, 0);
     const filterDate = date.toISOString().slice(0, 10); // Format as "YYYY-MM-DD"
     const filter = `check_in_date >= "${filterDate} 00:00:00Z" && check_in_date < "${filterDate} 23:59:59Z"`;
@@ -389,22 +385,12 @@ export function PocketbaseContextProvider(props: ParentProps) {
   }
 
   const getClasses = async () => {
+    console.log("getting classes...");
     try {
       const classes = await pb.collection("class").getFullList<ClassRecord>();
       return classes;
     } catch (err) {
       console.error("Error fetching classes: ", err);
-      return [];
-    }
-  };
-
-  const getClassesFromDay = async (day: number) => {
-    // get all classes that occur on this day of the week
-    try {
-      const classes = await pb.collection("class").getFullList<ClassRecord>(100);
-      return classes;
-    } catch (err) {
-      console.error("Error fetching classes", err);
       return [];
     }
   };
@@ -461,7 +447,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClassesFromDay, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

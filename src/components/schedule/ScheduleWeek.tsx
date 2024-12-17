@@ -4,14 +4,17 @@ import ScheduleEditClass from "./ScheduleEditClass";
 import ScheduleClassMenu from "./ScheduleClassMenu";
 import ScheduleDeleteClass from "./ScheduleDeleteClass";
 import ScheduleAttendance from "./ScheduleAttendance";
-import { Index, createSignal, onMount } from "solid-js";
+import { For, createSignal, onMount, createResource, Resource } from "solid-js";
 import { FaSolidPlus } from "solid-icons/fa";
-import { For, createResource } from 'solid-js';
 import { usePocket } from '~/context/PocketbaseContext';
 import { ClassRecord, MartialArtRecord } from "~/types/UserType";
 
-export default function ScheduleWeek() {
-  const { getClasses, getMartialArts } = usePocket();
+interface ScheduleWeekProps {
+  classes: Resource<ClassRecord[]>;
+  refetch: (info?: unknown) => ClassRecord[] | Promise<ClassRecord[] | undefined> | null | undefined;
+}
+export default function ScheduleWeek(props: ScheduleWeekProps) {
+  const { getMartialArts } = usePocket();
 
   // propagate the list of martial arts to be used throughout the dashboard
   // this prevents repeated database calls by setting it on the weekly dashboard
@@ -50,10 +53,6 @@ export default function ScheduleWeek() {
     dialog.showModal();
   };
 
-  // return all the classes from the database
-  const [classes, { mutate, refetch }] = createResource(async () => {
-    return getClasses();
-  });
 
   const openNewClass = () => {
     const dialog = document.getElementById("new-class-dialog") as HTMLDialogElement;
@@ -65,15 +64,15 @@ export default function ScheduleWeek() {
     // append all classes that are recurring on that week day
     let dayClasses: ClassRecord[] = [];
 
-    if (classes() != undefined) {
-      for (let i = 0; i < classes()!.length; i++) {
+    if (props.classes() != undefined) {
+      for (let i = 0; i < props.classes()!.length; i++) {
 
-        const currentClass = classes()?.at(i);
+        const currentClass = props.classes()?.at(i);
 
         if (currentClass!.date === date) {
-          dayClasses.push(classes()![i]);
+          dayClasses.push(props.classes()![i]);
         } else if (currentClass!.is_recurring && currentClass!.week_day === date.getDay()) {
-          dayClasses.push(classes()![i]);
+          dayClasses.push(props.classes()![i]);
         }
       }
     }
@@ -92,11 +91,11 @@ export default function ScheduleWeek() {
       week.push(day);
     }
 
-    return <Index each={week}>
-      {(day, index) => (
-        <ScheduleDay date={day()} classes={getDayClasses(day())} setClassId={setClassId} setOpenEdit={setOpenEdit} />
+    return <For each={week}>
+      {(day) => (
+        <ScheduleDay date={day} classes={getDayClasses(day)} setClassId={setClassId} setOpenEdit={setOpenEdit} />
       )}
-    </Index>;
+    </For>;
   };
 
 
@@ -108,10 +107,10 @@ export default function ScheduleWeek() {
         <button onClick={openNewClass} class="btn btn-secondary btn-circle btn-lg xl:btn-md"><FaSolidPlus /> </button>
       </div>
     </div>
-    <ScheduleNewClass refetch={refetch} martialArtList={martialArtList} />
-    <ScheduleEditClass refetch={refetch} classId={classId} martialArtList={martialArtList} openEdit={openEdit} setOpenEdit={setOpenEdit} />
+    <ScheduleNewClass refetch={props.refetch} martialArtList={martialArtList} />
+    <ScheduleEditClass refetch={props.refetch} classId={classId} martialArtList={martialArtList} openEdit={openEdit} setOpenEdit={setOpenEdit} />
     <ScheduleClassMenu classId={classId} editClass={editClass} deleteClass={deleteClass} viewAttendance={viewAttendance} />
-    <ScheduleDeleteClass refetch={refetch} classId={classId} />
+    <ScheduleDeleteClass refetch={props.refetch} classId={classId} />
     <ScheduleAttendance classId={classId} openAttendance={openAttendance} setOpenAttendance={setOpenAttendance} />
   </>);
 }

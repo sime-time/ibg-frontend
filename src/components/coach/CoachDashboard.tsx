@@ -1,8 +1,9 @@
-import { createSignal, Match, Switch } from "solid-js";
+import { createSignal, Match, Switch, createResource } from "solid-js";
 import { MemberTable } from "./CoachMemberTable";
 import { FaRegularCalendar, FaSolidCalendar, FaSolidListCheck } from 'solid-icons/fa'
 import { RiUserFacesGroupLine, RiUserFacesGroupFill } from 'solid-icons/ri'
 import { BsBarChart, BsBarChartFill } from "solid-icons/bs";
+import { usePocket } from "~/context/PocketbaseContext";
 import ScheduleWeek from "../schedule/ScheduleWeek";
 import Attendance from "../attendance/Attendance";
 import Stats from "../stats/Stats";
@@ -15,6 +16,11 @@ enum View {
 }
 
 export default function CoachDashboard() {
+  const { getClasses } = usePocket();
+  const [classes, { mutate, refetch }] = createResource(async () => {
+    return getClasses();
+  });
+
   const [currentView, setCurrentView] = createSignal(View.Members);
 
   return (
@@ -26,7 +32,7 @@ export default function CoachDashboard() {
           <MemberTable />
         </Match>
         <Match when={currentView() === View.Scheduler}>
-          <ScheduleWeek />
+          <ScheduleWeek classes={classes} refetch={refetch} />
         </Match>
         <Match when={currentView() === View.Stats}>
           <Stats />
