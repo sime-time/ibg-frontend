@@ -385,7 +385,6 @@ export function PocketbaseContextProvider(props: ParentProps) {
   }
 
   const getClasses = async () => {
-    console.log("getting classes...");
     try {
       const classes = await pb.collection("class").getFullList<ClassRecord>();
       return classes;

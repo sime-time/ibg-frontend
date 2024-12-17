@@ -1,5 +1,6 @@
 import { Accessor, Setter, createEffect, createSignal, Show } from "solid-js";
-import { ClassRecord, usePocket } from "~/context/PocketbaseContext";
+import { usePocket } from "~/context/PocketbaseContext";
+import { ClassRecord } from "~/types/UserType";
 import { BsCalendarEvent } from "solid-icons/bs";
 import { IoClose } from "solid-icons/io";
 import flatpickr from "flatpickr";
@@ -92,7 +93,7 @@ export default function ScheduleAttendance(props: ScheduleAttendanceProps) {
                   ref={dateRef}
                   onInput={(event) => {
                     const input = event.currentTarget.value;
-                    // convert the input text into a date object 
+                    // convert the input text into a date object
                     const selectedDate = new Date(input);
                     if (!isNaN(selectedDate.getDate())) {
                       setAttendanceDate(selectedDate);
