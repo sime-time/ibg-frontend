@@ -1,6 +1,7 @@
 import { Accessor, createContext, useContext, createSignal, createEffect, ParentProps, createResource } from "solid-js";
-import Pocketbase, { AuthModel, RecordModel, RecordListOptions, RecordFullListOptions } from "pocketbase";
+import Pocketbase, { AuthModel } from "pocketbase";
 import { ClassData } from "~/types/ValidationType";
+import { MemberData, MemberRecord, ContactInfo, UpdateMemberData, MartialArtRecord, ClassRecord } from "~/types/UserType";
 
 interface PocketbaseContextProps {
   token: Accessor<string>,
@@ -32,80 +33,8 @@ interface PocketbaseContextProps {
   getAvatarUrl: () => Promise<string>,
   checkIn: (date: Date, memberId: string) => Promise<boolean>,
   checkOut: (date: Date, memberId: string) => Promise<boolean>,
-  getMemberAttendance: (date: Date) => Promise<MemberAttendanceRecord[]>,
+  getMemberAttendance: (date: Date) => Promise<MemberRecord[]>,
 }
-
-export interface MemberData {
-  name: string,
-  email: string,
-  emailVisibility: boolean,
-  password: string,
-  passwordConfirm: string
-}
-
-export interface ContactInfo {
-  avatar: File | null,
-  phone: string,
-  emergencyName: string,
-  emergencyPhone: string,
-}
-
-export interface UpdateMemberData {
-  avatar: File | null,
-  name?: string,
-  email?: string,
-  newPassword?: string,
-  oldPassword?: string,
-  phone?: string,
-  emergencyName?: string,
-  emergencyPhone?: string,
-}
-
-// fulfills the properties of the pocketbase update collection function
-export interface UpdateMemberRecord {
-  avatar?: File | null,
-  name?: string,
-  email?: string,
-  password?: string,
-  passwordConfirm?: string,
-  oldPassword?: string,
-  phone_number?: string,
-}
-
-export interface MemberRecord extends RecordModel {
-  id: string;
-  name: string;
-  email: string;
-  is_subscribed: string;
-  program: string;
-  phone_number: string;
-  stripe_customer_id: string;
-  avatarUrl: string;
-}
-
-export interface ClassRecord extends RecordModel {
-  id: string;
-  date: Date;
-  martial_art: string;
-  is_recurring: boolean;
-  active: boolean;
-  start_hour: number;
-  start_minute: number;
-  end_hour: number;
-  end_minute: number;
-  week_day: number;
-}
-
-export interface MartialArtRecord extends RecordModel {
-  id: string;
-  name: string;
-  shortname: string;
-}
-
-export interface MemberAttendanceRecord extends MemberRecord {
-  checkedIn: boolean;
-}
-
 const PocketbaseContext = createContext<PocketbaseContextProps>();
 
 export function PocketbaseContextProvider(props: ParentProps) {
@@ -237,7 +166,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
   const updateMember = async (memberId: string, updatedData: UpdateMemberData) => {
 
     // for avatar, use undefined instead of null
-    // because null will delete the previous avatar 
+    // because null will delete the previous avatar
     let updateMemberRecord = {
       "name": updatedData.name,
       "oldPassword": updatedData.oldPassword,
@@ -251,7 +180,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
       "name": updatedData.emergencyName,
     };
 
-    // update member 
+    // update member
     try {
       await pb.collection("member").update(memberId, updateMemberRecord);
       // update the member's avatar if applicable
@@ -264,7 +193,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
       console.error("Error updating member: ", err)
     }
 
-    // update emergency contact 
+    // update emergency contact
     try {
       const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}"`);
       await pb.collection("member_emergency").update(emergencyRecord.id, updateEmergencyRecord);
@@ -275,7 +204,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   const refreshMember = async () => {
-    // requires a valid record auth to be set 
+    // requires a valid record auth to be set
     try {
       if (pb.authStore.isValid) {
         await testPocketbase()
@@ -292,11 +221,14 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const getMember = async (memberId: string) => {
     const member = await pb.collection("member").getOne<MemberRecord>(memberId);
-    const avatarUrl = member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp";
-    return { ...member, avatarUrl };
+    return {
+      ...member,
+      avatarUrl: member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp"
+    };
   };
 
   const getMembers = async () => {
+    console.log("getting members...");
     const members = await pb.collection("member").getFullList<MemberRecord>();
     return members.map(member => ({
       ...member,
@@ -304,7 +236,11 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }));
   };
 
+  interface MemberAttendanceRecord extends MemberRecord {
+    checkedIn: boolean;
+  }
   const getMemberAttendance = async (date: Date): Promise<MemberAttendanceRecord[]> => {
+    console.log("getting member attendance...");
     date.setHours(0, 0, 0, 0);
     const filterDate = date.toISOString().slice(0, 10); // Format as "YYYY-MM-DD"
     const filter = `check_in_date >= "${filterDate} 00:00:00Z" && check_in_date < "${filterDate} 23:59:59Z"`;
@@ -314,9 +250,9 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
     const members = await getMembers();
 
-    // go through members  
-    // if member is in the attendanceList 
-    // add property to member obj -> checkedIn: true 
+    // go through members
+    // if member is in the attendanceList
+    // add property to member obj -> checkedIn: true
     // otherwise add -> checkedIn: false
     const hasAttended = (memberId: string) => {
       for (let i = 0; i < attendanceList.length; i++) {
@@ -340,7 +276,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
         throw new Error("Deletion cancelled. User is not admin.");
       }
 
-      // cancel stripe subscription 
+      // cancel stripe subscription
       const member = await pb.collection("member").getOne(memberId);
       if (member.is_subscribed) {
         const cancelled = await cancelSubscription(member.stripe_customer_id);
@@ -353,7 +289,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
         console.log("Member has no active subscription");
       }
 
-      // delete emergency contact 
+      // delete emergency contact
       try {
         const emergencyRecord = await getMemberEmergencyContact(memberId);
         await pb.collection("member_emergency").delete(emergencyRecord.id).then(() => {
@@ -395,7 +331,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
     return false;
   };
 
-  // client side needs to use the shortname so the database id is not exposed 
+  // client side needs to use the shortname so the database id is not exposed
   const getMartialArtId = async (shortname: string) => {
     try {
       const record = await pb.collection("martial_art").getFirstListItem(`shortname="${shortname}"`);
@@ -481,12 +417,12 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const getAvatarUrl = async () => {
     const member = await pb.collection("member").getOne<MemberRecord>(user()?.id);
-    const avatarUrl = member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp"
+    const avatarUrl: string = member.avatarUrl ? pb.files.getUrl(member, member.avatarUrl) : "https://www.gravatar.com/avatar/?d=mp"
     return avatarUrl;
   };
 
   const checkIn = async (date: Date, memberId: string) => {
-    // do not include time, we are tracking the attendance for the full day 
+    // do not include time, we are tracking the attendance for the full day
     // including time will make it difficult to search for duplicates
     date.setHours(0, 0, 0, 0);
     const utcDate = date.toISOString();
@@ -496,7 +432,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
     };
 
     try {
-      // prevent duplicate check-ins 
+      // prevent duplicate check-ins
       const filter = `member_id="${memberId}" && check_in_date="${utcDate.replace("T", " ")}"`;
       const duplicate = await pb.collection("attendance").getFirstListItem(filter);
       console.log(`member ${memberId} already checked-in on ${utcDate.replace("T", " ")}`)
