@@ -24,6 +24,8 @@
     "node": ">=18"
   },
   "devDependencies": {
-    "daisyui": "^4.12.13"
+    "@vite-pwa/assets-generator": "^0.2.6",
+    "daisyui": "^4.12.13",
+    "vite-plugin-pwa": "^0.21.1"
   }
 }
