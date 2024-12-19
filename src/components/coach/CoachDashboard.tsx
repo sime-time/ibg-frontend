@@ -46,31 +46,31 @@ export default function CoachDashboard() {
       <div class="btm-nav">
         <button
           onClick={() => setCurrentView(View.Stats)}
-          class={currentView() === View.Stats ? "active" : ""}
+          class={currentView() === View.Stats ? "active" : "opacity-50"}
         >
           {currentView() === View.Stats ? <BsBarChartFill class="size-6" /> : <BsBarChart class="size-6" />}
-          <label class="text-xs opacity-60">Dashboard</label>
+          <label class="text-xs opacity-70">Dashboard</label>
         </button>
         <button
           onClick={() => setCurrentView(View.Members)}
-          class={currentView() === View.Members ? "active" : ""}
+          class={currentView() === View.Members ? "active" : "opacity-50"}
         >
           {currentView() === View.Members ? <RiUserFacesGroupFill class="size-6" /> : <RiUserFacesGroupLine class="size-6" />}
-          <label class="text-xs opacity-60">Members</label>
+          <label class="text-xs opacity-70">Members</label>
         </button>
         <button
           onClick={() => setCurrentView(View.Scheduler)}
-          class={currentView() === View.Scheduler ? "active" : ""}
+          class={currentView() === View.Scheduler ? "active" : "opacity-50"}
         >
           {currentView() === View.Scheduler ? <FaSolidCalendar class="size-6" /> : <FaRegularCalendar class="size-6" />}
-          <label class="text-xs opacity-60">Classes</label>
+          <label class="text-xs opacity-70">Classes</label>
         </button>
         <button
           onClick={() => setCurrentView(View.Attendance)}
-          class={currentView() === View.Attendance ? "active" : ""}
+          class={currentView() === View.Attendance ? "active" : "opacity-50"}
         >
           <FaSolidListCheck class="size-5" />
-          <label class="text-xs opacity-60">Attendance</label>
+          <label class="text-xs opacity-70">Attendance</label>
         </button>
       </div>
 
