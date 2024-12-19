@@ -2,13 +2,15 @@ import { defineConfig } from "@solidjs/start/config";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa"
 
 const vitePWAManifest: Partial<VitePWAOptions> = {
-  injectRegister: null,
   registerType: 'autoUpdate',
+  injectRegister: 'auto',
   includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'maskable-icon-512x512.png'],
   devOptions: {
     enabled: true,
-    type: "module",
   },
+  strategies: 'injectManifest',
+  srcDir: 'src',
+  filename: 'sw.ts',
   manifest: {
     name: "Indy Boxing and Grappling App",
     short_name: "IBG",
