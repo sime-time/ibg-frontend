@@ -3,14 +3,10 @@ import { VitePWA, VitePWAOptions } from "vite-plugin-pwa"
 
 const vitePWAManifest: Partial<VitePWAOptions> = {
   registerType: 'autoUpdate',
-  injectRegister: 'auto',
   includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'maskable-icon-512x512.png'],
   devOptions: {
     enabled: true,
   },
-  strategies: 'injectManifest',
-  srcDir: 'src',
-  filename: 'sw.ts',
   manifest: {
     name: "Indy Boxing and Grappling App",
     short_name: "IBG",
@@ -45,7 +41,7 @@ const vitePWAManifest: Partial<VitePWAOptions> = {
 }
 
 export default defineConfig({
-  ssr: true,
+  ssr: false,
   vite: {
     plugins: [VitePWA(vitePWAManifest)]
   },
