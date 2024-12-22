@@ -4,7 +4,7 @@
   "description": "An app to manage gym memberships.",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#ffffff",
+  "theme_color": "#282a36",
   "background_color": "#282a36",
   "icons": [
     {
