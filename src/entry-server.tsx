@@ -13,7 +13,7 @@ export default createHandler(() => (
           <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
           <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
           <link rel="manifest" href="/manifest.webmanifest" />
-          <meta name="theme-color" content="#282a36" />
+          <meta name="theme-color" content="#1f202a" />
           {assets}
         </head>
         <body>
