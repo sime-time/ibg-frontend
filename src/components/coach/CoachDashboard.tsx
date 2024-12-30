@@ -7,6 +7,7 @@ import { usePocket } from "~/context/PocketbaseContext";
 import ScheduleWeek from "../schedule/ScheduleWeek";
 import Attendance from "../attendance/Attendance";
 import Stats from "../stats/Stats";
+import "./coach.css";
 
 enum View {
   Members = "members",
@@ -43,7 +44,8 @@ export default function CoachDashboard() {
       </Switch>
 
       {/* Bottom Navigation */}
-      <div class="btm-nav">
+      <div class="btm-nav nav-padding">
+        {/*
         <button
           onClick={() => setCurrentView(View.Stats)}
           class={currentView() === View.Stats ? "active" : "opacity-50"}
@@ -51,6 +53,7 @@ export default function CoachDashboard() {
           {currentView() === View.Stats ? <BsBarChartFill class="size-6" /> : <BsBarChart class="size-6" />}
           <label class="text-xs opacity-70">Dashboard</label>
         </button>
+        */}
         <button
           onClick={() => setCurrentView(View.Members)}
           class={currentView() === View.Members ? "active" : "opacity-50"}

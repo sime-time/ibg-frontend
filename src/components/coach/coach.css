@@ -1,0 +1,3 @@
+.nav-padding {
+  margin-bottom: calc(.5rem + env(safe-area-inset-bottom))
+}
