@@ -44,7 +44,7 @@ export default function CoachDashboard() {
       </Switch>
 
       {/* Bottom Navigation */}
-      <div class="btm-nav nav-padding">
+      <div class="btm-nav btm-nav-lg">
         {/*
         <button
           onClick={() => setCurrentView(View.Stats)}
