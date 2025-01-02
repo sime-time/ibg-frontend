@@ -6,6 +6,7 @@ import { clientOnly } from "@solidjs/start";
 const AccessDenied = clientOnly(() => import("~/components/AccessDenied"));
 const MemberContactInfo = clientOnly(() => import("~/components/member/MemberContactInfo"));
 const MemberSubscribe = clientOnly(() => import("~/components/member/MemberSubscribe"));
+const MemberPricingTable = clientOnly((() => import("~/components/member/MemberPricingTable")));
 const MemberDashboard = clientOnly(() => import("~/components/member/MemberDashboard"));
 
 export default function Member() {
@@ -32,7 +33,7 @@ export default function Member() {
           <MemberContactInfo />
         </Match>
         <Match when={!isSubscribed()}>
-          <MemberSubscribe />
+          <MemberPricingTable />
         </Match>
       </Switch>
     </main>

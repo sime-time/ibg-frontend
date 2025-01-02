@@ -13,20 +13,30 @@ export default function MemberSubscribe() {
   const { user } = usePocket();
   const plans = [
     {
-      name: "boxing",
+      name: " competitive boxing",
       price: "70",
       priceId: "price_1Q30Yu06MCKUDe5TaDFKUmwn",
+      img: "/images/boxing-comp.png",
+    },
+    {
+      name: "unlimited boxing",
+      price: "110",
+      priceId: "price_1Q3M2m06MCKUDe5TCJbaFfzR",
+      img: "/images/boxing-unlimited.png",
     },
     {
       name: "jiu-jitsu",
       price: "100",
       priceId: "price_1Q30ZV06MCKUDe5T8hxKMWhK",
+      img: "/images/jiu-jitsu.png",
     },
     {
       name: "mma",
       price: "120",
       priceId: "price_1Q3M2m06MCKUDe5TCJbaFfzR",
-    }
+      img: "/images/mma.png",
+    },
+
   ];
 
   const handleSubmit = (async (e: Event) => {
@@ -34,7 +44,7 @@ export default function MemberSubscribe() {
     setError("");
     setSubmitDisabled(true);
 
-    // use martial art signal to redirect to the correct payment link 
+    // use martial art signal to redirect to the correct payment link
     for (let i = 0; i < plans.length; i++) {
       if (martialArt() === plans[i].name) {
         try {
@@ -54,7 +64,7 @@ export default function MemberSubscribe() {
           console.log(data)
 
           if (response.ok && data.url) {
-            // redirect to the payment page 
+            // redirect to the payment page
             window.location.href = data.url;
           }
         } catch (error) {
@@ -76,7 +86,7 @@ export default function MemberSubscribe() {
               {(plan) => (
                 <Radio value={plan.name}>
                   <div class="flex gap-4 items-center">
-                    <img src={`/images/${plan.name}.png`} alt={plan.name} class="size-16" />
+                    <img src={plan.img} alt={plan.name} class="size-16" />
                     <div class="flex flex-col">
                       <h2 class="text-2xl uppercase font-semibold">{plan.name}</h2>
                       <span class=" font-medium">${plan.price} / month</span>
