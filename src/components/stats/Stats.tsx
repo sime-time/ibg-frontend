@@ -1,7 +1,13 @@
-import MembersAcquired from "./MembersAcquired";
+import MonthlyRevenue from "./MonthlyRevenue";
+import { Resource } from "solid-js";
+import { RevenueData } from "./Revenue";
 
-export default function Stats() {
+interface StatsProps {
+  revenue: Resource<RevenueData | undefined>;
+}
+
+export default function Stats(props: StatsProps) {
   return (
-    <MembersAcquired />
+    <MonthlyRevenue revenue={props.revenue} />
   );
 }

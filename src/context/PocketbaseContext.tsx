@@ -38,7 +38,6 @@ const PocketbaseContext = createContext<PocketbaseContextProps>();
 
 export function PocketbaseContextProvider(props: ParentProps) {
   const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
-
   const [token, setToken] = createSignal(pb.authStore.token);
   const [user, setUser] = createSignal(pb.authStore.model);
 

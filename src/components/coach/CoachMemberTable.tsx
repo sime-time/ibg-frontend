@@ -243,7 +243,7 @@ export function MemberTable() {
       </div>
 
       <div class="overflow-x-auto whitespace-nowrap block">
-        <Show when={!members.loading} fallback={<div class="flex justify-center"><span class="loading loading-spinner loading-md"></span></div>}>
+        <Show when={!members.loading} fallback={<div class="flex justify-center"><span class="loading loading-spinner loading-lg"></span></div>}>
           <table class="table bg-base-100">
             <thead>
               <TableHeaders />
