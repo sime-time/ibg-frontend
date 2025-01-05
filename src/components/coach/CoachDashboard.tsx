@@ -7,9 +7,7 @@ import { usePocket } from "~/context/PocketbaseContext";
 import ScheduleWeek from "../schedule/ScheduleWeek";
 import Attendance from "../attendance/Attendance";
 import Stats from "../stats/Stats";
-import MonthlyRevenue from "../stats/MonthlyRevenue";
 import "./coach.css";
-import { fetchRevenue } from "../stats/Revenue";
 
 enum View {
   Members = "members",
@@ -25,16 +23,8 @@ export default function CoachDashboard() {
     return getClasses();
   });
 
-  // higher-level data load for stats tab
-  const [revenueFetched, setRevenueFetched] = createSignal(false);
-  const [revenue] = createResource(async () => {
-    setRevenueFetched(false);
-    let rev = await fetchRevenue(6);
-    setRevenueFetched(true);
-    return rev;
-  });
+  const [currentView, setCurrentView] = createSignal(View.Stats);
 
-  const [currentView, setCurrentView] = createSignal(View.Members);
   return (
     <div class="w-full flex justify-center mb-20">
 
@@ -47,7 +37,7 @@ export default function CoachDashboard() {
           <ScheduleWeek classes={classes} refetch={refetch} />
         </Match>
         <Match when={currentView() === View.Stats}>
-          <MonthlyRevenue revenue={revenue} fetchCompleted={revenueFetched} />
+          <Stats />
         </Match>
         <Match when={currentView() === View.Attendance}>
           <Attendance />
