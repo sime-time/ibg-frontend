@@ -19,7 +19,6 @@ export default createHandler(() => (
         <body>
           <div id="app">{children}</div>
           {scripts}
-          <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
         </body>
       </html>
     )}

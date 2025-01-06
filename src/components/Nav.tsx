@@ -5,10 +5,9 @@ import LogoutButton from "./ui/LogoutButton";
 function NavMenu() {
   return (
     <>
+      <li><a href="/">Home</a></li>
       <li><a href="/signup">Sign Up</a></li>
       <li><a href="/login">Log In</a></li>
-      <li><a href="/member">Member</a></li>
-      <li><a href="/coach">Coach</a></li>
     </>
   );
 }
@@ -51,7 +50,6 @@ export default function Nav() {
         <Show
           when={
             location.pathname === "/coach" ||
-            location.pathname === "/signup-kiosk" ||
             location.pathname === "/qr-login"
           }
         >

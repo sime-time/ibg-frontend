@@ -23,7 +23,7 @@ export default function CoachDashboard() {
     return getClasses();
   });
 
-  const [currentView, setCurrentView] = createSignal(View.Stats);
+  const [currentView, setCurrentView] = createSignal(View.Members);
 
   return (
     <div class="w-full flex justify-center mb-20">

@@ -7,7 +7,7 @@ import { AiOutlineDollar } from 'solid-icons/ai'
 import { IoClose } from "solid-icons/io";
 import { CoachEditMemberData, CoachEditMemberSchema } from "~/types/ValidationType";
 import * as v from "valibot";
-import ContactDialog from "../ContactDialog";
+import ContactDialog from "./ContactDialog";
 import { MemberRecord } from "~/types/UserType";
 
 function TableHeaders() {

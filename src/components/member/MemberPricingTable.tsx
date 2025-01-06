@@ -1,4 +1,4 @@
-import { onMount, createSignal } from "solid-js";
+import { onMount, createSignal, onCleanup } from "solid-js";
 import { usePocket } from "~/context/PocketbaseContext";
 
 interface ClientSecretResponse {
@@ -10,6 +10,18 @@ export default function MemberPricingTable() {
   const [clientSecret, setClientSecret] = createSignal("");
 
   let divRef!: HTMLDivElement;
+
+  // add essential stripe <script> to page
+  onMount(() => {
+    const script = document.createElement("script");
+    script.src = "https://js.stripe.com/v3/pricing-table.js";
+    script.async = true;
+    document.head.appendChild(script);
+
+    onCleanup(() => {
+      document.head.removeChild(script);
+    });
+  });
 
   onMount(async () => {
     try {
