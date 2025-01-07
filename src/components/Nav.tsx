@@ -59,7 +59,10 @@ export default function Nav() {
         >
           <LogoutButton />
         </Show>
-        <Show when={location.pathname === "/"}>
+        <Show when={
+          location.pathname != "/coach" &&
+          location.pathname != "/member"
+        }>
           <a href="/signup" class="btn btn-primary">Sign Up</a>
           <a href="/login" class="btn btn-outline">Log In</a>
         </Show>

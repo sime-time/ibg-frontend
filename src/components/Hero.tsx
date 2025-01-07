@@ -14,7 +14,7 @@ export default function Hero() {
       </video>
 
       {/* Overlay Content */}
-      <div class="relative gradient-bg py-32 text-center ">
+      <div class="relative gradient-bg py-36 text-center ">
         <div class="max-w-4xl mx-auto text-center flex flex-col gap-20">
           <h1 class="text-4xl md:text-6xl font-bold italic uppercase">
             Train Like A <span class="text-primary">Champion</span>
@@ -22,7 +22,7 @@ export default function Hero() {
           <div>
             <a
               href="/signup"
-              class="btn btn-primary md:btn-lg uppercase"
+              class="btn btn-primary text-lg md:btn-lg uppercase"
             >
               Join Now
             </a>

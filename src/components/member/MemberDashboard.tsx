@@ -15,7 +15,7 @@ export default function MemberDashboard() {
   createEffect(async () => {
     let url: string = await getAvatarUrl();
     setAvatarUrl(url);
-  })
+  });
 
   const handleManageSubscription = (async (e: Event) => {
     e.preventDefault();
