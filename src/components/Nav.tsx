@@ -40,7 +40,7 @@ export default function Nav() {
           </ul>
         </div>
         <a href="/">
-          <img src="/logo.svg" width="100%" height="auto" class="max-w-20" />
+          <img src="/logo.svg" alt="IBG Logo" width="100%" height="auto" class="max-w-20" />
         </a>
       </div>
 
