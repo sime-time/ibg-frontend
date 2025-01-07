@@ -5,7 +5,7 @@ dist
 .vercel
 .netlify
 .vinxi
-.mp4
+*.mp4
 
 # Environment
 .env
