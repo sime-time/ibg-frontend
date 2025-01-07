@@ -43,6 +43,17 @@ export default function MemberScheduleDay(props: MemberScheduleDayProps) {
     }
   };
 
+  const fullClassName = (martialArt: string) => {
+    switch (martialArt) {
+      case "BOX":
+        return "Boxing"
+      case "BJJ":
+        return "Jiu-Jitsu"
+      case "MMA":
+        return "Mixed Marial Arts"
+    }
+  };
+
   return (
     <div class="flex flex-col p-4 min-w-max">
       <h2 class="text-xl font-semibold">{days[props.date.getDay()]}</h2>
@@ -55,7 +66,7 @@ export default function MemberScheduleDay(props: MemberScheduleDayProps) {
               <button
                 class={classButtonStyle(classItem.martial_art)}
               >
-                {`${classItem.martial_art} - ${formatTime(classItem.start_hour, classItem.start_minute)}`}
+                {`${fullClassName(classItem.martial_art)} - ${formatTime(classItem.start_hour, classItem.start_minute)}`}
               </button>
             </li>
           }

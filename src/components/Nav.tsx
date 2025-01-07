@@ -6,8 +6,9 @@ function NavMenu() {
   return (
     <>
       <li><a href="/">Home</a></li>
-      <li><a href="/signup">Sign Up</a></li>
-      <li><a href="/login">Log In</a></li>
+      <li><a href="/our-team">Our Team</a></li>
+      <li><a href="/pricingschedule">Schedule</a></li>
+      <li><a href="/#contact">Contact Us</a></li>
     </>
   );
 }
@@ -20,6 +21,7 @@ export default function Nav() {
       <div class="navbar-start">
         <div class="dropdown">
           <div tabIndex={0} role="button" class="btn btn-ghost lg:hidden">
+            {/* Menu icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
@@ -37,7 +39,9 @@ export default function Nav() {
             <NavMenu />
           </ul>
         </div>
-        <a href="/" class="btn btn-ghost text-xl">IBG</a>
+        <a href="/">
+          <img src="/logo.svg" width="100%" height="auto" class="max-w-20" />
+        </a>
       </div>
 
       <div class="navbar-center hidden lg:flex">
@@ -54,6 +58,10 @@ export default function Nav() {
           }
         >
           <LogoutButton />
+        </Show>
+        <Show when={location.pathname === "/"}>
+          <a href="/signup" class="btn btn-primary">Sign Up</a>
+          <a href="/login" class="btn btn-outline">Log In</a>
         </Show>
       </div>
 

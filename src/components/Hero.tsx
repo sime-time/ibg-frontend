@@ -15,14 +15,14 @@ export default function Hero() {
 
       {/* Overlay Content */}
       <div class="relative gradient-bg py-32 px-6 md:px-12 lg:px-24">
-        <div class="max-w-4xl mx-auto text-center flex flex-col gap-16">
-          <h1 class="text-4xl md:text-6xl font-bold uppercase leading-tight">
+        <div class="max-w-4xl mx-auto text-center flex flex-col gap-20">
+          <h1 class="text-4xl md:text-6xl font-bold italic uppercase">
             Train Like A <span class="text-primary">Champion</span>
           </h1>
           <div>
             <a
-              href="#"
-              class="btn btn-primary uppercase"
+              href="/signup"
+              class="btn btn-primary md:btn-lg uppercase"
             >
               Join Now
             </a>
