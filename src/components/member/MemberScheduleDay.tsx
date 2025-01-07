@@ -51,6 +51,8 @@ export default function MemberScheduleDay(props: MemberScheduleDayProps) {
         return "Jiu-Jitsu"
       case "MMA":
         return "Mixed Marial Arts"
+      default:
+        return "Open Gym"
     }
   };
 
