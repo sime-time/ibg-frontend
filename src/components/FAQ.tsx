@@ -15,14 +15,14 @@ export default function FAQ() {
       answer: "4903 E 23rd St Indianapolis IN 46218",
     },
     {
-      question: "Can I pay membership dues in cash, Zelle, or Cash App?",
+      question: "Can I pay membership dues in Cash App, Zelle, or cash?",
       answer: "Yes! Come in person and talk to one of the coaches about paying for your membership in cash or Zelle. (Our online payment system already allows you to pay with Cash App or debit/credit card).",
     },
   ];
 
   return (
     <section class="bg-slate-950 py-16 px-8 md:px-16 flex justify-center">
-      <div class="flex flex-col gap-6 w-11/12 md:w-5/6">
+      <div class="flex flex-col gap-6 md:w-2/3">
         <h1 class="text-start font-bold text-4xl">Frequently Asked <span class="text-primary">Questions</span></h1>
         <For each={faqItems}>
           {(faq) => (

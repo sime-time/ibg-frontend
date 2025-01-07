@@ -8,7 +8,7 @@ function NavMenu() {
       <li><a href="/">Home</a></li>
       <li><a href="/our-team">Our Team</a></li>
       <li><a href="/pricingschedule">Schedule</a></li>
-      <li><a href="/#contact">Contact Us</a></li>
+      <li><a href="/contact-us">Contact Us</a></li>
     </>
   );
 }
