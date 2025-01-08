@@ -7,12 +7,16 @@ export default function FAQ() {
       answer: "For boxing please bring workout shoes, athletic wear, a jump rope, boxing gloves, and a mouthpiece/cup if you want to spar. For jiu-jitsu, athletic wear and a mouthpiece. Try to arrive 10 minutes before class to prepare.",
     },
     {
+      question: "What are the classes like?",
+      answer: "Boxing classes usually start with multiple rounds of cardio, followed by technique drills and heavy bag work. For competetive boxers, some classes also involve sparring sessions. Feel free to visit us during a class to see what training is like.",
+    },
+    {
       question: "Do you train kids?",
       answer: "We currently offer boxing classes for kids over the age of 8 provided they have parental supervision for the entirety of practice. Jiu-jitsu participants must be over the age of 14. Boxing for kids is $70/month and jiu-jitsu is $100/month.",
     },
     {
       question: "Where are you located?",
-      answer: "4903 E 23rd St Indianapolis IN 46218",
+      answer: (<a href="https://maps.app.goo.gl/o84UTdgM7tfjiras7" target="_blank" class="link">4903 E 23rd St Indianapolis IN 46218</a>),
     },
     {
       question: "Can I pay membership dues in Cash App, Zelle, or cash?",
