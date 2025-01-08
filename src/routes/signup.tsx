@@ -34,7 +34,7 @@ export default function SignUp() {
     }
 
     try {
-      // validate user input 
+      // validate user input
       const validSignUp = v.parse(SignUpSchema, signUpData);
 
       const successful: boolean = await signup(validSignUp);
@@ -60,7 +60,7 @@ export default function SignUp() {
   }
 
   return <>
-    <Title>Sign Up</Title>
+    <Title>Sign Up - Indy Boxing and Grappling</Title>
     <main class="flex items-start justify-center min-h-full mt-4">
       <div class="card bg-base-100 shadow-xl w-fit md:w-96">
         <div class="card-body">

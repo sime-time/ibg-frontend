@@ -9,11 +9,11 @@ export default function Contact() {
         <p class="text-lg leading-relaxed">We always welcome walk-ins. So if you're not sure, or have more questions, just visit the gym for any class and we can help you get the information you need!</p>
       </div>
       <div class="flex flex-col justify-evenly gap-6 md:gap-0">
-        <a href="https://www.instagram.com/indy.boxing/" class="btn btn-lg btn-primary text-sm">
+        <a href="https://www.instagram.com/indy.boxing/" class="btn btn-lg btn-primary text-sm" target="_blank" >
           <FaBrandsInstagram class="size-12" />
           @indy.boxing
         </a>
-        <a href="https://www.facebook.com/IndyBoxingandGrappling" class="btn btn-lg btn-secondary text-sm">
+        <a href="https://www.facebook.com/IndyBoxingandGrappling" class="btn btn-lg btn-secondary text-sm" target="_blank" >
           <FaBrandsSquareFacebook class="size-12" />
           @IndyBoxingandGrappling
         </a>

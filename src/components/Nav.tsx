@@ -2,7 +2,7 @@ import { useLocation } from "@solidjs/router";
 import { Show } from "solid-js";
 import LogoutButton from "./ui/LogoutButton";
 
-function NavMenu() {
+export function NavMenu() {
   return (
     <>
       <li><a href="/">Home</a></li>
