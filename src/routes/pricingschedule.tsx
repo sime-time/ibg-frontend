@@ -1,14 +1,12 @@
 import { Title } from "@solidjs/meta"
 import Footer from "~/components/Footer";
-import MemberSchedule from "~/components/member/MemberSchedule";
+import FullSchedule from "~/components/schedule/readonly/FullSchedule";
 
 export default function Schedule() {
   return (<>
     <Title>Schedule - Indy Boxing and Grappling</Title>
     <main>
-      <section>
-        <MemberSchedule />
-      </section>
+      <FullSchedule />
     </main>
     <Footer />
   </>);

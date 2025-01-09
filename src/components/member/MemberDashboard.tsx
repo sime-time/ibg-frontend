@@ -4,7 +4,7 @@ import { BsCreditCard2BackFill } from 'solid-icons/bs';
 import { FaSolidArrowLeft, FaRegularCalendarDays } from 'solid-icons/fa';
 import LogoutButton from "../ui/LogoutButton";
 import MemberEdit from "./MemberEdit";
-import MemberSchedule from "./MemberSchedule";
+import MemberSchedule from "../schedule/readonly/FullSchedule";
 
 export default function MemberDashboard() {
   const { user, logout, getAvatarUrl } = usePocket();

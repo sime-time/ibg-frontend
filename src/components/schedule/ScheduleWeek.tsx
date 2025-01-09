@@ -100,9 +100,9 @@ export default function ScheduleWeek(props: ScheduleWeekProps) {
 
 
   return (<>
-    <div class="grid grid-cols-1 sm:grid-cols-4 xl:grid-cols-7 gap-3 w-5/6 sm:w-11/12 xl:w-5/6 p-6 card bg-base-100 shadow-xl">
+    <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-3 w-5/6 sm:w-11/12 xl:w-5/6 p-6 card bg-base-100 shadow-xl">
       {loadWeek()}
-      <div class="col-span-1 xl:col-span-7 flex flex-col gap-2 items-center justify-center rounded-lg py-6 border border-neutral">
+      <div class="flex flex-col gap-2 items-center justify-center rounded-lg py-6 border border-neutral">
         <h2 class="text-lg font-semibold text-center">New Class</h2>
         <button onClick={openNewClass} class="btn btn-secondary btn-circle btn-lg xl:btn-md"><FaSolidPlus /> </button>
       </div>

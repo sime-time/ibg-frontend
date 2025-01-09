@@ -1,12 +1,12 @@
 import { createMemo, For } from "solid-js";
 import { ClassRecord } from "~/types/UserType";
 
-interface MemberScheduleDayProps {
-  date: Date;
+interface DayScheduleProps {
+  week_day: number;
   classes: ClassRecord[] | undefined;
 }
 
-export default function MemberScheduleDay(props: MemberScheduleDayProps) {
+export default function DaySchedule(props: DayScheduleProps) {
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const formatTime = (hour: number, minute: number) => {
@@ -14,9 +14,9 @@ export default function MemberScheduleDay(props: MemberScheduleDayProps) {
     const formatMinute: string = minute === 0 ? "" : `:${minute.toString().padStart(2, '0')}`;
     const time = formatHour + formatMinute;
     if (hour < 12) {
-      return `${time} AM`
+      return `${time}am`
     } else {
-      return `${time} PM`
+      return `${time}pm`
     }
   };
 
@@ -32,12 +32,14 @@ export default function MemberScheduleDay(props: MemberScheduleDayProps) {
   });
 
   const classButtonStyle = (martialArt: string) => {
-    const baseStyle = "w-full btn bg-opacity-50";
+    const baseStyle = "w-full btn btn-sm btn-block bg-opacity-50";
     switch (martialArt) {
       case "BOX":
         return `${baseStyle} btn-primary`
       case "BJJ":
         return `${baseStyle} btn-secondary`
+      case "MMA":
+        return `${baseStyle} btn-primary text-purple-200 bg-purple-500 border-purple-700 bg-opacity-30 hover:bg-purple-700 hover:border-purple-700`
       default:
         return `${baseStyle} btn-neutral`
     }
@@ -50,25 +52,22 @@ export default function MemberScheduleDay(props: MemberScheduleDayProps) {
       case "BJJ":
         return "Jiu-Jitsu"
       case "MMA":
-        return "Mixed Marial Arts"
+        return "MMA"
       default:
         return "Open Gym"
     }
   };
 
   return (
-    <div class="flex flex-col p-4 min-w-max">
-      <h2 class="text-xl font-semibold">{days[props.date.getDay()]}</h2>
-      <span class="text-gray-500">{props.date.getDate()}</span>
-      <div class="divider text-neutral-500"></div>
-      <ul class="flex flex-col gap-4 items-center">
+    <div class="flex flex-col p-4 min-w-max gap-3">
+      <h2 class="text-2xl font-semibold uppercase">{days[props.week_day]}</h2>
+      <hr class="border-neutral border-[1px]" />
+      <ul class="flex flex-col gap-3 items-center">
         <For each={sortedClasses()}>
           {(classItem, index) =>
             <li class="w-full">
-              <button
-                class={classButtonStyle(classItem.martial_art)}
-              >
-                {`${fullClassName(classItem.martial_art)} - ${formatTime(classItem.start_hour, classItem.start_minute)}`}
+              <button class={classButtonStyle(classItem.martial_art)}>
+                {`${fullClassName(classItem.martial_art).toUpperCase()} ${formatTime(classItem.start_hour, classItem.start_minute)} - ${formatTime(classItem.end_hour, classItem.end_minute)}`}
               </button>
             </li>
           }
