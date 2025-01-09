@@ -4,7 +4,7 @@ export default function FAQ() {
   const faqItems = [
     {
       question: "What do I need to bring?",
-      answer: "For boxing please bring workout shoes, athletic wear, a jump rope, boxing gloves, and a mouthpiece/cup if you want to spar. For jiu-jitsu, athletic wear and a mouthpiece. Try to arrive 10 minutes before class to prepare.",
+      answer: "For boxing please bring workout shoes, athletic wear, hand wraps, boxing gloves, and a mouthpiece/cup if you want to spar. For jiu-jitsu, athletic wear and a mouthpiece. Try to arrive 10 minutes before class to prepare.",
     },
     {
       question: "What are the classes like?",

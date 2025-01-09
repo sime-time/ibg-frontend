@@ -4,7 +4,7 @@ import { BsCreditCard2BackFill } from 'solid-icons/bs';
 import { FaSolidArrowLeft, FaRegularCalendarDays } from 'solid-icons/fa';
 import LogoutButton from "../ui/LogoutButton";
 import MemberEdit from "./MemberEdit";
-import MemberSchedule from "../schedule/readonly/FullSchedule";
+import FullSchedule from "../schedule/readonly/FullSchedule";
 
 export default function MemberDashboard() {
   const { user, logout, getAvatarUrl } = usePocket();
@@ -72,7 +72,7 @@ export default function MemberDashboard() {
     }>
       <div class="flex flex-col gap-6 w-5/6">
         <button onClick={() => setScheduleIsOpen(false)} class="btn items-center flex md:hidden"><FaSolidArrowLeft />Back</button>
-        <MemberSchedule />
+        <FullSchedule />
         <button onClick={() => setScheduleIsOpen(false)} class="btn items-center flex"><FaSolidArrowLeft />Back</button>
       </div>
     </Show>

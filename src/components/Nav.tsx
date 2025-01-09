@@ -1,5 +1,6 @@
 import { useLocation } from "@solidjs/router";
-import { Show } from "solid-js";
+import { usePocket } from "~/context/PocketbaseContext";
+import { Show, Switch, Match } from "solid-js";
 import LogoutButton from "./ui/LogoutButton";
 
 export function NavMenu() {
@@ -15,6 +16,7 @@ export function NavMenu() {
 
 export default function Nav() {
   const location = useLocation();
+  const { loggedIn, userIsAdmin, userIsMember } = usePocket();
 
   return (
     <nav class="navbar">
@@ -51,21 +53,28 @@ export default function Nav() {
       </div>
 
       <div class="navbar-end flex gap-3">
-        <Show
-          when={
+        <Switch>
+          <Match when={
             location.pathname === "/coach" ||
             location.pathname === "/qr-login"
-          }
-        >
-          <LogoutButton />
-        </Show>
-        <Show when={
-          location.pathname != "/coach" &&
-          location.pathname != "/member"
-        }>
-          <a href="/signup" class="btn btn-primary">Sign Up</a>
-          <a href="/login" class="btn btn-outline">Log In</a>
-        </Show>
+          }>
+            <LogoutButton />
+          </Match>
+          <Match when={
+            !loggedIn() &&
+            location.pathname != "/coach" &&
+            location.pathname != "/member"
+          }>
+            <a href="/signup" class="btn btn-primary">Sign Up</a>
+            <a href="/login" class="btn btn-outline">Log In</a>
+          </Match>
+          <Match when={userIsMember() && location.pathname != "/member"} >
+            <a href="/member" class="btn btn-secondary">Member Dashboard</a>
+          </Match>
+          <Match when={userIsAdmin() && location.pathname != "/coach"}>
+            <a href="/coach" class="btn btn-secondary">Coach Dashboard</a>
+          </Match>
+        </Switch>
       </div>
 
     </nav>
