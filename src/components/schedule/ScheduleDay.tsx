@@ -53,7 +53,7 @@ export default function ScheduleDay(props: ScheduleDayProps) {
       case "BJJ":
         return `${baseStyle} btn-secondary`
       case "MMA":
-        return `${baseStyle} btn-primary text-purple-200 bg-purple-500 border-purple-700 bg-opacity-30 hover:bg-purple-700 hover:border-purple-700`
+        return `${baseStyle} btn-primary text-purple-200 bg-purple-600 border-purple-700 bg-opacity-30 focus:bg-purple-700 hover:bg-purple-700 hover:border-purple-700`
       default:
         return `${baseStyle} btn-neutral`
     }

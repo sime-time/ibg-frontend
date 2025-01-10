@@ -1,7 +1,7 @@
 import { Title } from "@solidjs/meta";
 import Hero from "~/components/Hero";
 import About from "~/components/About";
-import Programs from "~/components/Programs";
+import Plans from "~/components/Plans";
 import Footer from "~/components/Footer";
 import FAQ from "~/components/FAQ";
 import Contact from "~/components/Contact";
@@ -13,7 +13,7 @@ export default function Home() {
       <main>
         <Hero />
         <About />
-        <Programs />
+        <Plans />
         <FAQ />
         <Contact />
         <Footer />

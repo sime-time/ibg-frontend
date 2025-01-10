@@ -11,7 +11,7 @@ export default function Footer() {
             <a href="/">
               <img src="/logo.svg" alt="IBG Logo" width="100%" height="auto" class="max-w-32" />
             </a>
-            <p class="hidden md:block">Elite martial arts gym for competitive athletes featuring attentive, patient coaches.</p>
+            <p class="hidden md:block xl:w-3/4 text-wrap">Elite martial arts gym for competitive athletes featuring attentive, patient coaches.</p>
           </div>
 
           <ul class="leading-loose opacity-70">
@@ -39,10 +39,10 @@ export default function Footer() {
 
           <ul class="leading-loose">
             <li class="font-bold underline">Programs</li>
-            <li><a href="/pricingschedule">Competitive Boxing</a></li>
-            <li><a href="/pricingschedule">Unlimited Boxing</a></li>
-            <li><a href="/pricingschedule">Jiu-Jitsu</a></li>
-            <li><a href="/pricingschedule">Mixed Martial Arts</a></li>
+            <li><a href="/pricingschedule#plans">Competitive Boxing</a></li>
+            <li><a href="/pricingschedule#plans">Unlimited Boxing</a></li>
+            <li><a href="/pricingschedule#plans">Jiu-Jitsu</a></li>
+            <li><a href="/pricingschedule#plans">Mixed Martial Arts</a></li>
           </ul>
         </div>
       </div>
