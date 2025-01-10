@@ -1,4 +1,4 @@
-import { createSignal, Match, Switch, createResource } from "solid-js";
+import { createSignal, Match, Switch, createResource, Suspense, Show } from "solid-js";
 import { MemberTable } from "./CoachMemberTable";
 import { FaRegularCalendar, FaSolidCalendar, FaSolidListCheck } from 'solid-icons/fa'
 import { RiUserFacesGroupLine, RiUserFacesGroupFill } from 'solid-icons/ri'
@@ -6,8 +6,8 @@ import { BsBarChart, BsBarChartFill } from "solid-icons/bs";
 import { usePocket } from "~/context/PocketbaseContext";
 import ScheduleWeek from "../schedule/ScheduleWeek";
 import Attendance from "../attendance/Attendance";
-import Stats from "../stats/Stats";
 import "./coach.css";
+import MonthlyRevenue from "../stats/MonthlyRevenue";
 
 enum View {
   Members = "members",
@@ -23,6 +23,24 @@ export default function CoachDashboard() {
     return getClasses();
   });
 
+  // higher-level data load for stats tab
+  const fetchRevenue = async (monthsAgo: number) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_POCKETBASE_URL}/revenue-data`, {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ monthsAgo }),
+      });
+      if (response.ok) {
+        return response.json();
+      }
+    } catch (error) {
+      console.error("Error fetching revenue (client): ", error);
+      throw error;
+    }
+  };
+  const [revenueData] = createResource(() => fetchRevenue(6));
+
   const [currentView, setCurrentView] = createSignal(View.Members);
 
   return (
@@ -37,7 +55,16 @@ export default function CoachDashboard() {
           <ScheduleWeek classes={classes} refetch={refetch} />
         </Match>
         <Match when={currentView() === View.Stats}>
-          <Stats />
+          <Suspense fallback={
+            <div class="flex flex-col justify-center items-center gap-5">
+              <p>Gathering 6 months of payment data. Please wait...</p>
+              <span class="loading loading-spinner loading-lg"></span>
+            </div>
+          }>
+            <Show when={revenueData()}>
+              <MonthlyRevenue revenueData={revenueData()} />
+            </Show>
+          </Suspense>
         </Match>
         <Match when={currentView() === View.Attendance}>
           <Attendance />

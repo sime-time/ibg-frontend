@@ -1,5 +1,5 @@
 import Chart, { ChartItem } from "chart.js/auto";
-import { createSignal, onMount, Show } from "solid-js";
+import { createEffect } from "solid-js";
 
 const getShortMonthNames = (labels: string[]): string[] => {
   return labels.map(label => {
@@ -9,43 +9,32 @@ const getShortMonthNames = (labels: string[]): string[] => {
   });
 };
 
-export default function MonthlyRevenue() {
-  const [data, setData] = createSignal<number[]>([]);
-  const [labels, setLabels] = createSignal<string[]>([]);
-  const [fetchCompleted, setFetchCompleted] = createSignal(false);
+interface MonthlyRevenueProps {
+  revenueData: Record<string, number>;
+}
 
-  type RevenueData = Record<string, number>;
-
-  const fetchRevenue = async (monthsAgo: number) => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_POCKETBASE_URL}/revenue-data`, {
-        method: "POST",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ monthsAgo }),
-      });
-      if (response.ok) {
-        const revenue: RevenueData = await response.json();
-        setData(Object.values(revenue));
-        const months = getShortMonthNames(Object.keys(revenue));
-        setLabels(months);
-        setFetchCompleted(true);
-      }
-    } catch (error) {
-      console.error("Error fetching revenue (client): ", error);
-    }
-  }
-
+export default function MonthlyRevenue(props: MonthlyRevenueProps) {
   let canvasRef!: HTMLCanvasElement;
-  const makeChart = async () => {
+
+  createEffect(async () => {
+    const data = props.revenueData;
+    if (data && canvasRef) {
+      const values: number[] = Object.values(data);
+      const months = getShortMonthNames(Object.keys(data));
+      makeChart(values, months);
+    }
+  });
+
+  const makeChart = async (chartData: number[], chartLabels: string[]) => {
     const ctx = canvasRef.getContext("2d") as ChartItem;
     new Chart(ctx, {
       type: "line",
       data: {
-        labels: labels(),
+        labels: chartLabels,
         datasets: [
           {
             label: "Monthly Revenue",
-            data: data(),
+            data: chartData,
             borderColor: "#4CAF50", // Softer green line
             backgroundColor: "rgba(76, 175, 80, 0.2)", // Lighter green fill
             borderWidth: 4, // Moderate line thickness
@@ -144,20 +133,12 @@ export default function MonthlyRevenue() {
       },
     });
     // end of chart
-  }
+  };
 
-  onMount(async () => {
-    fetchRevenue(6).then(makeChart);
-  });
+
 
   return (
     <div class="w-full md:w-2/3">
-      <Show when={!fetchCompleted()}>
-        <div class="flex flex-col justify-center items-center gap-5">
-          <p>Gathering 6 months of payment data. Please wait...</p>
-          <span class="loading loading-spinner loading-lg"></span>
-        </div>
-      </Show>
       <canvas ref={canvasRef}></canvas>
     </div >
   );
