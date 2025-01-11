@@ -15,7 +15,7 @@ export default function Footer() {
           </div>
 
           <ul class="leading-loose opacity-70">
-            <li class="font-bold underline">Contact</li>
+            <li class="font-bold underline">Connect</li>
             <li class="flex items-center gap-2">
               <FaSolidLocationDot />
               <a href="https://maps.app.goo.gl/o84UTdgM7tfjiras7" target="_blank">4903 E 23rd St</a>
@@ -49,7 +49,11 @@ export default function Footer() {
 
       <div class="text-center text-sm opacity-70 mt-8">
         <p>&copy; 2025 Indy Boxing and Grappling. All rights reserved.</p>
-        <p>website + app built by <a href="https://www.linkedin.com/in/simeondunn/" target="_blank" class="link">Simeon Dunn</a></p>
+        <div class="flex gap-2 justify-center">
+          <a href="/privacypolicy" class="link">Privacy Policy</a>
+          <a href="/termsconditions" class="link">Terms and Conditions</a>
+        </div>
+        <p class="mt-2">website + app built by <a href="https://www.linkedin.com/in/simeondunn/" target="_blank" class="link">Simeon Dunn</a></p>
       </div>
     </footer>
   );

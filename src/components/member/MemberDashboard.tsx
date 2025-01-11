@@ -7,7 +7,7 @@ import MemberEdit from "./MemberEdit";
 import FullSchedule from "../schedule/readonly/FullSchedule";
 
 export default function MemberDashboard() {
-  const { user, logout, getAvatarUrl } = usePocket();
+  const { user, getAvatarUrl } = usePocket();
   const [buttonsDisabled, setButtonsDisabled] = createSignal(false);
   const [scheduleIsOpen, setScheduleIsOpen] = createSignal(false);
   const [avatarUrl, setAvatarUrl] = createSignal("");

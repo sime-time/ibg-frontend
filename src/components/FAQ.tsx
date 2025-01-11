@@ -8,7 +8,7 @@ export default function FAQ() {
     },
     {
       question: "What are the classes like?",
-      answer: "Boxing classes usually start with multiple rounds of cardio, followed by technique drills and heavy bag work. For competetive boxers, some classes also involve sparring sessions. Feel free to visit us during a class to see what training is like.",
+      answer: "Boxing classes usually start with multiple rounds of cardio, followed by technique drills and heavy bag work. For competitive boxers, some classes also involve sparring sessions. Feel free to visit us during a class to see what training is like.",
     },
     {
       question: "Do you train kids?",

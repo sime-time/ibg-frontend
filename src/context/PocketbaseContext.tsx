@@ -30,7 +30,6 @@ interface PocketbaseContextProps {
   getClass: (id: string) => Promise<ClassRecord>,
   deleteClass: (classId: string) => Promise<boolean>,
   getAvatarUrl: () => Promise<string>,
-  getVideoUrl: () => Promise<string>,
   checkIn: (date: Date, memberId: string) => Promise<boolean>,
   checkOut: (date: Date, memberId: string) => Promise<boolean>,
   getMemberAttendance: (date: Date) => Promise<MemberRecord[]>,
@@ -405,12 +404,6 @@ export function PocketbaseContextProvider(props: ParentProps) {
     return avatarUrl;
   };
 
-  const getVideoUrl = async () => {
-    const video = await pb.collection("video").getFirstListItem(`name="ibg-video"`)
-    const videoUrl: string = video.file ? pb.files.getUrl(video, video.file) : "";
-    return videoUrl;
-  }
-
   const checkIn = async (date: Date, memberId: string) => {
     // do not include time, we are tracking the attendance for the full day
     // including time will make it difficult to search for duplicates
@@ -452,7 +445,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, getVideoUrl, checkIn, checkOut, getMemberAttendance }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance }} >
       {props.children}
     </PocketbaseContext.Provider>
   );
