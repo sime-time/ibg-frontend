@@ -87,7 +87,6 @@ export default function Login() {
 
               <div class="flex justify-between items-center">
                 <h1 class="card-title text-2xl font-bold">Member Login</h1>
-
                 <button onClick={() => setMemberLogin(false)} class="btn btn-circle"><IoClose class="w-5 h-5" /></button>
               </div>
 

@@ -39,10 +39,10 @@ export default function Footer() {
 
           <ul class="leading-loose">
             <li class="font-bold underline">Programs</li>
-            <li><a href="/pricingschedule#plans">Competitive Boxing</a></li>
-            <li><a href="/pricingschedule#plans">Unlimited Boxing</a></li>
-            <li><a href="/pricingschedule#plans">Jiu-Jitsu</a></li>
-            <li><a href="/pricingschedule#plans">Mixed Martial Arts</a></li>
+            <li><a href="/pricingschedule#comp-boxing">Competitive Boxing</a></li>
+            <li><a href="/pricingschedule#unlimited-boxing">Unlimited Boxing</a></li>
+            <li><a href="/pricingschedule#jiu-jitsu">Jiu-Jitsu</a></li>
+            <li><a href="/pricingschedule#mma">Mixed Martial Arts</a></li>
           </ul>
         </div>
       </div>
