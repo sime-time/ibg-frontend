@@ -6,6 +6,8 @@ interface ImportMetaEnv {
   readonly VITE_POCKETBASE_PASSWORD: string;
   readonly VITE_STRIPE_CUSTOMER_URL: string;
   readonly VITE_IBG_VIDEO_URL: string;
+  readonly VITE_PRIVACY_POLICY_URL: string;
+  readonly VITE_TERMS_AND_CONDITIONS_URL: string;
 }
 
 interface ImportMeta {

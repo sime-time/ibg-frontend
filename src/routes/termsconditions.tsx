@@ -6,7 +6,7 @@ export default function TermsConditions() {
     <>
       <Title>Terms and Conditions - Indy Boxing and Grappling</Title>
       <main class="flex justify-center w-full">
-        <img src={"https://ibg-backend-production.up.railway.app/api/files/wfib95m530423hu/xlwnxrpso0xwxyi/terms_and_conditions_ZWnEt27tfc.png"} />
+        <img src={import.meta.env.VITE_TERMS_AND_CONDITIONS_URL} />
       </main>
       <Footer />
     </>
