@@ -6,7 +6,6 @@ import { BsBarChart, BsBarChartFill } from "solid-icons/bs";
 import { usePocket } from "~/context/PocketbaseContext";
 import ScheduleWeek from "../schedule/ScheduleWeek";
 import Attendance from "../attendance/Attendance";
-import "./coach.css";
 import MonthlyRevenue from "../stats/MonthlyRevenue";
 
 enum View {
