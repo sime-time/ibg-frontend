@@ -33,6 +33,7 @@ interface PocketbaseContextProps {
   checkIn: (date: Date, memberId: string) => Promise<boolean>,
   checkOut: (date: Date, memberId: string) => Promise<boolean>,
   getMemberAttendance: (date: Date) => Promise<MemberRecord[]>,
+  authWithGoogle: () => Promise<void>,
 }
 const PocketbaseContext = createContext<PocketbaseContextProps>();
 
@@ -443,9 +444,14 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
+  const authWithGoogle = async () => {
+    logout();
+    const authData = await pb.collection("member").authWithOAuth2({ provider: "google" });
+  };
+
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance, authWithGoogle }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

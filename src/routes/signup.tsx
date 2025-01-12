@@ -1,10 +1,12 @@
 import { createSignal, Show } from "solid-js";
 import { Title } from "@solidjs/meta";
 import { FaSolidEnvelope } from 'solid-icons/fa'
+import { usePocket } from "~/context/PocketbaseContext";
 import EmailSignUp from "~/components/auth/EmailSignUp";
 import "../components/auth/googleauth.css"
 
 export default function SignUp() {
+  const { authWithGoogle } = usePocket();
   const [openEmailSignUp, setOpenEmailSignUp] = createSignal(false);
 
   return <>
@@ -16,7 +18,7 @@ export default function SignUp() {
             <h1 class="card-title text-2xl font-bold mb-3">Sign Up</h1>
             <div class="flex flex-col gap-4">
 
-              <button class="gsi-material-button">
+              <button class="gsi-material-button" onClick={authWithGoogle}>
                 <div class="gsi-material-button-state"></div>
                 <div class="gsi-material-button-content-wrapper">
                   <div class="gsi-material-button-icon">
