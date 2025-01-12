@@ -61,10 +61,7 @@ export default function EmailSignUp() {
   return (
     <div class="card bg-base-100 shadow-xl w-fit md:w-96">
       <div class="card-body">
-        <div class="flex justify-between items-center">
-          <h1 class="card-title text-2xl font-bold">Sign Up</h1>
-          <button onClick={() => location.reload()} class="btn btn-circle"><IoClose class="w-5 h-5" /></button>
-        </div>
+        <h1 class="card-title text-2xl font-bold">Sign Up</h1>
         <form onSubmit={handleSignUp} class="flex flex-col gap-4">
           <div class="form-control">
             <label class="label">
