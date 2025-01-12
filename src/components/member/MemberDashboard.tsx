@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Show } from "solid-js";
+import { createEffect, createSignal, Show, onMount } from "solid-js";
 import { usePocket } from "~/context/PocketbaseContext";
 import { BsCreditCard2BackFill } from 'solid-icons/bs';
 import { FaSolidArrowLeft, FaRegularCalendarDays } from 'solid-icons/fa';
@@ -14,6 +14,12 @@ export default function MemberDashboard() {
   const [avatarUrl, setAvatarUrl] = createSignal("");
 
   createEffect(async () => {
+    console.log("refetching avatar url...");
+    let url: string = await getAvatarUrl();
+    setAvatarUrl(url);
+  });
+
+  onMount(async () => {
     let url: string = await getAvatarUrl();
     setAvatarUrl(url);
   });
@@ -76,7 +82,9 @@ export default function MemberDashboard() {
           <LogoutButton />
         </div>
       </div>
-      <EmailVerifyToast email={user()?.email} />
+      <Show when={!user()?.verified}>
+        <EmailVerifyToast email={user()?.email} />
+      </Show>
     </Show>
   );
 }
