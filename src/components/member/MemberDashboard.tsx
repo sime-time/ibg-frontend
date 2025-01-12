@@ -5,6 +5,7 @@ import { FaSolidArrowLeft, FaRegularCalendarDays } from 'solid-icons/fa';
 import LogoutButton from "../ui/LogoutButton";
 import MemberEdit from "./MemberEdit";
 import FullSchedule from "../schedule/readonly/FullSchedule";
+import EmailVerifyToast from "../auth/EmailVerifyToast";
 
 export default function MemberDashboard() {
   const { user, getAvatarUrl } = usePocket();
@@ -44,7 +45,13 @@ export default function MemberDashboard() {
   });
 
   return (
-    <Show when={scheduleIsOpen()} fallback={
+    <Show when={!scheduleIsOpen()} fallback={
+      <div class="flex flex-col gap-6 w-5/6">
+        <button onClick={() => setScheduleIsOpen(false)} class="btn items-center flex md:hidden"><FaSolidArrowLeft />Back</button>
+        <FullSchedule />
+        <button onClick={() => setScheduleIsOpen(false)} class="btn items-center flex"><FaSolidArrowLeft />Back</button>
+      </div>
+    }>
       <div class="card bg-base-100 shadow-xl mx-4 my-1 w-full md:w-96">
         <div class="card-body flex flex-col gap-5">
           <div class="flex flex-row gap-3">
@@ -69,12 +76,7 @@ export default function MemberDashboard() {
           <LogoutButton />
         </div>
       </div>
-    }>
-      <div class="flex flex-col gap-6 w-5/6">
-        <button onClick={() => setScheduleIsOpen(false)} class="btn items-center flex md:hidden"><FaSolidArrowLeft />Back</button>
-        <FullSchedule />
-        <button onClick={() => setScheduleIsOpen(false)} class="btn items-center flex"><FaSolidArrowLeft />Back</button>
-      </div>
+      <EmailVerifyToast email={user()?.email} />
     </Show>
   );
 }

@@ -33,6 +33,7 @@ interface PocketbaseContextProps {
   checkIn: (date: Date, memberId: string) => Promise<boolean>,
   checkOut: (date: Date, memberId: string) => Promise<boolean>,
   getMemberAttendance: (date: Date) => Promise<MemberRecord[]>,
+  requestVerification: (email: string) => Promise<boolean>,
 }
 const PocketbaseContext = createContext<PocketbaseContextProps>();
 
@@ -62,6 +63,8 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
     await pb.collection("member").create(newMember);
     console.log("New member created: ", newMember.name);
+    console.log("Sending verification email to:", newMember.email);
+    await pb.collection("member").requestVerification(newMember.email);
     return await loginMember(newMember.email, newMember.password);
   };
 
@@ -443,9 +446,13 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
+  const requestVerification = async (email: string) => {
+    return await pb.collection("member").requestVerification(email);
+  }
+
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance, requestVerification }} >
       {props.children}
     </PocketbaseContext.Provider>
   );
