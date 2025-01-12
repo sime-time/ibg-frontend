@@ -35,6 +35,7 @@ interface PocketbaseContextProps {
   checkOut: (date: Date, memberId: string) => Promise<boolean>,
   getMemberAttendance: (date: Date) => Promise<MemberRecord[]>,
   requestVerification: (email: string) => Promise<boolean>,
+  requestEmailChange: (email: string) => Promise<{ success: boolean; message: string; }>,
 }
 const PocketbaseContext = createContext<PocketbaseContextProps>();
 
@@ -486,8 +487,40 @@ export function PocketbaseContextProvider(props: ParentProps) {
     return await pb.collection("member").requestVerification(email);
   };
 
+  const requestEmailChange = async (email: string) => {
+    try {
+      if (!loggedIn()) {
+        return {
+          success: false,
+          message: "User is not logged in",
+        }
+      }
+
+      // check if email is the same as current email
+      if (email == user()?.email) {
+        return {
+          success: false,
+          message: `New email cannot be the same as current email: ${user()?.email}`,
+        }
+      }
+
+      await pb.collection("member").requestEmailChange(email);
+      return {
+        success: true,
+        message: `Email change request sent to ${email}`
+      };
+
+    } catch (err) {
+      console.error("Email change request failed: ", err);
+    }
+    return {
+      success: false,
+      message: "Email request failed to send"
+    };
+  }
+
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updatePassword, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance, requestVerification }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updatePassword, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance, requestVerification, requestEmailChange }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

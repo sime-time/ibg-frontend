@@ -7,6 +7,7 @@ import MemberEdit from "./MemberEdit";
 import MemberChangePassword from "./MemberChangePassword";
 import FullSchedule from "../schedule/readonly/FullSchedule";
 import EmailVerifyToast from "../auth/EmailVerifyToast";
+import MemberChangeEmail from "./MemberChangeEmail";
 
 export default function MemberDashboard() {
   const { user, getAvatarUrl } = usePocket();
@@ -74,6 +75,7 @@ export default function MemberDashboard() {
             {buttonsDisabled() ? <span class="loading loading-spinner loading-md"></span> : <><BsCreditCard2BackFill class="size-5" /> Manage Subscription</>}
           </button>
           <MemberEdit />
+          <MemberChangeEmail />
           <MemberChangePassword />
           <LogoutButton />
         </div>
