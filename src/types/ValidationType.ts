@@ -197,24 +197,29 @@ export type MemberEditData = v.InferOutput<typeof MemberEditSchema>;
 
 export const MemberPasswordSchema = v.pipe(
   v.object({
-    newPassword: v.pipe(
-      v.string('Your new password must be a string of characters.'),
-      v.nonEmpty('Your new password cannot be blank'),
-      v.minLength(8, 'Your new password must have 8 characters or more.')
-    ),
     oldPassword: v.pipe(
       v.string('Your password must be a string of characters.'),
       v.nonEmpty('Your password cannot be blank.'),
       v.minLength(8, 'Your password must have 8 characters or more.')
     ),
-  }),
-  v.forward(
-    v.partialCheck(
-      [['newPassword'], ['oldPassword']],
-      (input) => !input.oldPassword || input.newPassword != input.oldPassword,
-      'Your new password cannot be the same as your old password.'
+    newPassword: v.pipe(
+      v.string('Your new password must be a string of characters.'),
+      v.nonEmpty('Your new password cannot be blank'),
+      v.minLength(8, 'Your new password must have 8 characters or more.')
     ),
-    ['oldPassword']
+    newPasswordConfirm: v.pipe(
+      v.string('Your new password must be a string of characters.'),
+      v.nonEmpty('Your password confirmation cannot be blank'),
+      v.minLength(8, 'Your new password must have 8 characters or more.')
+    ),
+  }),
+  v.check(
+    (input) => !input.oldPassword || input.newPassword != input.oldPassword,
+    'Your new password cannot be the same as your old password.'
+  ),
+  v.check(
+    (input) => input.newPassword === input.newPasswordConfirm,
+    'The new password fields do not match.'
   ),
 );
 export type MemberPasswordData = v.InferOutput<typeof MemberPasswordSchema>;

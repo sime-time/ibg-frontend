@@ -4,6 +4,7 @@ import { BsCreditCard2BackFill } from 'solid-icons/bs';
 import { FaSolidArrowLeft, FaRegularCalendarDays } from 'solid-icons/fa';
 import LogoutButton from "../ui/LogoutButton";
 import MemberEdit from "./MemberEdit";
+import MemberChangePassword from "./MemberChangePassword";
 import FullSchedule from "../schedule/readonly/FullSchedule";
 import EmailVerifyToast from "../auth/EmailVerifyToast";
 
@@ -57,7 +58,7 @@ export default function MemberDashboard() {
           <div class="flex flex-row gap-3">
             <div class="avatar">
               <div class="mask mask-squircle h-12 w-12">
-                <Show when={avatarUrl()} fallback={<div class="flex items-center justify-center"><span class="loading loading-spinner loading-md"></span></div>}>
+                <Show when={avatarUrl() != ""} fallback={<div class="flex items-center justify-center"><span class="loading loading-spinner loading-md"></span></div>}>
                   <img
                     src={avatarUrl()}
                     alt="Member Avatar" />
@@ -73,6 +74,7 @@ export default function MemberDashboard() {
             {buttonsDisabled() ? <span class="loading loading-spinner loading-md"></span> : <><BsCreditCard2BackFill class="size-5" /> Manage Subscription</>}
           </button>
           <MemberEdit />
+          <MemberChangePassword />
           <LogoutButton />
         </div>
       </div>

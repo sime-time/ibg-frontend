@@ -1,7 +1,7 @@
 import { Accessor, createContext, useContext, createSignal, createEffect, ParentProps } from "solid-js";
 import Pocketbase, { AuthModel } from "pocketbase";
-import { ClassData } from "~/types/ValidationType";
-import { MemberData, MemberRecord, ContactInfo, UpdateMemberData, MartialArtRecord, ClassRecord } from "~/types/UserType";
+import { ClassData, MemberPasswordData } from "~/types/ValidationType";
+import { MemberData, MemberRecord, ContactInfo, UpdateMemberData, MartialArtRecord, ClassRecord, PasswordUpdateResult } from "~/types/UserType";
 
 interface PocketbaseContextProps {
   token: Accessor<string>,
@@ -17,6 +17,7 @@ interface PocketbaseContextProps {
   refreshMember: () => Promise<void>,
   getEmergencyContact: () => Promise<{ phone: string; name: string; }>,
   getMemberEmergencyContact: (memberId: string) => Promise<{ id: string, phone: string; name: string; }>,
+  updatePassword: (memberId: string, p: MemberPasswordData) => Promise<PasswordUpdateResult>
   updateMember: (memberId: string, updatedData: UpdateMemberData) => Promise<void>,
   getMember: (memberId: string) => Promise<MemberRecord>,
   getMembers: () => Promise<MemberRecord[]>,
@@ -164,8 +165,46 @@ export function PocketbaseContextProvider(props: ParentProps) {
     };
   }
 
-  const updateMember = async (memberId: string, updatedData: UpdateMemberData) => {
+  const updatePassword = async (memberId: string, p: MemberPasswordData) => {
 
+    let result: PasswordUpdateResult;
+
+    // determine if old password is correct
+    try {
+      await pb.collection("member").authWithPassword(user()?.email, p.oldPassword);
+    } catch (err) {
+      console.error("Old password is incorrect", err);
+      result = {
+        success: false,
+        message: "Current password is incorrect",
+      }
+      return result;
+    }
+
+    let updateMemberPassword = {
+      "password": p.newPassword,
+      "passwordConfirm": p.newPasswordConfirm,
+      "oldPassword": p.oldPassword,
+    };
+
+    // try to update the password
+    try {
+      await pb.collection("member").update(memberId, updateMemberPassword);
+      result = {
+        success: true,
+        message: "Password updated successfully!",
+      }
+    } catch (err) {
+      console.error("Error updating password:", err);
+      result = {
+        success: false,
+        message: "Error updating password",
+      }
+    }
+    return result;
+  }
+
+  const updateMember = async (memberId: string, updatedData: UpdateMemberData) => {
     // for avatar, use undefined instead of null
     // because null will delete the previous avatar
     let updateMemberRecord = {
@@ -445,11 +484,10 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const requestVerification = async (email: string) => {
     return await pb.collection("member").requestVerification(email);
-  }
-
+  };
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance, requestVerification }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updatePassword, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance, requestVerification }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

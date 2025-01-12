@@ -143,7 +143,7 @@ export default function MemberEdit() {
         </form>
         <div class="modal-box">
           <form method="dialog">
-            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"><IoClose class="size-5" /></button>
           </form>
 
           <h3 class="font-bold text-lg">Edit Profile</h3>
@@ -322,7 +322,7 @@ export default function MemberEdit() {
           <div class="modal-action">
             <form method="dialog" class="flex gap-4 w-full">
               <button onClick={handleSave} disabled={saveDisabled()} class="btn btn-secondary flex-1">
-                {saveDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Save Changes"}
+                {saveDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Save"}
               </button>
               <button class="btn flex-1">Cancel</button>
             </form>

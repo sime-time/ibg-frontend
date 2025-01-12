@@ -24,8 +24,6 @@ export interface UpdateMemberData {
   avatar: File | null,
   name?: string,
   email?: string,
-  newPassword?: string,
-  oldPassword?: string,
   phone?: string,
   emergencyName?: string,
   emergencyPhone?: string,
@@ -71,4 +69,9 @@ export interface MartialArtRecord extends RecordModel {
   id: string;
   name: string;
   shortname: string;
+}
+
+export interface PasswordUpdateResult {
+  success: boolean;
+  message: string;
 }
