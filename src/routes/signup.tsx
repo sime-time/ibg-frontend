@@ -28,12 +28,14 @@ export default function SignUp() {
                       <path fill="none" d="M0 0h48v48H0z"></path>
                     </svg>
                   </div>
-                  <span class="gsi-material-button-contents">Continue with Google</span>
-                  <span style="display: none;">Continue with Google</span>
+                  <span class="gsi-material-button-contents">Sign up with Google</span>
+                  <span style="display: none;">Sign up with Google</span>
                 </div>
               </button>
 
-              <button class="btn btn-neutral flex gap-3" onClick={() => setOpenEmailSignUp(true)}><FaSolidEnvelope class="w-5 h-5 opacity-70" /> Continue with Email</button>
+              <div class="divider">OR</div>
+
+              <button class="btn btn-neutral flex gap-3" onClick={() => setOpenEmailSignUp(true)}><FaSolidEnvelope class="w-5 h-5 opacity-70" />Sign up with Email</button>
             </div>
           </div>
         </div>
