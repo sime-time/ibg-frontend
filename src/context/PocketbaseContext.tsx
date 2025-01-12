@@ -1,4 +1,4 @@
-import { Accessor, createContext, useContext, createSignal, createEffect, ParentProps, createResource } from "solid-js";
+import { Accessor, createContext, useContext, createSignal, createEffect, ParentProps } from "solid-js";
 import Pocketbase, { AuthModel } from "pocketbase";
 import { ClassData } from "~/types/ValidationType";
 import { MemberData, MemberRecord, ContactInfo, UpdateMemberData, MartialArtRecord, ClassRecord } from "~/types/UserType";
@@ -170,9 +170,6 @@ export function PocketbaseContextProvider(props: ParentProps) {
     // because null will delete the previous avatar
     let updateMemberRecord = {
       "name": updatedData.name,
-      "oldPassword": updatedData.oldPassword,
-      "password": updatedData.newPassword,
-      "passwordConfirm": updatedData.newPassword,
       "phone_number": updatedData.phone,
     };
 

@@ -16,7 +16,7 @@ export default function EmailVerifyToast(props: EmailVerifyToastProps) {
     try {
       const sent: boolean = await requestVerification(email);
       if (sent) {
-        const resendDiv = document.createElement("div");
+        const resendDiv: HTMLDivElement = document.createElement("div");
         resendDiv.className = "alert alert-success text-sm md:text-base";
         resendDiv.textContent = "Verification email resent successfuly!";
         toastRef.appendChild(resendDiv);
@@ -28,7 +28,7 @@ export default function EmailVerifyToast(props: EmailVerifyToastProps) {
       }
     } catch (err) {
       console.error("Email resend failed: ", err);
-      const errorDiv = document.createElement("div");
+      const errorDiv: HTMLDivElement = document.createElement("div");
       errorDiv.className = "alert alert-error text-sm md:text-base";
       errorDiv.textContent = "Failed to resend the verification email.";
       toastRef.appendChild(errorDiv);
@@ -43,12 +43,12 @@ export default function EmailVerifyToast(props: EmailVerifyToastProps) {
   return (
     <Show when={showToast()}>
       <div ref={toastRef} class="toast toast-bottom md:toast-top toast-center md:toast-end">
-        <div class="alert alert-warning flex flex-col items-start text-sm md:text-base">
+        <div class="alert alert-warning flex flex-col items-start text-sm md:text-base text-start">
           <div class="flex justify-between w-full">
             <strong>Please verify your email.</strong>
             <button onClick={() => setShowToast(false)}><IoClose class="w-5 h-5" /></button>
           </div>
-          <span>We've sent a verification email to: {props.email}</span>
+          <span class="text-wrap">We've sent a verification email to: {props.email}</span>
           <span>Didn't receive the email? <button onClick={() => handleResendEmail(props.email)} class="link">Resend verification email</button></span>
         </div>
       </div>

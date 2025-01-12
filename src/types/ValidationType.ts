@@ -168,41 +168,45 @@ export const ContactSchema = v.pipe(v.object({
 );
 export type ContactData = v.InferOutput<typeof ContactSchema>;
 
-export const MemberEditSchema = v.pipe(
+export const MemberEditSchema = v.object({
+  avatar: v.nullable(v.pipe(
+    v.file('Please select an image file or take a photo with your camera.'),
+    v.mimeType(['image/png', 'image/jpeg', 'image/heic', 'image/webp'], 'Please select an image file or take a photo with your camera.'),
+    v.maxSize(1024 * 1024 * 5, 'Please select a file smaller than 5MB.'),
+  )),
+  name: v.optional(v.pipe(
+    v.string('Your name must be in text.'),
+    v.nonEmpty('Your name cannot be blank.'),
+  )),
+  phone: v.optional(v.pipe(
+    v.string('You must include your phone number.'),
+    v.maxLength(20, 'The phone number must not exceed 20 characters.'),
+    v.nonEmpty('Your phone number cannot be blank.'),
+  )),
+  emergencyName: v.optional(v.pipe(
+    v.string('The name must be in text.'),
+    v.nonEmpty("The emergency contact's name cannot be blank"),
+  )),
+  emergencyPhone: v.optional(v.pipe(
+    v.string("You must include your emergency contact's phone number."),
+    v.maxLength(20, 'The phone number must not exceed 20 characters.'),
+    v.nonEmpty("Your emergency contact's phone number cannot be blank."),
+  )),
+});
+export type MemberEditData = v.InferOutput<typeof MemberEditSchema>;
+
+export const MemberPasswordSchema = v.pipe(
   v.object({
-    avatar: v.nullable(v.pipe(
-      v.file('Please select an image file or take a photo with your camera.'),
-      v.mimeType(['image/png', 'image/jpeg', 'image/heic', 'image/webp'], 'Please select an image file or take a photo with your camera.'),
-      v.maxSize(1024 * 1024 * 5, 'Please select a file smaller than 5MB.'),
-    )),
-    name: v.optional(v.pipe(
-      v.string('Your name must be in text.'),
-      v.nonEmpty('Your name cannot be blank.'),
-    )),
-    phone: v.optional(v.pipe(
-      v.string('You must include your phone number.'),
-      v.maxLength(20, 'The phone number must not exceed 20 characters.'),
-      v.nonEmpty('Your phone number cannot be blank.'),
-    )),
-    emergencyName: v.optional(v.pipe(
-      v.string('The name must be in text.'),
-      v.nonEmpty("The emergency contact's name cannot be blank"),
-    )),
-    emergencyPhone: v.optional(v.pipe(
-      v.string("You must include your emergency contact's phone number."),
-      v.maxLength(20, 'The phone number must not exceed 20 characters.'),
-      v.nonEmpty("Your emergency contact's phone number cannot be blank."),
-    )),
-    newPassword: v.optional(v.pipe(
+    newPassword: v.pipe(
       v.string('Your new password must be a string of characters.'),
       v.nonEmpty('Your new password cannot be blank'),
       v.minLength(8, 'Your new password must have 8 characters or more.')
-    )),
-    oldPassword: v.optional(v.pipe(
+    ),
+    oldPassword: v.pipe(
       v.string('Your password must be a string of characters.'),
       v.nonEmpty('Your password cannot be blank.'),
       v.minLength(8, 'Your password must have 8 characters or more.')
-    )),
+    ),
   }),
   v.forward(
     v.partialCheck(
@@ -213,6 +217,4 @@ export const MemberEditSchema = v.pipe(
     ['oldPassword']
   ),
 );
-
-export type MemberEditData = v.InferOutput<typeof MemberEditSchema>;
-
+export type MemberPasswordData = v.InferOutput<typeof MemberPasswordSchema>;
