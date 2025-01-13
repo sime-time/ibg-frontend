@@ -11,7 +11,7 @@ export default function Coach() {
 
   return <>
     <Title>Coach Dashboard</Title>
-    <main class="flex justify-center min-h-full mt-4">
+    <main class="flex justify-center mt-4">
       <Show when={userIsAdmin()} fallback={<AccessDenied />}>
         <CoachDashboard />
       </Show>

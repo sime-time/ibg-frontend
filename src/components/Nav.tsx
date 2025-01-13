@@ -1,7 +1,7 @@
-import { useLocation } from "@solidjs/router";
 import { usePocket } from "~/context/PocketbaseContext";
 import { Switch, Match, ParentProps } from "solid-js";
 import LogoutButton from "./ui/LogoutButton";
+import { useLocation } from "@solidjs/router";
 
 export function NavMenu(props: { onNavClick?: () => void }) {
   return (
@@ -14,10 +14,36 @@ export function NavMenu(props: { onNavClick?: () => void }) {
   );
 }
 
-export default function Nav(props: ParentProps) {
-  const location = useLocation();
+function NavMenuEnd(props: { onNavClick?: () => void }) {
   const { loggedIn, userIsAdmin, userIsMember } = usePocket();
+  const location = useLocation();
+  return (
+    <Switch>
+      <Match when={
+        location.pathname === "/coach" ||
+        location.pathname === "/qr-login"
+      }>
+        <LogoutButton />
+      </Match>
+      <Match when={
+        !loggedIn() &&
+        location.pathname != "/coach" &&
+        location.pathname != "/member"
+      }>
+        <a href="/signup" class="btn btn-primary">Sign Up</a>
+        <a href="/login" class="btn btn-outline">Log In</a>
+      </Match>
+      <Match when={userIsMember() && location.pathname != "/member"} >
+        <a href="/member" class="btn btn-secondary">Member Dashboard</a>
+      </Match>
+      <Match when={userIsAdmin() && location.pathname != "/coach"}>
+        <a href="/coach" class="btn btn-secondary">Coach Dashboard</a>
+      </Match>
+    </Switch>
+  );
+}
 
+export default function Nav(props: ParentProps) {
   const closeDrawer = () => {
     const drawer = document.getElementById("nav-drawer") as HTMLInputElement;
     if (drawer) {
@@ -57,28 +83,7 @@ export default function Nav(props: ParentProps) {
           </nav>
 
           <div class="flex flex-1 justify-end gap-3">
-            <Switch>
-              <Match when={
-                location.pathname === "/coach" ||
-                location.pathname === "/qr-login"
-              }>
-                <LogoutButton />
-              </Match>
-              <Match when={
-                !loggedIn() &&
-                location.pathname != "/coach" &&
-                location.pathname != "/member"
-              }>
-                <a href="/signup" class="btn btn-primary">Sign Up</a>
-                <a href="/login" class="btn btn-outline">Log In</a>
-              </Match>
-              <Match when={userIsMember() && location.pathname != "/member"} >
-                <a href="/member" class="btn btn-secondary">Member Dashboard</a>
-              </Match>
-              <Match when={userIsAdmin() && location.pathname != "/coach"}>
-                <a href="/coach" class="btn btn-secondary">Coach Dashboard</a>
-              </Match>
-            </Switch>
+            <NavMenuEnd />
           </div>
 
         </div>

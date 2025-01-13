@@ -71,7 +71,7 @@ export default function Login() {
 
   return <>
     <Title>Log In - Indy Boxing and Grappling</Title>
-    <main class="flex items-start justify-center min-h-full mt-4">
+    <main class="flex items-start justify-center mt-4">
       <Switch fallback={
         <div class="flex flex-col gap-4 mt-24">
           <h2 class="text-2xl text-center font-bold">I am a...</h2>

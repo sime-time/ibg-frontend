@@ -20,7 +20,7 @@ export default function Member() {
 
   return <>
     <Title>Member Dashboard</Title>
-    <main class="flex justify-center min-h-full mt-4">
+    <main class="flex justify-center mt-4">
       <Switch fallback={<span class="loading loading-spinner loading-md"></span>}>
         <Match when={hasContactInfo && isSubscribed()}>
           <MemberDashboard />

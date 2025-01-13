@@ -5,7 +5,7 @@ export default function SignUp() {
 
   return <>
     <Title>Sign Up - Indy Boxing and Grappling</Title>
-    <main class="flex items-start justify-center min-h-full mt-4">
+    <main class="flex items-start justify-center mt-4">
       <EmailSignUp />
     </main>
   </>
