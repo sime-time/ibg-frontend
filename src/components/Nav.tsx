@@ -53,9 +53,9 @@ export default function Nav(props: ParentProps) {
 
   return (
     <div class="drawer">
-      <input id="nav-drawer" type="checkbox" class="drawer-toggle" />
+      <input id="nav-drawer" type="checkbox" class="drawer-toggle" aria-label="toggle navigation menu" />
       <div class="drawer-content flex flex-col">
-        {/*<!-- Navbar -->*/}
+        {/* Navbar */}
         <div class="navbar w-full">
           <div class="flex-none lg:hidden">
             <label for="nav-drawer" aria-label="open sidebar" class="btn btn-square btn-ghost">
@@ -77,7 +77,7 @@ export default function Nav(props: ParentProps) {
           </a>
           <nav class="hidden flex-none lg:block">
             <ul class="menu menu-horizontal">
-              {/*<!-- Navbar menu content here -->*/}
+              {/* Navbar menu content here */}
               <NavMenu />
             </ul>
           </nav>
@@ -87,13 +87,13 @@ export default function Nav(props: ParentProps) {
           </div>
 
         </div>
-        {/*<!-- Page content here -->*/}
+        {/* Page content here */}
         {props.children}
       </div>
       <div class="drawer-side">
         <label for="nav-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
         <ul class="menu bg-base-100 min-h-full w-80 p-4 flex flex-col justify-center gap-3 font-semibold text-3xl">
-          {/*<!-- Sidebar content here -->*/}
+          {/* Sidebar content here */}
           <NavMenu onNavClick={closeDrawer} />
         </ul>
       </div>
