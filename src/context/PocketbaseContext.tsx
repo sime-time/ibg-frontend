@@ -36,6 +36,7 @@ interface PocketbaseContextProps {
   getMemberAttendance: (date: Date) => Promise<MemberRecord[]>,
   requestVerification: (email: string) => Promise<boolean>,
   requestEmailChange: (email: string) => Promise<{ success: boolean; message: string; }>,
+  requestPasswordReset: (email: string) => Promise<boolean>,
 }
 const PocketbaseContext = createContext<PocketbaseContextProps>();
 
@@ -519,8 +520,19 @@ export function PocketbaseContextProvider(props: ParentProps) {
     };
   }
 
+  const requestPasswordReset = async (email: string) => {
+    try {
+      // always return a success response as a very basic user emails enumeration protection because the endpoint is public.
+      await pb.collection("member").requestPasswordReset(email);
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  }
+
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updatePassword, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance, requestVerification, requestEmailChange }} >
+    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updatePassword, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance, requestVerification, requestEmailChange, requestPasswordReset }} >
       {props.children}
     </PocketbaseContext.Provider>
   );

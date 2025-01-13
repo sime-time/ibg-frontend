@@ -17,7 +17,7 @@ export default function Hero() {
       <div class="relative gradient-bg py-40 xl:py-52 text-center px-5">
         <div class="max-w-4xl mx-auto text-center flex flex-col gap-20">
           <h1 class="text-5xl md:text-6xl font-bold italic uppercase">
-            Train Like A <span class="text-primary">Champion</span>
+            Train Like A <span class="text-primary text-transparent bg-clip-text bg-gradient-to-r from-primary via-orange-500 to-primary">Champion</span>
           </h1>
           <div>
             <a

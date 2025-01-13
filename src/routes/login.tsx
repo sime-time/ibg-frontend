@@ -6,6 +6,7 @@ import { IoClose } from 'solid-icons/io'
 import { usePocket } from "~/context/PocketbaseContext";
 import { LoginSchema, LoginData } from "~/types/ValidationType";
 import * as v from "valibot";
+import ForgotPassword from "~/components/auth/ForgotPassword";
 
 export default function Login() {
   const [memberLogin, setMemberLogin] = createSignal(false);
@@ -116,9 +117,7 @@ export default function Login() {
                     }}
                       type="password" class="grow" placeholder="Enter password" value={password()} />
                   </label>
-                  <label class="label">
-                    <a href="#" class="label-text-alt link link-hover">Forgot password?</a>
-                  </label>
+                  <ForgotPassword />
                 </div>
 
                 <Show when={error()}>
@@ -176,9 +175,7 @@ export default function Login() {
                     }}
                       type="password" class="grow" placeholder="Enter password" value={password()} />
                   </label>
-                  <label class="label">
-                    <a href="#" class="label-text-alt link link-hover">Forgot password?</a>
-                  </label>
+                  <ForgotPassword />
                 </div>
 
                 <Show when={error()}>
