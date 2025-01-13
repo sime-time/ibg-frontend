@@ -54,7 +54,7 @@ export default function MemberDashboard() {
         <button onClick={() => setScheduleIsOpen(false)} class="btn items-center flex"><FaSolidArrowLeft />Back</button>
       </div>
     }>
-      <div class="card bg-base-100 shadow-xl mx-4 my-1 w-full md:w-96">
+      <div class="card bg-base-100 shadow-xl mx-4 my-1 w-full md:w-96 h-fit">
         <div class="card-body flex flex-col gap-5">
           <div class="flex flex-row gap-3">
             <div class="avatar">

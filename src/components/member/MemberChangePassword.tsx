@@ -4,15 +4,17 @@ import { createSignal, Show } from "solid-js";
 import { MemberPasswordData, MemberPasswordSchema } from "~/types/ValidationType";
 import { PasswordUpdateResult } from "~/types/UserType";
 import { usePocket } from "~/context/PocketbaseContext";
+import { useNavigate } from "@solidjs/router";
 import * as v from "valibot";
 
 export default function MemberChangePassword() {
-  const { user, updatePassword } = usePocket();
+  const { user, updatePassword, logout } = usePocket();
   const [oldPassword, setOldPassword] = createSignal("");
   const [newPassword, setNewPassword] = createSignal("");
   const [newPasswordConfirm, setNewPasswordConfirm] = createSignal("");
   const [error, setError] = createSignal("");
   const [saveDisabled, setSaveDisabled] = createSignal(false);
+  const navigate = useNavigate();
 
   const openPasswordModal = () => {
     const dialog = document.getElementById("change-password-dialog") as HTMLDialogElement;
@@ -47,17 +49,18 @@ export default function MemberChangePassword() {
         const passwordChangedDiv: HTMLDivElement = document.createElement("div");
         passwordChangedDiv.role = "alert";
         passwordChangedDiv.className = "alert alert-success text-sm md:text-base";
-        passwordChangedDiv.textContent = result.message;
+        passwordChangedDiv.textContent = result.message + " Logging you out now...";
         document.body.appendChild(passwordChangedDiv);
 
         // Remove the message after few seconds
         setTimeout(() => {
           document.body.removeChild(passwordChangedDiv);
-        }, 3000);
+          logout();
+          navigate("/login");
+        }, 3500);
       } else {
         setError(result.message);
       }
-
       setSaveDisabled(false);
 
     } catch (err) {
@@ -83,7 +86,7 @@ export default function MemberChangePassword() {
           </form>
 
           <h3 class="font-bold text-lg">Change Password</h3>
-          <p class="py-2">You must input your current password to update it. Press save when done.</p>
+          <p class="py-2">When changing password, you will automatically logout and be redirected to the login page.</p>
 
 
           <div class="form-control">
