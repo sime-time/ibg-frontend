@@ -3,7 +3,7 @@ import { FileRoutes } from "@solidjs/start/router";
 import { Suspense } from "solid-js";
 import { MetaProvider } from "@solidjs/meta";
 import { PocketbaseContextProvider } from "./context/PocketbaseContext";
-import Nav from "~/components/Nav";
+import Nav from "./components/Nav";
 import "./app.css";
 
 export default function App() {
@@ -12,8 +12,9 @@ export default function App() {
       <PocketbaseContextProvider>
         <Router root={props => (
           <>
-            <Nav />
-            <Suspense>{props.children}</Suspense>
+            <Nav>
+              <Suspense>{props.children}</Suspense>
+            </Nav>
           </>
         )}>
           <FileRoutes />
