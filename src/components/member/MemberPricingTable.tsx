@@ -25,22 +25,24 @@ export default function MemberPricingTable() {
 
   onMount(async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_POCKETBASE_URL}/client-secret`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          customerId: user()?.stripe_customer_id,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_POCKETBASE_URL}/client-secret`,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            customerId: user()?.stripe_customer_id,
+          }),
+        }
+      );
       console.log(response);
 
       const data: ClientSecretResponse = await response.json();
-      console.log(data.client_secret)
 
       if (response.ok && data.client_secret) {
-        setClientSecret(data.client_secret)
+        setClientSecret(data.client_secret);
       }
     } catch (error) {
       console.error("Error fetching client secret: ", error);
@@ -65,5 +67,5 @@ export default function MemberPricingTable() {
     };
   });
 
-  return (<div ref={divRef} class="w-full"></div>);
+  return <div ref={divRef} class="w-full"></div>;
 }
