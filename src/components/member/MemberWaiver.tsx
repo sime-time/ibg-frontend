@@ -18,7 +18,7 @@ export default function MemberWaiver() {
       if (successful) {
         location.reload();
       } else {
-        throw new Error("internal server error");
+        throw new Error("Internal server error");
       }
     } catch (err) {
       setError("Internal server error, please reload the page and try again.");

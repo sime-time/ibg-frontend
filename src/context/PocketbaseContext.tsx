@@ -596,7 +596,8 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const requestPasswordReset = async (email: string) => {
     try {
-      // always return a success response as a very basic user emails enumeration protection because the endpoint is public.
+      // "this function always return a success response as a very basic user emails enumeration protection because the endpoint is public."
+      // - pocketbase author
       await pb.collection("member").requestPasswordReset(email);
       return true;
     } catch (err) {
@@ -607,12 +608,8 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const waiverTimestamp = async (memberId: string, time: Date) => {
     try {
-      const waiverData = {
-        waiver_accepted: time,
-      };
-
+      const waiverData = { waiver_accepted: time };
       await pb.collection("member").update(memberId, waiverData);
-      console.log("Waiver and Release accepted!");
       return true;
     } catch (err) {
       console.error("Error accepting waiver: ", err);

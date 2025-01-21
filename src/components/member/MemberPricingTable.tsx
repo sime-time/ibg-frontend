@@ -49,11 +49,11 @@ export default function MemberPricingTable() {
     }
 
     const table = document.createElement("stripe-pricing-table");
-    table.setAttribute("pricing-table-id", "prctbl_1Qcc7W06MCKUDe5TcRdGW1ja");
     table.setAttribute(
-      "publishable-key",
-      "pk_test_51Q04BE06MCKUDe5Ti0qzgC33iHkBhtj8JBDUkqGjPhlVSE0w25kTDYAcFVUrJIO51Eyh8o5X4ODIBPjymDb7ja2c00xMvh4rXc"
+      "pricing-table-id",
+      import.meta.env.VITE_STRIPE_PRICING_TABLE_ID
     );
+    table.setAttribute("publishable-key", import.meta.env.VITE_STRIPE_PUB_KEY);
     table.setAttribute("customer-session-client-secret", clientSecret());
 
     if (divRef) {
