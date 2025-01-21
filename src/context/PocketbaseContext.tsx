@@ -1,42 +1,71 @@
-import { Accessor, createContext, useContext, createSignal, createEffect, ParentProps } from "solid-js";
+import {
+  Accessor,
+  createContext,
+  useContext,
+  createSignal,
+  createEffect,
+  ParentProps,
+} from "solid-js";
 import Pocketbase, { AuthModel } from "pocketbase";
 import { ClassData, MemberPasswordData } from "~/types/ValidationType";
-import { MemberData, MemberRecord, ContactInfo, UpdateMemberData, MartialArtRecord, ClassRecord, PasswordUpdateResult } from "~/types/UserType";
+import {
+  MemberData,
+  MemberRecord,
+  ContactInfo,
+  UpdateMemberData,
+  MartialArtRecord,
+  ClassRecord,
+  PasswordUpdateResult,
+} from "~/types/UserType";
 
 interface PocketbaseContextProps {
-  token: Accessor<string>,
-  user: Accessor<AuthModel>,
-  signup: (newMember: MemberData) => Promise<boolean>,
-  loginMember: (email: string, password: string) => Promise<boolean>,
-  loginAdmin: (email: string, password: string) => Promise<boolean>,
-  logout: () => void,
-  loggedIn: () => boolean,
-  userIsAdmin: () => boolean,
-  userIsMember: () => boolean,
-  addContactInfo: (contactInfo: ContactInfo) => Promise<boolean>,
-  refreshMember: () => Promise<void>,
-  getEmergencyContact: () => Promise<{ phone: string; name: string; }>,
-  getMemberEmergencyContact: (memberId: string) => Promise<{ id: string, phone: string; name: string; }>,
-  updatePassword: (memberId: string, p: MemberPasswordData) => Promise<PasswordUpdateResult>
-  updateMember: (memberId: string, updatedData: UpdateMemberData) => Promise<void>,
-  getMember: (memberId: string) => Promise<MemberRecord>,
-  getMembers: () => Promise<MemberRecord[]>,
-  deleteMember: (memberId: string) => Promise<void>,
-  createMember: (newMember: MemberData, newContact: ContactInfo) => Promise<boolean>,
-  getMartialArtId: (shortname: string) => Promise<string>,
-  getMartialArts: () => Promise<MartialArtRecord[]>,
-  createClass: (newClass: ClassData) => Promise<boolean>,
-  updateClass: (classId: string, updatedClass: ClassData) => Promise<boolean>,
-  getClasses: () => Promise<ClassRecord[]>,
-  getClass: (id: string) => Promise<ClassRecord>,
-  deleteClass: (classId: string) => Promise<boolean>,
-  getAvatarUrl: () => Promise<string>,
-  checkIn: (date: Date, memberId: string) => Promise<boolean>,
-  checkOut: (date: Date, memberId: string) => Promise<boolean>,
-  getMemberAttendance: (date: Date) => Promise<MemberRecord[]>,
-  requestVerification: (email: string) => Promise<boolean>,
-  requestEmailChange: (email: string) => Promise<{ success: boolean; message: string; }>,
-  requestPasswordReset: (email: string) => Promise<boolean>,
+  token: Accessor<string>;
+  user: Accessor<AuthModel>;
+  signup: (newMember: MemberData) => Promise<boolean>;
+  loginMember: (email: string, password: string) => Promise<boolean>;
+  loginAdmin: (email: string, password: string) => Promise<boolean>;
+  logout: () => void;
+  loggedIn: () => boolean;
+  userIsAdmin: () => boolean;
+  userIsMember: () => boolean;
+  addContactInfo: (contactInfo: ContactInfo) => Promise<boolean>;
+  refreshMember: () => Promise<void>;
+  getEmergencyContact: () => Promise<{ phone: string; name: string }>;
+  getMemberEmergencyContact: (
+    memberId: string
+  ) => Promise<{ id: string; phone: string; name: string }>;
+  updatePassword: (
+    memberId: string,
+    p: MemberPasswordData
+  ) => Promise<PasswordUpdateResult>;
+  updateMember: (
+    memberId: string,
+    updatedData: UpdateMemberData
+  ) => Promise<void>;
+  getMember: (memberId: string) => Promise<MemberRecord>;
+  getMembers: () => Promise<MemberRecord[]>;
+  deleteMember: (memberId: string) => Promise<void>;
+  createMember: (
+    newMember: MemberData,
+    newContact: ContactInfo
+  ) => Promise<boolean>;
+  getMartialArtId: (shortname: string) => Promise<string>;
+  getMartialArts: () => Promise<MartialArtRecord[]>;
+  createClass: (newClass: ClassData) => Promise<boolean>;
+  updateClass: (classId: string, updatedClass: ClassData) => Promise<boolean>;
+  getClasses: () => Promise<ClassRecord[]>;
+  getClass: (id: string) => Promise<ClassRecord>;
+  deleteClass: (classId: string) => Promise<boolean>;
+  getAvatarUrl: () => Promise<string>;
+  checkIn: (date: Date, memberId: string) => Promise<boolean>;
+  checkOut: (date: Date, memberId: string) => Promise<boolean>;
+  getMemberAttendance: (date: Date) => Promise<MemberRecord[]>;
+  requestVerification: (email: string) => Promise<boolean>;
+  requestEmailChange: (
+    email: string
+  ) => Promise<{ success: boolean; message: string }>;
+  requestPasswordReset: (email: string) => Promise<boolean>;
+  waiverTimestamp: (memberId: string, time: Date) => Promise<boolean>;
 }
 const PocketbaseContext = createContext<PocketbaseContextProps>();
 
@@ -71,39 +100,43 @@ export function PocketbaseContextProvider(props: ParentProps) {
     return await loginMember(newMember.email, newMember.password);
   };
 
-  const createMember = async (newMember: MemberData, newContact: ContactInfo) => {
+  const createMember = async (
+    newMember: MemberData,
+    newContact: ContactInfo
+  ) => {
     try {
       if (!userIsAdmin()) {
-        throw new Error("User is not an admin. Cannot create new member.")
+        throw new Error("User is not an admin. Cannot create new member.");
       }
-      const memberCreated = await pb.collection("member").create(newMember)
+      const memberCreated = await pb.collection("member").create(newMember);
       console.log("New member created: ", memberCreated.name);
 
       const memberPhone = {
-        "phone_number": newContact.phone,
-      }
+        phone_number: newContact.phone,
+      };
 
       const emergencyContact = {
-        "phone_number": newContact.emergencyPhone,
-        "name": newContact.emergencyName,
-        "member_id": memberCreated.id
-      }
+        phone_number: newContact.emergencyPhone,
+        name: newContact.emergencyName,
+        member_id: memberCreated.id,
+      };
 
       await pb.collection("member").update(memberCreated.id, memberPhone);
       await pb.collection("member_emergency").create(emergencyContact);
       console.log("Contact info added to member");
 
       return true;
-
     } catch (err) {
       console.error("Create member cancelled: ", err);
       return false;
     }
-  }
+  };
 
   const loginMember = async (email: string, password: string) => {
     logout();
-    const response = await pb.collection("member").authWithPassword(email, password);
+    const response = await pb
+      .collection("member")
+      .authWithPassword(email, password);
     return pb.authStore.isValid;
   };
 
@@ -128,22 +161,21 @@ export function PocketbaseContextProvider(props: ParentProps) {
   const addContactInfo = async (contactInfo: ContactInfo) => {
     try {
       const memberData = {
-        "avatar": contactInfo.avatar,
-        "phone_number": contactInfo.phone,
-      }
+        avatar: contactInfo.avatar,
+        phone_number: contactInfo.phone,
+      };
 
       const emergencyContact = {
-        "phone_number": contactInfo.emergencyPhone,
-        "name": contactInfo.emergencyName,
-        "member_id": user()?.id
-      }
+        phone_number: contactInfo.emergencyPhone,
+        name: contactInfo.emergencyName,
+        member_id: user()?.id,
+      };
 
       await pb.collection("member").update(user()?.id, memberData);
       await pb.collection("member_emergency").create(emergencyContact);
 
       console.log("Contact info added successfully!");
       return true;
-
     } catch (err) {
       console.error("Error adding contact info: ", err);
       return false;
@@ -151,42 +183,47 @@ export function PocketbaseContextProvider(props: ParentProps) {
   };
 
   const getEmergencyContact = async () => {
-    const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${user()?.id}"`);
+    const emergencyRecord = await pb
+      .collection("member_emergency")
+      .getFirstListItem(`member_id="${user()?.id}"`);
     return {
       phone: String(emergencyRecord.phone_number),
-      name: String(emergencyRecord.name)
+      name: String(emergencyRecord.name),
     };
   };
 
   const getMemberEmergencyContact = async (memberId: string) => {
-    const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}"`);
+    const emergencyRecord = await pb
+      .collection("member_emergency")
+      .getFirstListItem(`member_id="${memberId}"`);
     return {
       id: String(emergencyRecord.id),
       phone: String(emergencyRecord.phone_number),
-      name: String(emergencyRecord.name)
+      name: String(emergencyRecord.name),
     };
-  }
+  };
 
   const updatePassword = async (memberId: string, p: MemberPasswordData) => {
-
     let result: PasswordUpdateResult;
 
     // determine if old password is correct
     try {
-      await pb.collection("member").authWithPassword(user()?.email, p.oldPassword);
+      await pb
+        .collection("member")
+        .authWithPassword(user()?.email, p.oldPassword);
     } catch (err) {
       console.error("Old password is incorrect", err);
       result = {
         success: false,
         message: "Current password is incorrect",
-      }
+      };
       return result;
     }
 
     let updateMemberPassword = {
-      "password": p.newPassword,
-      "passwordConfirm": p.newPasswordConfirm,
-      "oldPassword": p.oldPassword,
+      password: p.newPassword,
+      passwordConfirm: p.newPasswordConfirm,
+      oldPassword: p.oldPassword,
     };
 
     // try to update the password
@@ -195,28 +232,31 @@ export function PocketbaseContextProvider(props: ParentProps) {
       result = {
         success: true,
         message: "Password updated successfully!",
-      }
+      };
     } catch (err) {
       console.error("Error updating password:", err);
       result = {
         success: false,
         message: "Error updating password",
-      }
+      };
     }
     return result;
-  }
+  };
 
-  const updateMember = async (memberId: string, updatedData: UpdateMemberData) => {
+  const updateMember = async (
+    memberId: string,
+    updatedData: UpdateMemberData
+  ) => {
     // for avatar, use undefined instead of null
     // because null will delete the previous avatar
     let updateMemberRecord = {
-      "name": updatedData.name,
-      "phone_number": updatedData.phone,
+      name: updatedData.name,
+      phone_number: updatedData.phone,
     };
 
     const updateEmergencyRecord = {
-      "phone_number": updatedData.emergencyPhone,
-      "name": updatedData.emergencyName,
+      phone_number: updatedData.emergencyPhone,
+      name: updatedData.emergencyName,
     };
 
     // update member
@@ -229,55 +269,63 @@ export function PocketbaseContextProvider(props: ParentProps) {
         await pb.collection("member").update(memberId, updateAvatar);
       }
     } catch (err) {
-      console.error("Error updating member: ", err)
+      console.error("Error updating member: ", err);
     }
 
     // update emergency contact
     try {
-      const emergencyRecord = await pb.collection("member_emergency").getFirstListItem(`member_id="${memberId}"`);
-      await pb.collection("member_emergency").update(emergencyRecord.id, updateEmergencyRecord);
+      const emergencyRecord = await pb
+        .collection("member_emergency")
+        .getFirstListItem(`member_id="${memberId}"`);
+      await pb
+        .collection("member_emergency")
+        .update(emergencyRecord.id, updateEmergencyRecord);
     } catch (err) {
-      console.error("Error updating emergency contact: ", err)
+      console.error("Error updating emergency contact: ", err);
     }
   };
-
 
   const refreshMember = async () => {
     // requires a valid record auth to be set
     try {
       if (pb.authStore.isValid) {
-        await testPocketbase()
         await pb.collection("member").authRefresh();
-      } else {
-        throw new Error("Auth store invalid");
       }
     } catch (err) {
-      console.log("Auth store: ", pb.authStore)
-      console.log("Is Auth store valid: ", pb.authStore.isValid)
-      console.error(err)
+      console.error("Error refreshing auth: ", err);
+      console.log("Is Auth store valid: ", pb.authStore.isValid);
     }
   };
 
   const getMember = async (memberId: string): Promise<MemberRecord> => {
     const member = await pb.collection("member").getOne<MemberRecord>(memberId);
-    member.avatarUrl = member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp";
+    member.avatarUrl = member.avatar
+      ? pb.files.getUrl(member, member.avatar)
+      : "https://www.gravatar.com/avatar/?d=mp";
     return member;
   };
 
   const getMembers = async (): Promise<MemberRecord[]> => {
-    const members: MemberRecord[] = await pb.collection("member").getFullList<MemberRecord>();
-    return members.map(member => ({
-      ...member,
-      avatarUrl: member.avatar
-        ? pb.files.getUrl(member, member.avatar)
-        : "https://www.gravatar.com/avatar/?d=mp",
-    } as MemberRecord));
+    const members: MemberRecord[] = await pb
+      .collection("member")
+      .getFullList<MemberRecord>();
+    return members.map(
+      (member) =>
+        ({
+          ...member,
+          avatarUrl: member.avatar
+            ? pb.files.getUrl(member, member.avatar)
+            : "https://www.gravatar.com/avatar/?d=mp",
+        } as MemberRecord)
+    );
   };
 
   interface MemberAttendanceRecord extends MemberRecord {
     checkedIn: boolean;
   }
-  const getMemberAttendance = async (date: Date): Promise<MemberAttendanceRecord[]> => {
+  const getMemberAttendance = async (
+    date: Date
+  ): Promise<MemberAttendanceRecord[]> => {
     date.setHours(0, 0, 0, 0);
     const filterDate = date.toISOString().slice(0, 10); // Format as "YYYY-MM-DD"
     const filter = `check_in_date >= "${filterDate} 00:00:00Z" && check_in_date < "${filterDate} 23:59:59Z"`;
@@ -298,12 +346,15 @@ export function PocketbaseContextProvider(props: ParentProps) {
         }
       }
       return false;
-    }
-    return members.map(member => ({
-      ...member,
-      checkedIn: hasAttended(member.id),
-    } as MemberAttendanceRecord));
-  }
+    };
+    return members.map(
+      (member) =>
+        ({
+          ...member,
+          checkedIn: hasAttended(member.id),
+        } as MemberAttendanceRecord)
+    );
+  };
 
   const deleteMember = async (memberId: string) => {
     try {
@@ -316,7 +367,9 @@ export function PocketbaseContextProvider(props: ParentProps) {
       if (member.is_subscribed) {
         const cancelled = await cancelSubscription(member.stripe_customer_id);
         if (!cancelled) {
-          throw new Error("Active subscription was not cancelled. Member not deleted.")
+          throw new Error(
+            "Active subscription was not cancelled. Member not deleted."
+          );
         } else {
           console.log("Member subscription cancelled");
         }
@@ -327,9 +380,12 @@ export function PocketbaseContextProvider(props: ParentProps) {
       // delete emergency contact
       try {
         const emergencyRecord = await getMemberEmergencyContact(memberId);
-        await pb.collection("member_emergency").delete(emergencyRecord.id).then(() => {
-          console.log("Emergency contact deleted.")
-        });
+        await pb
+          .collection("member_emergency")
+          .delete(emergencyRecord.id)
+          .then(() => {
+            console.log("Emergency contact deleted.");
+          });
       } catch (err) {
         console.error("No emergency contact deleted.", err);
       }
@@ -337,7 +393,6 @@ export function PocketbaseContextProvider(props: ParentProps) {
       // delete member
       await pb.collection("member").delete(memberId);
       console.log("Deleted member: ", member.name);
-
     } catch (err) {
       console.error(err);
     }
@@ -345,15 +400,18 @@ export function PocketbaseContextProvider(props: ParentProps) {
 
   const cancelSubscription = async (stripeCustomerId: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_POCKETBASE_URL}/cancel-subscription`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          customerId: stripeCustomerId
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_POCKETBASE_URL}/cancel-subscription`,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            customerId: stripeCustomerId,
+          }),
+        }
+      );
 
       console.log("Response: ", response);
 
@@ -369,7 +427,9 @@ export function PocketbaseContextProvider(props: ParentProps) {
   // client side needs to use the shortname so the database id is not exposed
   const getMartialArtId = async (shortname: string) => {
     try {
-      const record = await pb.collection("martial_art").getFirstListItem(`shortname="${shortname}"`);
+      const record = await pb
+        .collection("martial_art")
+        .getFirstListItem(`shortname="${shortname}"`);
       return record.id;
     } catch (err) {
       console.error("Could not find martial art id: ", err);
@@ -378,17 +438,19 @@ export function PocketbaseContextProvider(props: ParentProps) {
   };
 
   const getMartialArts = async () => {
-    const martialArts = await pb.collection("martial_art").getFullList<MartialArtRecord>();
+    const martialArts = await pb
+      .collection("martial_art")
+      .getFullList<MartialArtRecord>();
     return martialArts;
-  }
+  };
 
   const testPocketbase = async () => {
     try {
-      console.log('Testing PB connection...');
+      console.log("Testing PB connection...");
       const response = await pb.health.check();
-      console.log('PB health check response:', response);
+      console.log("PB health check response:", response);
     } catch (error) {
-      console.error('PB connection test failed:', error);
+      console.error("PB connection test failed:", error);
     }
   };
 
@@ -422,7 +484,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
       console.error("Error deleting class: ", err);
       return false;
     }
-  }
+  };
 
   const getClasses = async () => {
     try {
@@ -440,8 +502,12 @@ export function PocketbaseContextProvider(props: ParentProps) {
   };
 
   const getAvatarUrl = async () => {
-    const member = await pb.collection("member").getOne<MemberRecord>(user()?.id);
-    const avatarUrl: string = member.avatar ? pb.files.getUrl(member, member.avatar) : "https://www.gravatar.com/avatar/?d=mp"
+    const member = await pb
+      .collection("member")
+      .getOne<MemberRecord>(user()?.id);
+    const avatarUrl: string = member.avatar
+      ? pb.files.getUrl(member, member.avatar)
+      : "https://www.gravatar.com/avatar/?d=mp";
     return avatarUrl;
   };
 
@@ -451,18 +517,25 @@ export function PocketbaseContextProvider(props: ParentProps) {
     date.setHours(0, 0, 0, 0);
     const utcDate = date.toISOString();
     const checkInData = {
-      "check_in_date": utcDate,
-      "member_id": memberId,
+      check_in_date: utcDate,
+      member_id: memberId,
     };
 
     try {
       // prevent duplicate check-ins
-      const filter = `member_id="${memberId}" && check_in_date="${utcDate.replace("T", " ")}"`;
-      const duplicate = await pb.collection("attendance").getFirstListItem(filter);
-      console.log(`member ${memberId} already checked-in on ${utcDate.replace("T", " ")}`)
+      const filter = `member_id="${memberId}" && check_in_date="${utcDate.replace(
+        "T",
+        " "
+      )}"`;
+      const duplicate = await pb
+        .collection("attendance")
+        .getFirstListItem(filter);
+      console.log(
+        `member ${memberId} already checked-in on ${utcDate.replace("T", " ")}`
+      );
       return false;
     } catch (err) {
-      console.log("No duplicate attendance check-in found.")
+      console.log("No duplicate attendance check-in found.");
     }
     const record = await pb.collection("attendance").create(checkInData);
     return true;
@@ -494,31 +567,32 @@ export function PocketbaseContextProvider(props: ParentProps) {
         return {
           success: false,
           message: "User is not logged in",
-        }
+        };
       }
 
       // check if email is the same as current email
       if (email == user()?.email) {
         return {
           success: false,
-          message: `New email cannot be the same as current email: ${user()?.email}`,
-        }
+          message: `New email cannot be the same as current email: ${
+            user()?.email
+          }`,
+        };
       }
 
       await pb.collection("member").requestEmailChange(email);
       return {
         success: true,
-        message: `Email change request sent to ${email}`
+        message: `Email change request sent to ${email}`,
       };
-
     } catch (err) {
       console.error("Email change request failed: ", err);
     }
     return {
       success: false,
-      message: "Email request failed to send"
+      message: "Email request failed to send",
     };
-  }
+  };
 
   const requestPasswordReset = async (email: string) => {
     try {
@@ -529,10 +603,62 @@ export function PocketbaseContextProvider(props: ParentProps) {
       console.error(err);
       return false;
     }
-  }
+  };
+
+  const waiverTimestamp = async (memberId: string, time: Date) => {
+    try {
+      const waiverData = {
+        waiver_accepted: time,
+      };
+
+      await pb.collection("member").update(memberId, waiverData);
+      console.log("Waiver and Release accepted!");
+      return true;
+    } catch (err) {
+      console.error("Error accepting waiver: ", err);
+      return false;
+    }
+  };
 
   return (
-    <PocketbaseContext.Provider value={{ token, user, signup, loginMember, loginAdmin, logout, userIsAdmin, userIsMember, addContactInfo, refreshMember, getEmergencyContact, getMemberEmergencyContact, updatePassword, updateMember, getMembers, getMember, deleteMember, createMember, loggedIn, getMartialArtId, getMartialArts, createClass, updateClass, getClasses, getClass, deleteClass, getAvatarUrl, checkIn, checkOut, getMemberAttendance, requestVerification, requestEmailChange, requestPasswordReset }} >
+    <PocketbaseContext.Provider
+      value={{
+        token,
+        user,
+        signup,
+        loginMember,
+        loginAdmin,
+        logout,
+        userIsAdmin,
+        userIsMember,
+        addContactInfo,
+        refreshMember,
+        getEmergencyContact,
+        getMemberEmergencyContact,
+        updatePassword,
+        updateMember,
+        getMembers,
+        getMember,
+        deleteMember,
+        createMember,
+        loggedIn,
+        getMartialArtId,
+        getMartialArts,
+        createClass,
+        updateClass,
+        getClasses,
+        getClass,
+        deleteClass,
+        getAvatarUrl,
+        checkIn,
+        checkOut,
+        getMemberAttendance,
+        requestVerification,
+        requestEmailChange,
+        requestPasswordReset,
+        waiverTimestamp,
+      }}
+    >
       {props.children}
     </PocketbaseContext.Provider>
   );
