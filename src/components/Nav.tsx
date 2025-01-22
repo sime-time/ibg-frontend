@@ -1,35 +1,35 @@
 import { usePocket } from "~/context/PocketbaseContext";
 import { Switch, Match, ParentProps } from "solid-js";
 import LogoutButton from "./ui/LogoutButton";
-import { useLocation, A } from "@solidjs/router";
+import { useLocation } from "@solidjs/router";
 
 export function NavMenu(props: { onNavClick?: () => void }) {
   return (
     <>
       <li>
-        <A href="/" onClick={props.onNavClick}>
+        <a href="/" onClick={props.onNavClick}>
           Home
-        </A>
+        </a>
       </li>
       <li>
-        <A href="/our-team" onClick={props.onNavClick}>
+        <a href="/our-team" onClick={props.onNavClick}>
           Our Team
-        </A>
+        </a>
       </li>
       <li>
-        <A href="/pricingschedule" onClick={props.onNavClick}>
+        <a href="/pricingschedule" onClick={props.onNavClick}>
           Schedule
-        </A>
+        </a>
       </li>
       <li>
-        <A href="/facility" onClick={props.onNavClick}>
+        <a href="/facility" onClick={props.onNavClick}>
           Facility
-        </A>
+        </a>
       </li>
       <li>
-        <A href="/contact-us" onClick={props.onNavClick}>
+        <a href="/contact-us" onClick={props.onNavClick}>
           Contact Us
-        </A>
+        </a>
       </li>
     </>
   );
