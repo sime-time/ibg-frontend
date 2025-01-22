@@ -67,5 +67,9 @@ export default function MemberPricingTable() {
     };
   });
 
-  return <div ref={divRef} class="w-full"></div>;
+  return (
+    <>
+      <div ref={divRef} class="w-full"></div>
+    </>
+  );
 }

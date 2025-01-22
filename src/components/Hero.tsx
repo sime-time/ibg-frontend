@@ -1,8 +1,17 @@
+import { onMount } from "solid-js";
+
 export default function Hero() {
+  let videoRef!: HTMLVideoElement;
+  onMount(() => {
+    // trigger playback when back button is pressed.
+    videoRef.play();
+  });
+
   return (
     <section class="relative bg-black text-white">
       {/* Background Video */}
       <video
+        ref={videoRef}
         autoplay={true}
         muted={true}
         loop={true}
@@ -17,7 +26,10 @@ export default function Hero() {
       <div class="relative gradient-bg py-40 xl:py-52 text-center px-5">
         <div class="max-w-4xl mx-auto text-center flex flex-col gap-20">
           <h1 class="text-5xl md:text-6xl font-bold italic uppercase">
-            Train Like A <span class="text-primary text-transparent bg-clip-text bg-gradient-to-r from-primary via-orange-500 to-primary">Champion</span>
+            Train Like A{" "}
+            <span class="text-primary text-transparent bg-clip-text bg-gradient-to-r from-primary via-orange-500 to-primary">
+              Champion
+            </span>
           </h1>
           <div>
             <a
@@ -26,7 +38,6 @@ export default function Hero() {
             >
               Join Now
             </a>
-
           </div>
         </div>
       </div>
