@@ -2,10 +2,6 @@ import { onMount } from "solid-js";
 
 export default function Hero() {
   let videoRef!: HTMLVideoElement;
-  onMount(() => {
-    // trigger playback when back button is pressed.
-    videoRef.play();
-  });
 
   return (
     <section class="relative bg-black text-white">
