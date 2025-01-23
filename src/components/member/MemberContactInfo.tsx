@@ -3,7 +3,7 @@ import { usePocket } from "~/context/PocketbaseContext";
 import { FaSolidUser, FaSolidPhone, FaSolidUserDoctor } from "solid-icons/fa";
 import * as v from "valibot";
 import { ContactSchema, ContactData } from "~/types/ValidationType";
-
+import { phoneAutoFormat } from "~/util/phoneAutoFormat";
 
 export default function MemberContactInfo() {
   const [phone, setPhone] = createSignal("");
@@ -25,10 +25,10 @@ export default function MemberContactInfo() {
       phone: phone(),
       emergencyName: emergencyName(),
       emergencyPhone: emergencyPhone(),
-    }
+    };
 
     try {
-      // validate user input 
+      // validate user input
       const validContactInfo = v.parse(ContactSchema, contactData);
 
       const successful: boolean = await addContactInfo(validContactInfo);
@@ -39,12 +39,11 @@ export default function MemberContactInfo() {
       } else {
         throw new Error("server_error");
       }
-
     } catch (err) {
       if (err instanceof v.ValiError) {
         setError(err.issues[0].message);
       } else if (err instanceof Error && err.message == "server_error") {
-        setError("Internal server error. Try again later.")
+        setError("Internal server error. Try again later.");
       } else {
         setError("An unexpected error occured. Try again later.");
       }
@@ -58,14 +57,18 @@ export default function MemberContactInfo() {
       <div class="card-body">
         <h1 class="card-title text-2xl font-bold">Contact Information</h1>
         <form onSubmit={handleSubmit} class="flex flex-col gap-4">
-
           <div class="form-control">
             <label class="label">
               <span class="label-text">Name</span>
             </label>
             <label class="input input-bordered flex items-center gap-2">
               <FaSolidUser class="w-4 h-4 opacity-70" />
-              <input type="text" disabled={true} class="grow" placeholder={user()?.name} />
+              <input
+                type="text"
+                disabled={true}
+                class="grow"
+                placeholder={user()?.name}
+              />
             </label>
           </div>
 
@@ -82,7 +85,8 @@ export default function MemberContactInfo() {
               type="file"
               accept="image/*"
               capture="user"
-              class="file-input file-input-bordered w-full max-w-xs" />
+              class="file-input file-input-bordered w-full max-w-xs"
+            />
           </div>
 
           <div class="form-control">
@@ -93,12 +97,14 @@ export default function MemberContactInfo() {
               <FaSolidPhone class="w-4 h-4 opacity-70" />
               <input
                 onInput={(event) => {
-                  setPhone(event.currentTarget.value)
+                  let phone = phoneAutoFormat(event.currentTarget.value);
+                  setPhone(phone);
                 }}
                 type="tel"
                 class="grow"
                 placeholder="(123) 456-7890"
                 value={phone()}
+                maxLength="14"
               />
             </label>
           </div>
@@ -111,7 +117,7 @@ export default function MemberContactInfo() {
               <FaSolidUserDoctor class="w-4 h-4 opacity-70" />
               <input
                 onInput={(event) => {
-                  setEmergencyName(event.currentTarget.value)
+                  setEmergencyName(event.currentTarget.value);
                 }}
                 type="text"
                 class="grow"
@@ -129,12 +135,14 @@ export default function MemberContactInfo() {
               <FaSolidPhone class="w-4 h-4 opacity-70" />
               <input
                 onInput={(event) => {
-                  setEmergencyPhone(event.currentTarget.value)
+                  let phone = phoneAutoFormat(event.currentTarget.value);
+                  setEmergencyPhone(phone);
                 }}
                 type="tel"
                 class="grow"
                 placeholder="(098) 765-4321"
                 value={emergencyPhone()}
+                maxLength="14"
               />
             </label>
           </div>
@@ -144,11 +152,18 @@ export default function MemberContactInfo() {
           </Show>
 
           <div class="form-control mt-3">
-            <button type="submit" class="btn btn-primary" disabled={submitDisabled()}>
-              {submitDisabled() ? <span class="loading loading-spinner loading-md"></span> : "Continue"}
+            <button
+              type="submit"
+              class="btn btn-primary"
+              disabled={submitDisabled()}
+            >
+              {submitDisabled() ? (
+                <span class="loading loading-spinner loading-md"></span>
+              ) : (
+                "Continue"
+              )}
             </button>
           </div>
-
         </form>
       </div>
     </div>

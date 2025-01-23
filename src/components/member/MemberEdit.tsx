@@ -6,6 +6,7 @@ import { BiSolidEdit, BiSolidEditAlt } from "solid-icons/bi";
 import { IoClose } from "solid-icons/io";
 import { MemberEditData, MemberEditSchema } from "~/types/ValidationType";
 import * as v from "valibot";
+import { phoneAutoFormat } from "~/util/phoneAutoFormat";
 
 interface MemberEditProps {
   avatarUrl: Accessor<string>;
@@ -237,7 +238,8 @@ export default function MemberEdit(props: MemberEditProps) {
                 <FaSolidPhone class="w-4 h-4 opacity-70" />
                 <input
                   onInput={(event) => {
-                    setMember("phone", "value", event.currentTarget.value);
+                    let phone = phoneAutoFormat(event.currentTarget.value);
+                    setMember("phone", "value", phone);
                   }}
                   type="tel"
                   class="grow"
@@ -245,6 +247,7 @@ export default function MemberEdit(props: MemberEditProps) {
                   value={member.phone.value}
                   disabled={!member.phone.readyToEdit}
                   id="phone-input"
+                  maxLength="14"
                 />
               </label>
               <button
@@ -330,11 +333,8 @@ export default function MemberEdit(props: MemberEditProps) {
                 <FaSolidPhone class="w-4 h-4 opacity-70" />
                 <input
                   onInput={(event) => {
-                    setMember(
-                      "emergencyPhone",
-                      "value",
-                      event.currentTarget.value
-                    );
+                    let phone = phoneAutoFormat(event.currentTarget.value);
+                    setMember("emergencyPhone", "value", phone);
                   }}
                   type="tel"
                   class="grow"
@@ -342,6 +342,7 @@ export default function MemberEdit(props: MemberEditProps) {
                   value={member.emergencyPhone.value}
                   disabled={!member.emergencyPhone.readyToEdit}
                   id="emergencyPhone-input"
+                  maxLength="14"
                 />
               </label>
               <button
