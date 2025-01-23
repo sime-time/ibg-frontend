@@ -6,50 +6,51 @@ export enum UserType {
 }
 
 export interface MemberData {
-  name: string,
-  email: string,
-  emailVisibility: boolean,
-  password: string,
-  passwordConfirm: string
+  name: string;
+  email: string;
+  emailVisibility: boolean;
+  password: string;
+  passwordConfirm: string;
 }
 
 export interface ContactInfo {
-  avatar: File | null,
-  phone: string,
-  emergencyName: string,
-  emergencyPhone: string,
+  avatar: File | null;
+  phone: string;
+  emergencyName: string;
+  emergencyPhone: string;
 }
 
 export interface UpdateMemberData {
-  avatar: File | null,
-  name?: string,
-  email?: string,
-  phone?: string,
-  emergencyName?: string,
-  emergencyPhone?: string,
+  avatar: File | null;
+  name?: string;
+  email?: string;
+  phone?: string;
+  emergencyName?: string;
+  emergencyPhone?: string;
 }
 
 // fulfills the properties of the pocketbase update collection function
 export interface UpdateMemberRecord {
-  avatar?: File | null,
-  name?: string,
-  email?: string,
-  password?: string,
-  passwordConfirm?: string,
-  oldPassword?: string,
-  phone_number?: string,
+  avatar?: File | null;
+  name?: string;
+  email?: string;
+  password?: string;
+  passwordConfirm?: string;
+  oldPassword?: string;
+  phone_number?: string;
 }
 
 export interface MemberRecord extends RecordModel {
   id: string;
   name: string;
   email: string;
-  is_subscribed: string;
+  is_subscribed: boolean;
   program: string;
   phone_number: string;
   stripe_customer_id: string;
   avatarUrl: string;
   avatar?: string;
+  pay_with_cash?: boolean;
 }
 
 export interface ClassRecord extends RecordModel {

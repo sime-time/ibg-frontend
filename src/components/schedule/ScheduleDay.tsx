@@ -1,5 +1,6 @@
 import { createMemo, createEffect, For, Setter } from "solid-js";
 import { ClassRecord } from "~/types/UserType";
+import { classButtonStyle, fullClassName } from "./util/scheduleFormat";
 
 interface ScheduleDayProps {
   date: Date;
@@ -55,32 +56,6 @@ export default function ScheduleDay(props: ScheduleDayProps) {
       }
     });
   });
-
-  const classButtonStyle = (martialArt: string) => {
-    const baseStyle = "w-full btn btn-sm btn-block bg-opacity-50";
-    switch (martialArt) {
-      case "BOX":
-        return `${baseStyle} btn-primary`;
-      case "BJJ":
-        return `${baseStyle} btn-secondary`;
-      case "MMA":
-        return `${baseStyle} btn-primary text-purple-200 bg-purple-600 border-purple-700 bg-opacity-30 focus:bg-purple-700 hover:bg-purple-700 hover:border-purple-700`;
-      default:
-        return `${baseStyle} btn-neutral`;
-    }
-  };
-  const fullClassName = (martialArt: string) => {
-    switch (martialArt) {
-      case "BOX":
-        return "Boxing";
-      case "BJJ":
-        return "Jiu-Jitsu";
-      case "MMA":
-        return "MMA";
-      default:
-        return "Open Gym";
-    }
-  };
 
   return (
     <div class="flex flex-col p-4 min-w-max gap-3">

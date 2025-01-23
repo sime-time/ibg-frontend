@@ -66,6 +66,11 @@ interface PocketbaseContextProps {
   ) => Promise<{ success: boolean; message: string }>;
   requestPasswordReset: (email: string) => Promise<boolean>;
   waiverTimestamp: (memberId: string, time: Date) => Promise<boolean>;
+  memberPayWithCash: (
+    memberId: string,
+    selected: boolean,
+    program: string
+  ) => Promise<boolean>;
 }
 const PocketbaseContext = createContext<PocketbaseContextProps>();
 
@@ -617,6 +622,25 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
+  const memberPayWithCash = async (
+    memberId: string,
+    selected: boolean,
+    program: string
+  ) => {
+    try {
+      const memberData = {
+        is_subscribed: selected,
+        pay_with_cash: selected,
+        program: program,
+      };
+      await pb.collection("member").update(memberId, memberData);
+      return true;
+    } catch (err) {
+      console.error("Error selecting cash payment option: ", err);
+      return false;
+    }
+  };
+
   return (
     <PocketbaseContext.Provider
       value={{
@@ -654,6 +678,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
         requestEmailChange,
         requestPasswordReset,
         waiverTimestamp,
+        memberPayWithCash,
       }}
     >
       {props.children}
