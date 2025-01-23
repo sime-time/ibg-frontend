@@ -244,7 +244,7 @@ export function MemberTable() {
     } else if (is_subscribed) {
       return <span class="badge badge-success">Active</span>;
     } else {
-      <span class="badge badge-error">Inactive</span>;
+      return <span class="badge badge-error">Inactive</span>;
     }
   };
 

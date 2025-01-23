@@ -367,9 +367,9 @@ export function PocketbaseContextProvider(props: ParentProps) {
         throw new Error("Deletion cancelled. User is not admin.");
       }
 
-      // cancel stripe subscription
+      // cancel stripe subscription if not paying with cash
       const member = await pb.collection("member").getOne(memberId);
-      if (member.is_subscribed) {
+      if (member.is_subscribed && !member.pay_with_cash) {
         const cancelled = await cancelSubscription(member.stripe_customer_id);
         if (!cancelled) {
           throw new Error(

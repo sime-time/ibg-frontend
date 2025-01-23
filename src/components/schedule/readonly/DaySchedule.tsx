@@ -50,12 +50,13 @@ export default function DaySchedule(props: DayScheduleProps) {
           {(classItem, index) => (
             <li class="w-full">
               <button class={classButtonStyle(classItem.martial_art)}>
-                {`${fullClassName(
-                  classItem.martial_art
-                ).toUpperCase()} ${formatTime(
-                  classItem.start_hour,
-                  classItem.start_minute
-                )} - ${formatTime(classItem.end_hour, classItem.end_minute)}`}
+                {`${fullClassName(classItem.martial_art).toUpperCase()}`}
+                <span class="text-yellow-400">
+                  {`${formatTime(
+                    classItem.start_hour,
+                    classItem.start_minute
+                  )} - ${formatTime(classItem.end_hour, classItem.end_minute)}`}
+                </span>
               </button>
             </li>
           )}
