@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Show, onMount } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
 import { usePocket } from "~/context/PocketbaseContext";
 import { BsCreditCard2BackFill } from "solid-icons/bs";
 import { FaSolidArrowLeft, FaRegularCalendarDays } from "solid-icons/fa";

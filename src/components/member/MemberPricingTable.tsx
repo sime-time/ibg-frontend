@@ -67,7 +67,7 @@ export default function MemberPricingTable() {
     };
   });
 
-  // "Pay in cash" option sets is_subscribed to true for member
+  // "Pay with cash" option sets is_subscribed to true for member
 
   return (
     <>
