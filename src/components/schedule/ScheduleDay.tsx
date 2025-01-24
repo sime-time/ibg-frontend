@@ -71,12 +71,13 @@ export default function ScheduleDay(props: ScheduleDayProps) {
                 onClick={() => openClassMenu(classItem.id)}
                 class={classButtonStyle(classItem.martial_art)}
               >
-                {`${fullClassName(
-                  classItem.martial_art
-                ).toUpperCase()} ${formatTime(
-                  classItem.start_hour,
-                  classItem.start_minute
-                )} - ${formatTime(classItem.end_hour, classItem.end_minute)}`}
+                {`${fullClassName(classItem.martial_art).toUpperCase()}`}
+                <span class="text-yellow-300">
+                  {`${formatTime(
+                    classItem.start_hour,
+                    classItem.start_minute
+                  )} - ${formatTime(classItem.end_hour, classItem.end_minute)}`}
+                </span>
               </button>
             </li>
           )}
