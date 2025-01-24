@@ -72,7 +72,7 @@ export default function ScheduleDay(props: ScheduleDayProps) {
                 class={classButtonStyle(classItem.martial_art)}
               >
                 {`${fullClassName(classItem.martial_art).toUpperCase()}`}
-                <span class="text-yellow-300">
+                <span class="text-yellow-200">
                   {`${formatTime(
                     classItem.start_hour,
                     classItem.start_minute

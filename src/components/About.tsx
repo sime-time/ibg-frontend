@@ -26,7 +26,7 @@ export default function About() {
           <span class="text-primary font-bold italic">confidence</span>,
           strength, and resilience, <span class="font-bold">IBG</span> is the
           ultimate place to{" "}
-          <span class="text-primary font-bold italic">push your limits,</span>{" "}
+          <span class="text-primary font-bold italic">push your limits</span>,{" "}
           achieve your goals, and become the best version of yourself!
         </p>
 
