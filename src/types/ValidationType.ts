@@ -137,11 +137,11 @@ export const ClassSchema = v.pipe(
 export type ClassData = v.InferOutput<typeof ClassSchema>;
 
 export const ContactSchema = v.pipe(v.object({
-  avatar: v.nullable(v.pipe(
-    v.file('Please select an image file or take a photo with your camera.'),
+  avatar: v.pipe(
+    v.file('Please select an image file or take a clear photo of your face with your camera.'),
     v.mimeType(['image/png', 'image/jpeg', 'image/heic', 'image/webp'], 'Please select an image file or take a photo with your camera.'),
-    v.maxSize(1024 * 1024 * 5, 'Please select a file smaller than 5MB.'),
-  )),
+    v.maxSize(1024 * 1024 * 5, 'Please select a file size smaller than 5MB.'),
+  ),
   phone: v.pipe(
     v.string('You must include your phone number.'),
     v.maxLength(20, 'The phone number must not exceed 20 characters.'),

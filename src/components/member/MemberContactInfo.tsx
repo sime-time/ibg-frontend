@@ -20,7 +20,7 @@ export default function MemberContactInfo() {
     setError("");
     setSubmitDisabled(true);
 
-    const contactData: ContactData = {
+    const contactData = {
       avatar: avatar(),
       phone: phone(),
       emergencyName: emergencyName(),
