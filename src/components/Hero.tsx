@@ -32,7 +32,7 @@ export default function Hero() {
               Sign Up
             </a>
             <a href="/pricingschedule" class="btn btn-accent text-lg md:btn-lg uppercase">
-              Our Schedule
+              Schedule
             </a>
           </div>
         </div>
