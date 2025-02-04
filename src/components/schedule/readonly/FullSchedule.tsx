@@ -40,7 +40,7 @@ export default function FullSchedule() {
 
 
   return (
-    <section class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 py-16 px-8 md:px-16 gap-5 md:gap-0 bg-gray-900">
+    <section class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 py-16 px-0 lg:px-16 gap-5 md:gap-0 bg-gray-900">
       {loadWeek()}
     </section>
   );

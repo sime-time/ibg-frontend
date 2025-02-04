@@ -27,12 +27,12 @@ export default function Hero() {
               Champion
             </span>
           </h1>
-          <div>
-            <a
-              href="/signup"
-              class="btn btn-primary text-lg md:btn-lg uppercase"
-            >
-              Join Now
+          <div class="flex gap-4 justify-center">
+            <a href="/signup" class="btn btn-primary text-lg md:btn-lg uppercase">
+              Sign Up
+            </a>
+            <a href="/pricingschedule" class="btn btn-accent text-lg md:btn-lg uppercase">
+              Our Schedule
             </a>
           </div>
         </div>

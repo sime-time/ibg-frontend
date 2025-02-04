@@ -1,7 +1,7 @@
 export default function About() {
   return (
-    <section class="bg-gray-900 py-16 px-8 md:px-16 flex flex-col md:flex-row justify-evenly gap-10 md:gap-0">
-      <div class="flex flex-col gap-5 md:w-1/2">
+    <section class="bg-gray-900 py-16 px-8 md:px-16 flex flex-col lg:flex-row justify-evenly gap-10 lg:gap-0 items-center">
+      <div class="flex flex-col gap-5 lg:w-1/2">
         <h1 class="font-bold text-4xl">
           Indiana's <span class="text-primary">Elite</span> Martial Arts Gym
         </h1>

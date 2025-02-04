@@ -3,15 +3,15 @@ import { FaBrandsInstagram, FaBrandsSquareFacebook, FaSolidLocationDot } from "s
 
 export default function Footer() {
   return (
-    <footer class="py-16 px-4 md:px-32">
+    <footer class="py-16 px-4 md:px-16 lg:px-32">
       <div class="container mx-auto flex flex-col md:grid grid-cols-2 gap-8">
 
         <div class="grid grid-cols-2 gap-5">
           <div>
-            <a href="/">
+            <a class="flex flex-col gap-3" href="/">
               <img src="/logo.svg" alt="IBG Logo" width="100%" height="auto" class="max-w-32" />
+              <img src="/images/indyboxing.png" alt="Indy Boxing Logo" width="100%" height="auto" class="max-w-32" />
             </a>
-            <p class="hidden md:block xl:w-3/4 text-wrap">Elite martial arts gym for competitive athletes featuring attentive, patient coaches.</p>
           </div>
 
           <ul class="leading-loose opacity-70">

@@ -54,7 +54,7 @@ function NavMenuEnd(props: { onNavClick?: () => void }) {
           location.pathname != "/member"
         }
       >
-        <a href="/signup" class="btn btn-primary">
+        <a href="/signup" class="btn btn-primary hidden sm:flex">
           Sign Up
         </a>
         <a href="/login" class="btn btn-outline">
@@ -119,6 +119,13 @@ export default function Nav(props: ParentProps) {
             <img
               src="/logo.svg"
               alt="IBG Logo"
+              width="100%"
+              height="auto"
+              class="max-w-20"
+            />
+            <img
+              src="/images/indyboxing.png"
+              alt="Indy Boxing Logo"
               width="100%"
               height="auto"
               class="max-w-20"
