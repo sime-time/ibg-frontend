@@ -16,7 +16,10 @@ export default function FAQ() {
     },
     {
       question: "Where are you located?",
-      answer: (<><span class="font-bold">Indianapolis - </span><a href="https://maps.app.goo.gl/o84UTdgM7tfjiras7" target="_blank" class="link">4903 E 23rd St Indianapolis IN 46218</a></>),
+      answer: (<>
+        <span class="font-bold">Indianapolis - </span><a href="https://maps.app.goo.gl/o84UTdgM7tfjiras7" target="_blank" class="link">4903 E 23rd St Indianapolis, IN 46218</a><br />
+        <span class="font-bold">Carmel - </span>Coming Soon
+      </>),
     },
     {
       question: "Can I pay membership dues in Cash App, Zelle, or cash?",
@@ -24,7 +27,7 @@ export default function FAQ() {
     },
     {
       question: "Is there a free trial?",
-      answer: "Of course! Come in to workout for one free class to see what it's like."
+      answer: "Of course! Visit us for one free class to see what it's like."
     }
   ];
 
