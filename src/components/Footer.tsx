@@ -53,7 +53,7 @@ export default function Footer() {
           <a href="/privacypolicy" class="link">Privacy Policy</a>
           <a href="/termsconditions" class="link">Terms and Conditions</a>
         </div>
-        <p class="mt-2">website + app built by <a href="https://www.linkedin.com/in/simeondunn/" target="_blank" class="link">Simeon Dunn</a></p>
+        <p class="mt-2">website + app built by <a href="https://webundance.com" target="_blank" class="link">Simeon Dunn</a></p>
       </div>
     </footer>
   );
