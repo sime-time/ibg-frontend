@@ -100,7 +100,7 @@ export default function ScheduleWeek(props: ScheduleWeekProps) {
 
 
   return (<>
-    <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-3 w-5/6 sm:w-11/12 xl:w-5/6 p-6 card bg-base-100 shadow-xl">
+    <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-3 w-full xl:w-5/6 py-4 px-0 lg:px-16">
       {loadWeek()}
       <div class="flex flex-col gap-2 items-center justify-center rounded-lg py-6 border border-neutral">
         <h2 class="text-lg font-semibold text-center">New Class</h2>
