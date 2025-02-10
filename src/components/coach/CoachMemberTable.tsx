@@ -321,17 +321,12 @@ export function MemberTable() {
                           <div class="font-bold">{member.name}</div>
                           <div class="text-sm opacity-50">{member.email}</div>
                           <div class="md:hidden flex gap-1 mt-1">
-                            <a
-                              href={
-                                import.meta.env.VITE_STRIPE_CUSTOMER_URL +
-                                member.stripe_customer_id
-                              }
-                            >
+                            <span>
                               {subscriptionBadge(
                                 member.is_subscribed,
                                 member.pay_with_cash ? true : false
                               )}
-                            </a>
+                            </span>
                             <span class="badge badge-neutral">
                               {member.program ? member.program : "N/A"}
                             </span>
@@ -349,17 +344,12 @@ export function MemberTable() {
 
                     {/* Subscription Active? */}
                     <td class="hidden md:table-cell">
-                      <a
-                        href={
-                          import.meta.env.VITE_STRIPE_CUSTOMER_URL +
-                          member.stripe_customer_id
-                        }
-                      >
+                      <span>
                         {subscriptionBadge(
                           member.is_subscribed,
                           member.pay_with_cash ? true : false
                         )}
-                      </a>
+                      </span>
                     </td>
 
                     {/* Options Menu */}
@@ -391,6 +381,7 @@ export function MemberTable() {
 
                                 {/* Stripe Subscription Link */}
                                 <a
+                                  target="_blank"
                                   href={
                                     import.meta.env.VITE_STRIPE_CUSTOMER_URL +
                                     memberStripeId()
