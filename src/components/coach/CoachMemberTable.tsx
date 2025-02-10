@@ -33,7 +33,7 @@ function TableHeaders() {
   );
 }
 
-export function MemberTable() {
+export default function MemberTable() {
   const {
     getMember,
     getMemberEmergencyContact,
@@ -249,7 +249,7 @@ export function MemberTable() {
   };
 
   return (
-    <div class="w-11/12 xl:w-2/3 flex flex-col gap-4">
+    <div class="w-11/12 xl:w-2/3 flex flex-col gap-4 auto-visibility">
       <div class="flex justify-between">
         {/* Search Member */}
         <label class="input input-bordered flex items-center gap-2 input-sm">

@@ -5,3 +5,7 @@
 :root {
   @apply bg-base-300;
 }
+
+.auto-visibility {
+  content-visibility: auto;
+}
