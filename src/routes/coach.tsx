@@ -10,13 +10,15 @@ const CoachDashboard = clientOnly(() => import("~/components/coach/CoachDashboar
 export default function Coach() {
   const { userIsAdmin } = usePocket();
   return (
-    <CoachContextProvider>
+    <>
       <Title>Coach Dashboard</Title>
       <main class="w-full flex justify-center mt-4 mb-20">
         <Show when={userIsAdmin()} fallback={<AccessDenied />}>
-          <CoachDashboard />
+          <CoachContextProvider>
+            <CoachDashboard />
+          </CoachContextProvider>
         </Show>
       </main>
-    </CoachContextProvider>
+    </>
   );
 }

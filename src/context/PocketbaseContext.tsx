@@ -311,18 +311,22 @@ export function PocketbaseContextProvider(props: ParentProps) {
   };
 
   const getMembers = async (): Promise<MemberRecord[]> => {
-    const members: MemberRecord[] = await pb
-      .collection("member")
-      .getFullList<MemberRecord>();
-    return members.map(
-      (member) =>
+    try {
+      const members: MemberRecord[] = await pb.collection("member").getFullList<MemberRecord>();
+      console.log("Raw members from PocketBase:", members);
+      return members.map(
+        (member) =>
         ({
           ...member,
           avatarUrl: member.avatar
             ? pb.files.getUrl(member, member.avatar)
             : "https://www.gravatar.com/avatar/?d=mp",
         } as MemberRecord)
-    );
+      );
+    } catch (err) {
+      console.error("Error fetching members: ", err);
+      return [];
+    }
   };
 
   interface MemberAttendanceRecord extends MemberRecord {
@@ -354,10 +358,10 @@ export function PocketbaseContextProvider(props: ParentProps) {
     };
     return members.map(
       (member) =>
-        ({
-          ...member,
-          checkedIn: hasAttended(member.id),
-        } as MemberAttendanceRecord)
+      ({
+        ...member,
+        checkedIn: hasAttended(member.id),
+      } as MemberAttendanceRecord)
     );
   };
 
@@ -579,9 +583,8 @@ export function PocketbaseContextProvider(props: ParentProps) {
       if (email == user()?.email) {
         return {
           success: false,
-          message: `New email cannot be the same as current email: ${
-            user()?.email
-          }`,
+          message: `New email cannot be the same as current email: ${user()?.email
+            }`,
         };
       }
 

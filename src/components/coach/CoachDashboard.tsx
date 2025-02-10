@@ -25,22 +25,23 @@ enum View {
   Scheduler = "scheduler",
   Attendance = "attendance",
 }
-
 const [currentView, setCurrentView] = createSignal(View.Members);
 
 export default function CoachDashboard() {
-  const { classes, refetch, revenue } = useCoachContext();
+  const { classes, refetchClasses, members, refetchMembers, revenue } = useCoachContext();
 
   return (
     <div class="w-full flex justify-center mb-20">
       {/* Render based on currentView */}
       <Switch>
         <Match when={currentView() === View.Members}>
-          <MemberTable />
+          <MemberTable members={members} refetch={refetchMembers} />
         </Match>
+
         <Match when={currentView() === View.Scheduler}>
-          <ScheduleWeek classes={classes} refetch={refetch} />
+          <ScheduleWeek classes={classes} refetch={refetchClasses} />
         </Match>
+
         <Match when={currentView() === View.Stats}>
           <Suspense
             fallback={
@@ -54,8 +55,8 @@ export default function CoachDashboard() {
               <MonthlyRevenue revenueData={revenue()} />
             </Show>
           </Suspense>
-          <MembersAcquired />
         </Match>
+
         <Match when={currentView() === View.Attendance}>
           <Attendance />
         </Match>
@@ -69,6 +70,7 @@ export default function CoachDashboard() {
 function BottomNav() {
   return (
     <div class="btm-nav btm-nav-lg">
+
       <button
         onClick={() => setCurrentView(View.Stats)}
         class={currentView() === View.Stats ? "active" : "opacity-50"}
@@ -80,6 +82,7 @@ function BottomNav() {
         )}
         <label class="text-xs opacity-70">Stats</label>
       </button>
+
       <button
         onClick={() => setCurrentView(View.Members)}
         class={currentView() === View.Members ? "active" : "opacity-50"}
@@ -91,6 +94,7 @@ function BottomNav() {
         )}
         <label class="text-xs opacity-70">Members</label>
       </button>
+
       <button
         onClick={() => setCurrentView(View.Scheduler)}
         class={currentView() === View.Scheduler ? "active" : "opacity-50"}
@@ -102,6 +106,7 @@ function BottomNav() {
         )}
         <label class="text-xs opacity-70">Classes</label>
       </button>
+
       <button
         onClick={() => setCurrentView(View.Attendance)}
         class={currentView() === View.Attendance ? "active" : "opacity-50"}

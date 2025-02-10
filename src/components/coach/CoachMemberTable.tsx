@@ -1,4 +1,4 @@
-import { createResource, For, Show, createSignal, Suspense } from "solid-js";
+import { Resource, For, Show, createSignal, Suspense } from "solid-js";
 import { createStore } from "solid-js/store";
 import { usePocket } from "~/context/PocketbaseContext";
 import {
@@ -19,6 +19,7 @@ import {
 import * as v from "valibot";
 import ContactDialog from "./ContactDialog";
 import { MemberRecord } from "~/types/UserType";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 function TableHeaders() {
   return (
@@ -33,18 +34,19 @@ function TableHeaders() {
   );
 }
 
-export default function MemberTable() {
+interface MemberTableProps {
+  members: Resource<MemberRecord[]>;
+  refetch: (info?: unknown) => MemberRecord[] | Promise<MemberRecord[] | undefined> | null | undefined;
+}
+export default function MemberTable(props: MemberTableProps) {
   const {
     getMember,
     getMemberEmergencyContact,
-    getMembers,
     deleteMember,
     updateMember,
   } = usePocket();
 
-  const [members, { mutate, refetch }] = createResource(async () => {
-    return getMembers();
-  });
+  console.log(props.members());
   const [queryName, setQueryName] = createSignal("");
 
   // emergency functions
@@ -97,7 +99,7 @@ export default function MemberTable() {
     ) as HTMLDialogElement;
     try {
       deleteMember(memberId).then(() => {
-        refetch();
+        props.refetch();
         setDeleteDisabled(false);
         dialog.close();
       });
@@ -224,7 +226,7 @@ export default function MemberTable() {
             "edit-dialog"
           ) as HTMLDialogElement;
           dialog.close();
-          refetch();
+          props.refetch();
         });
     } catch (err) {
       if (err instanceof v.ValiError) {
@@ -289,13 +291,7 @@ export default function MemberTable() {
       </div>
 
       <div class="overflow-x-auto whitespace-nowrap block">
-        <Suspense
-          fallback={
-            <div class="flex justify-center">
-              <span class="loading loading-spinner loading-lg"></span>
-            </div>
-          }
-        >
+        <Suspense fallback={<LoadingSpinner />}>
           <table class="table bg-base-100">
             <thead>
               <TableHeaders />
@@ -303,7 +299,7 @@ export default function MemberTable() {
 
             <tbody>
               <For
-                each={members()?.filter((member) =>
+                each={props.members()?.filter((member) =>
                   member.name.toLowerCase().includes(queryName().toLowerCase())
                 )}
               >
