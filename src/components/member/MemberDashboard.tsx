@@ -53,10 +53,10 @@ export default function MemberDashboard() {
     <Show
       when={!scheduleIsOpen()}
       fallback={
-        <div class="flex flex-col gap-6 w-5/6">
+        <div class="flex flex-col gap-6 w-full">
           <button
             onClick={() => setScheduleIsOpen(false)}
-            class="btn items-center flex md:hidden"
+            class="btn items-center flex lg:hidden"
           >
             <FaSolidArrowLeft />
             Back
