@@ -15,6 +15,7 @@ import {
 import { RiUserFacesGroupLine, RiUserFacesGroupFill } from "solid-icons/ri";
 import { BsBarChart, BsBarChartFill } from "solid-icons/bs";
 import { usePocket } from "~/context/PocketbaseContext";
+import { fetchRevenue } from "~/util/fetchRevenue";
 import ScheduleWeek from "../schedule/ScheduleWeek";
 import Attendance from "../attendance/Attendance";
 import MonthlyRevenue from "../stats/MonthlyRevenue";
@@ -34,26 +35,8 @@ export default function CoachDashboard() {
     return getClasses();
   });
 
-  // higher-level data load for stats tab
-  const fetchRevenue = async (monthsAgo: number) => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_POCKETBASE_URL}/revenue-data`,
-        {
-          method: "POST",
-          headers: { "Content-type": "application/json" },
-          body: JSON.stringify({ monthsAgo }),
-        }
-      );
-      if (response.ok) {
-        return response.json();
-      }
-    } catch (error) {
-      console.error("Error fetching revenue (client): ", error);
-      throw error;
-    }
-  };
-  const [revenueData] = createResource(() => fetchRevenue(6));
+  const [revenueMonths, setRevenueMonths] = createSignal(6);
+  const [revenueData] = createResource(() => fetchRevenue(revenueMonths()));
 
   const [currentView, setCurrentView] = createSignal(View.Members);
 
@@ -71,7 +54,7 @@ export default function CoachDashboard() {
           <Suspense
             fallback={
               <div class="flex flex-col justify-center items-center gap-5">
-                <p>Gathering 6 months of payment data. Please wait...</p>
+                <p>{`Gathering ${revenueMonths()} months of payment data. Please wait...`}</p>
                 <span class="loading loading-spinner loading-lg"></span>
               </div>
             }
