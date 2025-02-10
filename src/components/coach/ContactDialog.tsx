@@ -4,15 +4,11 @@ import { IoClose } from "solid-icons/io";
 interface ContactDialogProps extends ParentProps {
   name: string;
   phone: string;
-  dialogId: string;
 }
 
 export default function ContactDialog(props: ContactDialogProps) {
   return (
-    <dialog id={props.dialogId} class="modal">
-      <form method="dialog" class="modal-backdrop">
-        <button>close when clicked outside</button>
-      </form>
+    <>
       <div class="modal-box">
         <form method="dialog">
           <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"><IoClose class="size-4" /></button>
@@ -29,6 +25,6 @@ export default function ContactDialog(props: ContactDialogProps) {
           </form>
         </div>
       </div>
-    </dialog>
+    </>
   );
 }

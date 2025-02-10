@@ -5,7 +5,7 @@ import {
   Suspense,
   Show,
 } from "solid-js";
-import MemberTable from "./CoachMemberTable";
+import MemberTable from "./MemberTable";
 import {
   FaRegularCalendar,
   FaSolidCalendar,
