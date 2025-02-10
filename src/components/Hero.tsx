@@ -28,10 +28,10 @@ export default function Hero() {
             </span>
           </h1>
           <div class="flex gap-4 justify-center">
-            <a href="/signup" class="btn btn-primary text-lg md:btn-lg uppercase">
+            <a href="/signup" class="btn btn-primary text-lg md:btn-lg">
               Sign Up
             </a>
-            <a href="/pricingschedule" class="btn btn-accent text-lg md:btn-lg uppercase">
+            <a href="/pricingschedule" class="btn btn-accent text-lg md:btn-lg">
               Schedule
             </a>
           </div>

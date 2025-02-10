@@ -1,4 +1,4 @@
-import { createResource, For, Show, createSignal } from "solid-js";
+import { createResource, For, Show, createSignal, Suspense } from "solid-js";
 import { createStore } from "solid-js/store";
 import { usePocket } from "~/context/PocketbaseContext";
 import {
@@ -289,8 +289,7 @@ export function MemberTable() {
       </div>
 
       <div class="overflow-x-auto whitespace-nowrap block">
-        <Show
-          when={!members.loading}
+        <Suspense
           fallback={
             <div class="flex justify-center">
               <span class="loading loading-spinner loading-lg"></span>
@@ -756,7 +755,7 @@ export function MemberTable() {
               <TableHeaders />
             </tfoot>
           </table>
-        </Show>
+        </Suspense>
       </div>
     </div>
   );
