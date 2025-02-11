@@ -32,7 +32,7 @@ export default function About() {
 
         <div class="mt-4 flex gap-4">
           <a href="/signup" class="btn btn-primary text-lg md:btn-lg">
-            Join Now
+            Sign Up
           </a>
           <a href="/pricingschedule" class="btn btn-outline text-lg md:btn-lg">
             See Schedule
