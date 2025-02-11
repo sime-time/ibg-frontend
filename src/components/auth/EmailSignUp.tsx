@@ -51,7 +51,7 @@ export default function EmailSignUp() {
       } else if (err instanceof Error && err.message == "server_error") {
         setError("Failed to connect to server. Try again later.")
       } else {
-        setError("Email or password is incorrect.");
+        setError("Email might already be taken. Go to login");
       }
     } finally {
       setSubmitDisabled(false);

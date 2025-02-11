@@ -43,7 +43,7 @@ export default function MemberContactInfo() {
       if (err instanceof v.ValiError) {
         setError(err.issues[0].message);
       } else if (err instanceof Error && err.message == "server_error") {
-        setError("Internal server error. Try again later.");
+        setError("Internal server error. Try again later. (Make sure image file type is .png, .jpeg, .heic, or .webp)");
       } else {
         setError("An unexpected error occured. Try again later.");
       }

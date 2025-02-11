@@ -1,4 +1,4 @@
-import { createEffect } from "solid-js";
+import { createEffect, Resource } from "solid-js";
 import { useCoachContext } from "~/context/CoachContext";
 import Chart from "chart.js/auto";
 import type { ChartData, ChartOptions } from "chart.js";
@@ -15,8 +15,11 @@ interface ProcessedData {
   }[];
 }
 
-export default function MembersAcquired() {
-  const { members } = useCoachContext();
+interface MembersAcquiredProps {
+  members: Resource<MemberRecord[]>;
+}
+
+export default function MembersAcquired(props: MembersAcquiredProps) {
   let chartRef: HTMLCanvasElement | undefined;
   let chartInstance: Chart | undefined;
 
@@ -50,14 +53,14 @@ export default function MembersAcquired() {
   };
 
   const processData = (): ProcessedData | null => {
-    const memberData = members();
+    const memberData = props.members();
     if (!memberData) return null;
 
     const monthsSet = new Set<string>();
     const programsSet = new Set<string>();
 
     memberData.forEach((member: MemberRecord) => {
-      const date = new Date(member.createdDate);
+      const date = new Date(member.created);
       const monthYear = date.toLocaleString('default', { month: 'short', year: 'numeric' });
       monthsSet.add(monthYear);
       programsSet.add(member.program || 'N/A');
@@ -90,7 +93,7 @@ export default function MembersAcquired() {
       const colors = getColorForProgram(program);
       const data = months.map(month => {
         return memberData.filter(member => {
-          const memberMonth = new Date(member.createdDate).toLocaleString('en-US', {
+          const memberMonth = new Date(member.created).toLocaleString('en-US', {
             month: 'short',
             year: 'numeric'
           });
@@ -155,7 +158,8 @@ export default function MembersAcquired() {
         callbacks: {
           label: (context) => {
             const value = context.raw as number;
-            return `${value} new members`;
+            const program = context.dataset.label;
+            return `${value} ${program}`;
           }
         }
       }

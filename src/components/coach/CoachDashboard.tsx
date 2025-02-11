@@ -18,7 +18,7 @@ import ScheduleWeek from "../schedule/ScheduleWeek";
 import Attendance from "../attendance/Attendance";
 import MonthlyRevenue from "../stats/MonthlyRevenue";
 import MembersAcquired from "../stats/MembersAcquired";
-import LoadingSpinner from "../ui/LoadingSpinner";
+import Stats from "../stats/Stats";
 
 enum View {
   Members = "members",
@@ -53,16 +53,15 @@ export default function CoachDashboard() {
         <Match when={currentView() === View.Stats}>
           <div class="flex flex-col w-full justify-center items-center gap-16">
             <Suspense
-              fallback={<div class="flex flex-col max-w-4xl w-full m-auto p-4 items-center skeleton h-screen">
-                <p class="opacity-50 mb-6">{`Gathering ${monthsAgo()} months of payment data. Please wait...`}</p>
-                <span class="loading loading-spinner loading-lg opacity-50"></span>
+              fallback={<div class="flex flex-col max-w-4xl w-full m-auto p-4 items-center">
+                <p class="mb-6">{`Gathering ${monthsAgo()} months of data. Please wait...`}</p>
+                <span class="loading loading-spinner loading-lg"></span>
               </div>}
             >
-              <Show when={revenue()}>
+              <Show when={members() && revenue()}>
+                <Stats members={members} revenue={revenue()} />
                 <MonthlyRevenue revenueData={revenue()} />
-              </Show>
-              <Show when={members}>
-                <MembersAcquired />
+                <MembersAcquired members={members} />
               </Show>
             </Suspense>
 
