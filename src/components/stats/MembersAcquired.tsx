@@ -1,5 +1,4 @@
 import { createEffect, Resource } from "solid-js";
-import { useCoachContext } from "~/context/CoachContext";
 import Chart from "chart.js/auto";
 import type { ChartData, ChartOptions } from "chart.js";
 import type { MemberRecord } from "~/types/UserType";
@@ -80,14 +79,25 @@ export default function MembersAcquired(props: MembersAcquiredProps) {
 
     // Sort months chronologically
     const months = Array.from(monthsSet).sort((a, b) => {
-      const [monthA, yearA] = a.split(' ');
-      const [monthB, yearB] = b.split(' ');
+      const monthMap: Record<string, number> = {
+        Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+        Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+      };
+      const [monthStr, yearStr] = a.split(" ");
+      const monthA: number = monthMap[monthStr];
+      const yearA: number = parseInt(yearStr.length === 2 ? '20' + yearStr : yearStr);
 
-      const dateA = new Date(`${monthA} 1, ${yearA.length === 2 ? '20' + yearA : yearA}`);
-      const dateB = new Date(`${monthB} 1, ${yearB.length === 2 ? '20' + yearB : yearB}`);
+      const [monthStrB, yearStrB] = b.split(" ");
+      const monthB: number = monthMap[monthStrB];
+      const yearB: number = parseInt(yearStrB.length === 2 ? '20' + yearStrB : yearStrB);
+
+      const dateA = new Date(yearA, monthA, 1);
+      const dateB = new Date(yearB, monthB, 1);
 
       return dateA.getTime() - dateB.getTime();
     });
+
+    console.log(months);
 
     // Ensure programs are in the desired order
     const programOrder = [
