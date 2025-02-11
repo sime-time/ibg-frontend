@@ -66,6 +66,7 @@ export default function MembersAcquired(props: MembersAcquiredProps) {
         year: 'numeric'
       });
       monthsSet.add(monthYear);
+      console.log("monthYear: ", monthYear)
       programsSet.add(member.program || 'N/A');
     });
 
@@ -80,6 +81,7 @@ export default function MembersAcquired(props: MembersAcquiredProps) {
       return dateA.getTime() - dateB.getTime();
     });
 
+    console.log("Months: ", months)
     // Ensure programs are in the desired order
     const programOrder = [
       'Competitive Boxing',
@@ -124,7 +126,7 @@ export default function MembersAcquired(props: MembersAcquiredProps) {
     plugins: {
       title: {
         display: true,
-        text: "Members Acquired by Month",
+        text: "Members Acquired",
         color: "#ffffff",
         fullSize: true,
         font: {
