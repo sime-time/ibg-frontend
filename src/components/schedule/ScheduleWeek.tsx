@@ -111,6 +111,5 @@ export default function ScheduleWeek(props: ScheduleWeekProps) {
     <ScheduleEditClass refetch={props.refetch} classId={classId} martialArtList={martialArtList} openEdit={openEdit} setOpenEdit={setOpenEdit} />
     <ScheduleClassMenu classId={classId} editClass={editClass} deleteClass={deleteClass} viewAttendance={viewAttendance} />
     <ScheduleDeleteClass refetch={props.refetch} classId={classId} />
-    <ScheduleAttendance classId={classId} openAttendance={openAttendance} setOpenAttendance={setOpenAttendance} />
   </>);
 }

@@ -18,6 +18,7 @@ import ScheduleWeek from "../schedule/ScheduleWeek";
 import Attendance from "../attendance/Attendance";
 import MonthlyRevenue from "../stats/MonthlyRevenue";
 import MembersAcquired from "../stats/MembersAcquired";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 enum View {
   Members = "members",
@@ -25,10 +26,17 @@ enum View {
   Scheduler = "scheduler",
   Attendance = "attendance",
 }
-const [currentView, setCurrentView] = createSignal(View.Members);
+const [currentView, setCurrentView] = createSignal(View.Stats);
 
 export default function CoachDashboard() {
-  const { classes, refetchClasses, members, refetchMembers, revenue } = useCoachContext();
+  const {
+    classes,
+    refetchClasses,
+    members,
+    refetchMembers,
+    revenue,
+    monthsAgo
+  } = useCoachContext();
 
   return (
     <div class="w-full flex justify-center mb-20">
@@ -43,18 +51,22 @@ export default function CoachDashboard() {
         </Match>
 
         <Match when={currentView() === View.Stats}>
-          <Suspense
-            fallback={
-              <div class="flex flex-col justify-center items-center gap-5">
-                <p>Gathering 6 months of payment data. Please wait...</p>
-                <span class="loading loading-spinner loading-lg"></span>
-              </div>
-            }
-          >
-            <Show when={revenue()}>
-              <MonthlyRevenue revenueData={revenue()} />
-            </Show>
-          </Suspense>
+          <div class="flex flex-col w-full justify-center items-center gap-16">
+            <Suspense
+              fallback={<div class="flex flex-col max-w-4xl w-full m-auto p-4 items-center skeleton h-screen">
+                <p class="opacity-50 mb-6">{`Gathering ${monthsAgo()} months of payment data. Please wait...`}</p>
+                <span class="loading loading-spinner loading-lg opacity-50"></span>
+              </div>}
+            >
+              <Show when={revenue()}>
+                <MonthlyRevenue revenueData={revenue()} />
+              </Show>
+              <Show when={members}>
+                <MembersAcquired />
+              </Show>
+            </Suspense>
+
+          </div>
         </Match>
 
         <Match when={currentView() === View.Attendance}>

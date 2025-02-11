@@ -5,6 +5,7 @@ import {
   ParentProps,
   createResource,
   Resource,
+  Accessor,
 } from "solid-js";
 import { usePocket } from "./PocketbaseContext";
 import { ClassRecord, MemberRecord } from "~/types/UserType";
@@ -15,6 +16,7 @@ interface CoachContextProps {
   members: Resource<MemberRecord[]>,
   refetchMembers: (info?: unknown) => MemberRecord[] | Promise<MemberRecord[] | undefined> | null | undefined,
   revenue: Resource<any>;
+  monthsAgo: Accessor<number>;
 }
 const CoachContext = createContext<CoachContextProps>();
 
@@ -29,7 +31,7 @@ export function CoachContextProvider(props: ParentProps) {
     return getClasses();
   });
 
-  const [revenueMonths, setRevenueMonths] = createSignal(6);
+  const [monthsAgo, setMonthsAgo] = createSignal(6);
   const fetchRevenue = async (monthsAgo: number) => {
     try {
       const response = await fetch(
@@ -48,7 +50,7 @@ export function CoachContextProvider(props: ParentProps) {
       throw error;
     }
   };
-  const [revenue] = createResource(() => fetchRevenue(revenueMonths()));
+  const [revenue] = createResource(() => fetchRevenue(monthsAgo()));
 
 
 
@@ -60,6 +62,7 @@ export function CoachContextProvider(props: ParentProps) {
         members: members,
         refetchMembers,
         revenue,
+        monthsAgo,
       }}
     >
       {props.children}

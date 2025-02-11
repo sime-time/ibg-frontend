@@ -5,7 +5,7 @@ const getShortMonthNames = (labels: string[]): string[] => {
   return labels.map(label => {
     const [year, month] = label.split('-').map(Number);
     const date = new Date(year, month - 1); // months are 0-indexed in JS
-    return new Intl.DateTimeFormat('en-US', { month: 'short' }).format(date);
+    return new Intl.DateTimeFormat('en-US', { month: 'short', year: '2-digit' }).format(date);
   });
 };
 
@@ -33,7 +33,7 @@ export default function MonthlyRevenue(props: MonthlyRevenueProps) {
         labels: chartLabels,
         datasets: [
           {
-            label: "Monthly Revenue",
+            label: "USD",
             data: chartData,
             borderColor: "#4CAF50", // Softer green line
             backgroundColor: "rgba(76, 175, 80, 0.2)", // Lighter green fill
@@ -49,9 +49,19 @@ export default function MonthlyRevenue(props: MonthlyRevenueProps) {
       options: {
         responsive: true,
         plugins: {
+          title: {
+            display: true,
+            text: "Monthly Revenue",
+            color: "#ffffff",
+            fullSize: true,
+            font: {
+              weight: 'bold',
+              size: 24,
+            }
+          },
           legend: {
             display: true,
-            position: "top",
+            position: "bottom",
             labels: {
               color: "#ffffff", // White legend text
               font: {
@@ -138,7 +148,7 @@ export default function MonthlyRevenue(props: MonthlyRevenueProps) {
 
 
   return (
-    <div class="w-full md:w-2/3">
+    <div class="w-full max-w-4xl mx-auto p-4">
       <canvas ref={canvasRef}></canvas>
     </div >
   );

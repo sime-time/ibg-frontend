@@ -3,7 +3,7 @@ export function phoneAutoFormat(phoneInput: string) {
   const numericInput: string = phoneInput.replace(/[^0-9]/g, "");
   let formatted: string = "";
 
-  // apply formatting rules (###) ###-####
+  // apply formatting rules -> (123) 456-7890
   if (numericInput.length > 0) {
     formatted = "(" + numericInput.substring(0, 3);
   }

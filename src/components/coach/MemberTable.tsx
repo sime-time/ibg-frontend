@@ -278,7 +278,7 @@ export default function MemberTable(props: MemberTableProps) {
 
       {/* Edit Dialog */}
       <dialog
-        class="modal"
+        class="modal auto-visibility"
         open={editDialogOpen()}
         onClick={() => setEditDialogOpen(false)}
       >
@@ -522,7 +522,7 @@ export default function MemberTable(props: MemberTableProps) {
 
       {/* Delete Dialog */}
       <dialog
-        class="modal"
+        class="modal auto-visibility"
         open={deleteDialogOpen()}
         onClick={() => setDeleteDialogOpen(false)}
       >
@@ -564,7 +564,7 @@ export default function MemberTable(props: MemberTableProps) {
 
       {/* Contact Dialog */}
       <dialog
-        class="modal"
+        class="modal auto-visibility"
         open={contactDialogOpen()}
         onClick={() => setContactDialogOpen(false)}
       >
@@ -578,7 +578,7 @@ export default function MemberTable(props: MemberTableProps) {
 
       {/* Emergency Contact Dialog */}
       <dialog
-        class="modal"
+        class="modal auto-visibility"
         open={emergencyDialogOpen()}
         onClick={() => setEmergencyDialogOpen(false)}
       >

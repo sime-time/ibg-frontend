@@ -21,6 +21,7 @@ import {
 interface PocketbaseContextProps {
   token: Accessor<string>;
   user: Accessor<AuthModel>;
+  isAuthLoading: Accessor<boolean>;
   signup: (newMember: MemberData) => Promise<boolean>;
   loginMember: (email: string, password: string) => Promise<boolean>;
   loginAdmin: (email: string, password: string) => Promise<boolean>;
@@ -78,12 +79,20 @@ export function PocketbaseContextProvider(props: ParentProps) {
   const pb = new Pocketbase(import.meta.env.VITE_POCKETBASE_URL);
   const [token, setToken] = createSignal(pb.authStore.token);
   const [user, setUser] = createSignal(pb.authStore.model);
+  const [isAuthLoading, setIsAuthLoading] = createSignal(true);
 
   createEffect(() => {
     return pb.authStore.onChange((tkn, model) => {
       setToken(tkn);
       setUser(model);
     });
+  });
+
+  createEffect(() => {
+    setIsAuthLoading(true);
+    if (pb.authStore.model) {
+      setIsAuthLoading(false);
+    }
   });
 
   const logout = () => {
@@ -313,11 +322,11 @@ export function PocketbaseContextProvider(props: ParentProps) {
   const getMembers = async (): Promise<MemberRecord[]> => {
     try {
       const members: MemberRecord[] = await pb.collection("member").getFullList<MemberRecord>();
-      console.log("Raw members from PocketBase:", members);
       return members.map(
         (member) =>
         ({
           ...member,
+          program: !member.program ? "N/A" : member.program,
           avatarUrl: member.avatar
             ? pb.files.getUrl(member, member.avatar)
             : "https://www.gravatar.com/avatar/?d=mp",
@@ -649,6 +658,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
       value={{
         token,
         user,
+        isAuthLoading,
         signup,
         loginMember,
         loginAdmin,
