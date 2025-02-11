@@ -26,7 +26,7 @@ enum View {
   Scheduler = "scheduler",
   Attendance = "attendance",
 }
-const [currentView, setCurrentView] = createSignal(View.Stats);
+const [currentView, setCurrentView] = createSignal(View.Members);
 
 export default function CoachDashboard() {
   const {
@@ -83,18 +83,6 @@ function BottomNav() {
     <div class="btm-nav btm-nav-lg">
 
       <button
-        onClick={() => setCurrentView(View.Stats)}
-        class={currentView() === View.Stats ? "active" : "opacity-50"}
-      >
-        {currentView() === View.Stats ? (
-          <BsBarChartFill class="size-6" />
-        ) : (
-          <BsBarChart class="size-6" />
-        )}
-        <label class="text-xs opacity-70">Stats</label>
-      </button>
-
-      <button
         onClick={() => setCurrentView(View.Members)}
         class={currentView() === View.Members ? "active" : "opacity-50"}
       >
@@ -104,6 +92,18 @@ function BottomNav() {
           <RiUserFacesGroupLine class="size-6" />
         )}
         <label class="text-xs opacity-70">Members</label>
+      </button>
+
+      <button
+        onClick={() => setCurrentView(View.Stats)}
+        class={currentView() === View.Stats ? "active" : "opacity-50"}
+      >
+        {currentView() === View.Stats ? (
+          <BsBarChartFill class="size-6" />
+        ) : (
+          <BsBarChart class="size-6" />
+        )}
+        <label class="text-xs opacity-70">Stats</label>
       </button>
 
       <button

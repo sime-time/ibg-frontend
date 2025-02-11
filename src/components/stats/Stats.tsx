@@ -11,7 +11,6 @@ interface StatsProps {
 }
 
 export default function Stats(props: StatsProps) {
-  console.log(props.revenue);
   const totalRevenue = Object.values(props.revenue).reduce((sum, value) => sum + value, 0);
   function toDollarString(num: number) {
     return new Intl.NumberFormat('en-US', {
