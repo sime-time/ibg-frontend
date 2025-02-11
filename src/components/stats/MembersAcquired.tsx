@@ -60,13 +60,14 @@ export default function MembersAcquired(props: MembersAcquiredProps) {
     const programsSet = new Set<string>();
 
     memberData.forEach((member: MemberRecord) => {
+      console.log("Member Created: ", member.created); // log on ipad
+
       const date = new Date(member.created);
       const monthYear = date.toLocaleString('en-US', {
         month: 'short',
         year: 'numeric'
       });
       monthsSet.add(monthYear);
-      console.log("monthYear: ", monthYear)
       programsSet.add(member.program || 'N/A');
     });
 
@@ -81,7 +82,6 @@ export default function MembersAcquired(props: MembersAcquiredProps) {
       return dateA.getTime() - dateB.getTime();
     });
 
-    console.log("Months: ", months)
     // Ensure programs are in the desired order
     const programOrder = [
       'Competitive Boxing',

@@ -210,9 +210,11 @@ export default function MemberTable(props: MemberTableProps) {
           <table class="table bg-base-100">
             <thead><TableHeaders /></thead>
             <tbody>
-              <For each={props.members()?.filter(member =>
-                member.name.toLowerCase().includes(queryName().toLowerCase())
-              )}>
+              <For each={
+                props.members()
+                  ?.filter(member => member.name.toLowerCase().includes(queryName().toLowerCase()))
+                  ?.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())
+              }>
                 {(member) => (
                   <tr>
                     {/* Name, Avatar, Email */}
