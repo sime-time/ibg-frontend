@@ -405,7 +405,6 @@ export default function MemberTable(props: MemberTableProps) {
                                     Personal
                                   </button>
                                   <ContactDialog
-                                    dialogId="contact-dialog"
                                     name={defaultName()}
                                     phone={defaultPhone()}
                                   >
@@ -419,7 +418,6 @@ export default function MemberTable(props: MemberTableProps) {
                                     <FaSolidPhone class="size-3" /> Emergency
                                   </button>
                                   <ContactDialog
-                                    dialogId="emergency-dialog"
                                     name={emergencyName()}
                                     phone={emergencyPhone()}
                                   >
@@ -489,6 +487,7 @@ export default function MemberTable(props: MemberTableProps) {
                               </div>
                             }
                           >
+                            {/* Member Ready To Edit Dialog */}
                             <h3 class="font-bold text-xl">Edit Member</h3>
                             <p class="py-2 text-wrap">
                               Click the edit icon on the right to make changes
@@ -726,7 +725,7 @@ export default function MemberTable(props: MemberTableProps) {
                                     "Save"
                                   )}
                                 </button>
-                                <button class="btn flex-1">Cancel</button>
+                                <button class="btn flex-1" onClick={() => setShowEdit(false)}>Cancel</button>
                               </form>
                             </div>
                           </Show>

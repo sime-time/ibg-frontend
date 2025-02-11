@@ -513,7 +513,7 @@ export default function MemberTable(props: MemberTableProps) {
                 >
                   Save
                 </button>
-                <button class="btn flex-1">Cancel</button>
+                <button class="btn flex-1" onClick={() => setMemberState("isEditing", false)}>Cancel</button>
               </form>
             </div>
           </Show>

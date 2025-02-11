@@ -4,7 +4,7 @@ import ScheduleEditClass from "./ScheduleEditClass";
 import ScheduleClassMenu from "./ScheduleClassMenu";
 import ScheduleDeleteClass from "./ScheduleDeleteClass";
 import ScheduleAttendance from "./ScheduleAttendance";
-import { For, createSignal, onMount, createResource, Resource } from "solid-js";
+import { For, createSignal, onMount, Resource } from "solid-js";
 import { FaSolidPlus } from "solid-icons/fa";
 import { usePocket } from '~/context/PocketbaseContext';
 import { ClassRecord, MartialArtRecord } from "~/types/UserType";
