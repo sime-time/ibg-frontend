@@ -61,7 +61,10 @@ export default function MembersAcquired(props: MembersAcquiredProps) {
 
     memberData.forEach((member: MemberRecord) => {
       const date = new Date(member.created);
-      const monthYear = date.toLocaleString('default', { month: 'short', year: 'numeric' });
+      const monthYear = date.toLocaleString('en-US', {
+        month: 'short',
+        year: 'numeric'
+      });
       monthsSet.add(monthYear);
       programsSet.add(member.program || 'N/A');
     });
