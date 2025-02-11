@@ -60,13 +60,20 @@ export default function MembersAcquired(props: MembersAcquiredProps) {
     const programsSet = new Set<string>();
 
     memberData.forEach((member: MemberRecord) => {
-      console.log("Member Created: ", member.created); // log on ipad
+      // member.created returns a string that doesn't convert to a valid date on ios safari browsers
+      // must convert to valid date iso string that ios safari can recognize
+      const memberCreated = member.created.toString();
+      const isoFormatted = memberCreated.replace(/\s(?=\d{2}:\d{2}:\d{2})/, "T");
 
-      const date = new Date(member.created);
+      const date = new Date(isoFormatted);
+      console.log("date: ", date);
+
       const monthYear = date.toLocaleString('en-US', {
         month: 'short',
         year: 'numeric'
       });
+      console.log("monthYear: ", monthYear);
+
       monthsSet.add(monthYear);
       programsSet.add(member.program || 'N/A');
     });
