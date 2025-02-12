@@ -1,13 +1,12 @@
-import { Resource } from "solid-js";
+import { createMemo, Resource } from "solid-js";
 import { MemberRecord } from "~/types/UserType";
 import { FaSolidFileInvoiceDollar } from 'solid-icons/fa'
-import { AiOutlineUserAdd } from 'solid-icons/ai'
 import { FaSolidUserPlus } from 'solid-icons/fa'
-import { RiUserFacesUserAddFill } from 'solid-icons/ri'
 
 interface StatsProps {
   members: Resource<MemberRecord[]>;
   revenue: Record<string, number>;
+  membersAttended: Resource<MemberRecord[]>;
 }
 
 export default function Stats(props: StatsProps) {
@@ -19,6 +18,13 @@ export default function Stats(props: StatsProps) {
       maximumFractionDigits: 0,
     }).format(num);
   }
+  const topMember = createMemo(() => {
+    const members = props.membersAttended() ?? []; // Ensure we have an array
+    return members.reduce((max, member) =>
+      (member.attendance ?? 0) > (max.attendance ?? 0) ? member : max,
+      members[0] ?? null
+    );
+  });
 
   return (
     <div class="stats shadow">
@@ -46,16 +52,16 @@ export default function Stats(props: StatsProps) {
       </div>
 
       <div class="stat">
-        <div class="stat-figure text-secondary mt-2">
+        <div class="stat-figure mt-2">
           <div class="avatar">
             <div class="w-16 rounded-full">
-              <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+              <img src={topMember()?.avatarUrl} />
             </div>
           </div>
         </div>
-        <div class="stat-title">Top Attendance</div>
-        <div class="stat-value text-secondary">24</div>
-        <div class="stat-desc">Days attended this month</div>
+        <div class="stat-title">{topMember()?.name}</div>
+        <div class="stat-value text-secondary">{topMember()?.attendance}</div>
+        <div class="stat-desc">Days this month</div>
       </div>
     </div>
   );

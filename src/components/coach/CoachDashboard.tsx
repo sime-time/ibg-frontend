@@ -19,6 +19,7 @@ import Attendance from "../attendance/Attendance";
 import MonthlyRevenue from "../stats/MonthlyRevenue";
 import MembersAcquired from "../stats/MembersAcquired";
 import Stats from "../stats/Stats";
+import TopAttendance from "../stats/TopAttendance";
 
 enum View {
   Members = "members",
@@ -35,7 +36,8 @@ export default function CoachDashboard() {
     members,
     refetchMembers,
     revenue,
-    monthsAgo
+    monthsAgo,
+    membersAttendedThisMonth
   } = useCoachContext();
 
   return (
@@ -59,9 +61,10 @@ export default function CoachDashboard() {
               </div>}
             >
               <Show when={members() && revenue()}>
-                <Stats members={members} revenue={revenue()} />
+                <Stats members={members} revenue={revenue()} membersAttended={membersAttendedThisMonth} />
                 <MonthlyRevenue revenueData={revenue()} />
                 <MembersAcquired members={members} />
+                <TopAttendance membersAttended={membersAttendedThisMonth} />
               </Show>
             </Suspense>
 

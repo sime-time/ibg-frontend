@@ -72,6 +72,7 @@ interface PocketbaseContextProps {
     selected: boolean,
     program: string
   ) => Promise<boolean>;
+  getMembersAttendedThisMonth: (members: MemberRecord[]) => Promise<MemberRecord[]>;
 }
 const PocketbaseContext = createContext<PocketbaseContextProps>();
 
@@ -653,6 +654,42 @@ export function PocketbaseContextProvider(props: ParentProps) {
     }
   };
 
+
+  const getMembersAttendedThisMonth = async (
+    members: MemberRecord[]
+  ): Promise<MemberRecord[]> => {
+    const today = new Date();
+    const currentMonth: number = today.getMonth();
+    const currentYear: number = today.getFullYear();
+    const firstDayInMonth = new Date(currentYear, currentMonth, 1, 0, 0, 0);
+    const firstDayString = firstDayInMonth.toISOString().slice(0, 10); // Format as "YYYY-MM-DD"
+
+    // first get all the attendance records this month
+    const attendanceList = await pb.collection("attendance").getFullList({
+      filter: `check_in_date >= "${firstDayString} 00:00:00Z"`
+    });
+
+    // count the attendance of each member this month using the attendance list
+    const numAttended = (memberId: string) => {
+      let count = 0;
+      for (let i = 0; i < attendanceList.length; i++) {
+        if (attendanceList[i].member_id === memberId) {
+          count++;
+        }
+      }
+      return count;
+    };
+
+    // return the members and number of times they attended this month
+    const attendedMembers = members.map(
+      (member) => ({
+        ...member,
+        attendance: numAttended(member.id),
+      } as MemberRecord)
+    );
+    return attendedMembers;
+  };
+
   return (
     <PocketbaseContext.Provider
       value={{
@@ -692,6 +729,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
         requestPasswordReset,
         waiverTimestamp,
         memberPayWithCash,
+        getMembersAttendedThisMonth
       }}
     >
       {props.children}

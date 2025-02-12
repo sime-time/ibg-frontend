@@ -52,6 +52,7 @@ export interface MemberRecord extends RecordModel {
   avatar?: string;
   pay_with_cash?: boolean;
   created: Date;
+  attendance?: number;
 }
 
 export interface ClassRecord extends RecordModel {

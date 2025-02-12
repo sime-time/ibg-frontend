@@ -39,6 +39,19 @@ function TableHeaders() {
   );
 }
 
+export const subscriptionBadge = (
+  is_subscribed: boolean,
+  pay_with_cash: boolean
+) => {
+  if (pay_with_cash) {
+    return <span class="badge badge-warning">Cash</span>;
+  } else if (is_subscribed) {
+    return <span class="badge badge-success">Active</span>;
+  } else {
+    return <span class="badge badge-error">Inactive</span>;
+  }
+};
+
 interface MemberTableProps {
   members: Resource<MemberRecord[]>;
   refetch: (info?: unknown) => MemberRecord[] | Promise<MemberRecord[] | undefined> | null | undefined;
@@ -151,18 +164,7 @@ export default function MemberTable(props: MemberTableProps) {
     }
   };
 
-  const subscriptionBadge = (
-    is_subscribed: boolean,
-    pay_with_cash: boolean
-  ) => {
-    if (pay_with_cash) {
-      return <span class="badge badge-warning">Cash</span>;
-    } else if (is_subscribed) {
-      return <span class="badge badge-success">Active</span>;
-    } else {
-      return <span class="badge badge-error">Inactive</span>;
-    }
-  };
+
 
   return (
     <div class="w-11/12 xl:w-2/3 flex flex-col gap-4">

@@ -6,6 +6,7 @@ import {
   createResource,
   Resource,
   Accessor,
+  createMemo,
 } from "solid-js";
 import { usePocket } from "./PocketbaseContext";
 import { ClassRecord, MemberRecord } from "~/types/UserType";
@@ -17,11 +18,12 @@ interface CoachContextProps {
   refetchMembers: (info?: unknown) => MemberRecord[] | Promise<MemberRecord[] | undefined> | null | undefined,
   revenue: Resource<any>;
   monthsAgo: Accessor<number>;
+  membersAttendedThisMonth: Resource<MemberRecord[]>;
 }
 const CoachContext = createContext<CoachContextProps>();
 
 export function CoachContextProvider(props: ParentProps) {
-  const { getClasses, getMembers } = usePocket();
+  const { getClasses, getMembers, getMembersAttendedThisMonth } = usePocket();
 
   const [members, { mutate: mutateMembers, refetch: refetchMembers }] = createResource(async () => {
     return getMembers();
@@ -29,6 +31,12 @@ export function CoachContextProvider(props: ParentProps) {
 
   const [classes, { mutate: mutateClasses, refetch: refetchClasses }] = createResource(async () => {
     return getClasses();
+  });
+
+  const membersReady = createMemo(() => members() ?? []);
+
+  const [membersAttendedThisMonth] = createResource(membersReady, async (members) => {
+    return getMembersAttendedThisMonth(members);
   });
 
   const [monthsAgo, setMonthsAgo] = createSignal(6);
@@ -63,6 +71,7 @@ export function CoachContextProvider(props: ParentProps) {
         refetchMembers,
         revenue,
         monthsAgo,
+        membersAttendedThisMonth,
       }}
     >
       {props.children}
