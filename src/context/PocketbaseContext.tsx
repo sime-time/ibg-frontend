@@ -681,12 +681,14 @@ export function PocketbaseContextProvider(props: ParentProps) {
     };
 
     // return the members and number of times they attended this month
-    const attendedMembers = members.map(
-      (member) => ({
+    // only return members that have attended this month (greater than 0)
+    const attendedMembers = members
+      .map((member) => ({
         ...member,
         attendance: numAttended(member.id),
-      } as MemberRecord)
-    );
+      }))
+      .filter((member) => member.attendance > 0) as MemberRecord[];
+
     return attendedMembers;
   };
 
