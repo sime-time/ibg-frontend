@@ -15,6 +15,7 @@ export default function MemberWaiver() {
 
     try {
       const successful = await waiverTimestamp(user()?.id, currentTime);
+      console.log("user: ", user())
       if (successful) {
         location.reload();
       } else {

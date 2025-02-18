@@ -16,7 +16,7 @@ export default function MemberDashboard() {
   const [avatarUrl, setAvatarUrl] = createSignal("");
 
   createEffect(async () => {
-    let url: string = await getAvatarUrl();
+    let url: string = await getAvatarUrl(user()?.id);
     setAvatarUrl(url);
   });
 

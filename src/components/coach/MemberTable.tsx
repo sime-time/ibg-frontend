@@ -60,7 +60,7 @@ interface MemberTableProps {
 export default function MemberTable(props: MemberTableProps) {
   const {
     getMember,
-    getMemberEmergencyContact,
+    getEmergencyContact,
     deleteMember,
     updateMember,
   } = usePocket();
@@ -94,7 +94,7 @@ export default function MemberTable(props: MemberTableProps) {
     switch (dialogType) {
       case "edit":
         const member = await getMember(memberId);
-        const emergency = await getMemberEmergencyContact(memberId);
+        const emergency = await getEmergencyContact(memberId);
 
         setMemberState({
           id: memberId,

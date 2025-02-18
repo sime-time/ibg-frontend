@@ -1,4 +1,4 @@
-import type RecordModel from "pocketbase";
+import type { RecordModel, AuthModel } from "pocketbase";
 
 export enum UserType {
   Member = "member",
@@ -77,4 +77,9 @@ export interface MartialArtRecord extends RecordModel {
 export interface PasswordUpdateResult {
   success: boolean;
   message: string;
+}
+
+export interface TokenUser {
+  token: string | null;
+  user: AuthModel | null;
 }

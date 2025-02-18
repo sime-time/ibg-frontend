@@ -19,7 +19,7 @@ export default function MemberChangeEmail() {
     setSubmitDisabled(true);
     setError("");
 
-    const result = await requestEmailChange(newEmail())
+    const result = await requestEmailChange(newEmail(), user()?.email)
 
     if (result.success) {
       setNewEmail("");

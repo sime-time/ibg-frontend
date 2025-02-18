@@ -36,7 +36,7 @@ export default function MemberChangePassword() {
       // validate user input
       const validPasswords = v.parse(MemberPasswordSchema, passwords);
 
-      const result: PasswordUpdateResult = await updatePassword(user()?.id, validPasswords);
+      const result: PasswordUpdateResult = await updatePassword(user()?.id, user()?.email, validPasswords);
 
       if (result.success) {
         setOldPassword("");

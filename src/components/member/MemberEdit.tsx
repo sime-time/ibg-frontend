@@ -47,7 +47,7 @@ export default function MemberEdit(props: MemberEditProps) {
     },
   });
 
-  getEmergencyContact().then((emergency) => {
+  getEmergencyContact(user()?.id).then((emergency) => {
     setMember("emergencyName", "value", emergency.name);
     setMember("emergencyPhone", "value", emergency.phone);
     setOriginalEmergencyName(emergency.name);
@@ -181,9 +181,8 @@ export default function MemberEdit(props: MemberEditProps) {
                 type="file"
                 accept="image/*"
                 capture="user"
-                class={`file-input file-input-bordered w-32 flex items-center grow ${
-                  member.avatar.readyToEdit ? "border-secondary" : ""
-                }`}
+                class={`file-input file-input-bordered w-32 flex items-center grow ${member.avatar.readyToEdit ? "border-secondary" : ""
+                  }`}
                 id="avatar-input"
               />
             </div>

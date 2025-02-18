@@ -31,7 +31,7 @@ export default function MemberContactInfo() {
       // validate user input
       const validContactInfo = v.parse(ContactSchema, contactData);
 
-      const successful: boolean = await addContactInfo(validContactInfo);
+      const successful: boolean = await addContactInfo(validContactInfo, user()?.id);
 
       if (successful) {
         console.log("Contact info added to member: ", user()?.name);
