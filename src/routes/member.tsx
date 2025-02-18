@@ -20,15 +20,18 @@ const MemberWaiver = clientOnly(
 export default function Member() {
   const { user, userIsMember, refreshMember } = usePocket();
 
-  const hasContactInfo = Boolean(user()?.phone_number);
-  const hasAcceptedWaiver = Boolean(user()?.waiver_accepted);
+  const [hasContactInfo, setHasContactInfo] = createSignal<boolean>(Boolean(user()?.phone_number))
+  const [hasAcceptedWaiver, setHasAcceptedWaiver] = createSignal<boolean>(Boolean(user()?.waiver_accepted))
   const [isSubscribed, setIsSubscribed] = createSignal(user()?.is_subscribed);
 
   createEffect(async () => {
     /* when user is redirected back to member page from stripe checkout
     this member must be refreshed to check if user is subscribed again.*/
     refreshMember().then(() => {
+      setHasContactInfo(Boolean(user()?.phone_number));
+      setHasAcceptedWaiver(Boolean(user()?.waiver_accepted));
       setIsSubscribed(user()?.is_subscribed);
+      console.log("isSubscribed: ", isSubscribed());
     });
   });
 
@@ -39,16 +42,16 @@ export default function Member() {
         <Switch
           fallback={<span class="loading loading-spinner loading-md"></span>}
         >
-          <Match when={hasContactInfo && isSubscribed() && hasAcceptedWaiver}>
+          <Match when={hasContactInfo() && isSubscribed() && hasAcceptedWaiver()}>
             <MemberDashboard />
           </Match>
           <Match when={!userIsMember()}>
             <AccessDenied />
           </Match>
-          <Match when={!hasContactInfo}>
+          <Match when={!hasContactInfo()}>
             <MemberContactInfo />
           </Match>
-          <Match when={!hasAcceptedWaiver}>
+          <Match when={!hasAcceptedWaiver()}>
             <MemberWaiver />
           </Match>
           <Match when={!isSubscribed()}>

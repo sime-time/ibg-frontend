@@ -248,10 +248,11 @@ export const deleteMember = async (memberId: string) => {
 
 export const refreshMember = async (token: string | null): Promise<TokenUser> => {
   const pb = new Pocketbase(POCKETBASE_URL);
+  if (token == null) {
+    return { token: null, user: null };
+  }
   try {
-    if (token == null) {
-      throw new Error("token is null");
-    }
+    await pb.admins.authWithPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
     // restore session using token
     pb.authStore.save(token, null);
 
@@ -303,8 +304,6 @@ export const getMemberAttendance = async (date: Date): Promise<MemberAttendanceR
   );
 };
 
-//////////////////////////////////////// CONTINUE REFACTOR HERE ////////////////////////////////////////////////
-
 export const cancelSubscription = async (stripeCustomerId: string) => {
   try {
     const response = await fetch(
@@ -320,7 +319,7 @@ export const cancelSubscription = async (stripeCustomerId: string) => {
       }
     );
 
-    console.log("Response: ", response);
+    console.log("Cancel Subscription Response: ", response);
 
     if (response.ok) {
       return true;
@@ -334,6 +333,7 @@ export const cancelSubscription = async (stripeCustomerId: string) => {
 export const getMartialArtId = async (shortname: string) => {
   const pb = new Pocketbase(POCKETBASE_URL);
   try {
+    await pb.admins.authWithPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
     const record = await pb.collection("martial_art").getFirstListItem(`shortname="${shortname}"`);
     return record.id;
   } catch (err) {
@@ -344,6 +344,7 @@ export const getMartialArtId = async (shortname: string) => {
 
 export const getMartialArts = async () => {
   const pb = new Pocketbase(POCKETBASE_URL);
+  await pb.admins.authWithPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
   const martialArts = await pb.collection("martial_art").getFullList<MartialArtRecord>();
   return martialArts;
 };
@@ -470,33 +471,32 @@ export const checkOut = async (date: Date, memberId: string) => {
 
 export const requestVerification = async (email: string) => {
   const pb = new Pocketbase(POCKETBASE_URL);
+  await pb.admins.authWithPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
   return await pb.collection("member").requestVerification(email);
 };
 
-export const requestEmailChange = async (newEmail: string, currentEmail: string) => {
+export const changeEmail = async (newEmail: string, memberId: string) => {
   const pb = new Pocketbase(POCKETBASE_URL);
   try {
     await pb.admins.authWithPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
-    // check if email is the same as current email
-    if (newEmail == currentEmail) {
+    const member = await pb.collection("member").getOne(memberId);
+    if (!member) {
+      return { success: false, message: "Member not found" };
+    }
+    // check if new email is the same as current email
+    if (member.email == newEmail) {
       return {
         success: false,
-        message: `New email cannot be the same as current email: ${currentEmail}`,
+        message: `New email cannot be the same as current email: ${member.email}`,
       };
     }
-
-    await pb.collection("member").requestEmailChange(newEmail);
-    return {
-      success: true,
-      message: `Email change request sent to ${newEmail}`,
-    };
+    // directly update the member's email as admin
+    await pb.collection("member").update(memberId, { email: newEmail });
+    return { success: true, message: `Email changed successfully to ${newEmail}` };
   } catch (err) {
-    console.error("Email change request failed: ", err);
+    console.error("Email change failed: ", err);
+    return { success: false, message: "Email change request failed to process on server" };
   }
-  return {
-    success: false,
-    message: "Email request failed to send",
-  };
 };
 
 export const requestPasswordReset = async (email: string) => {

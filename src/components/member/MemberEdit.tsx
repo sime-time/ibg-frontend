@@ -13,7 +13,7 @@ interface MemberEditProps {
   setAvatarUrl: Setter<string>;
 }
 export default function MemberEdit(props: MemberEditProps) {
-  const { user, getEmergencyContact, updateMember } = usePocket();
+  const { user, getEmergencyContact, updateMember, refreshMember } = usePocket();
   const [saveDisabled, setSaveDisabled] = createSignal(false);
   const [originalEmergencyPhone, setOriginalEmergencyPhone] = createSignal("");
   const [originalEmergencyName, setOriginalEmergencyName] = createSignal("");
@@ -117,6 +117,7 @@ export default function MemberEdit(props: MemberEditProps) {
             "edit-dialog"
           ) as HTMLDialogElement;
           dialog.close();
+          refreshMember()
         })
         .then(() => {
           setSaveDisabled(false);

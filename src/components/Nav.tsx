@@ -48,11 +48,7 @@ function NavMenuEnd(props: { onNavClick?: () => void }) {
         <LogoutButton />
       </Match>
       <Match
-        when={
-          !loggedIn() &&
-          location.pathname != "/coach" &&
-          location.pathname != "/member"
-        }
+        when={!loggedIn()}
       >
         <a href="/signup" class="btn btn-primary hidden sm:flex">
           Sign Up

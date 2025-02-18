@@ -9,15 +9,12 @@ import LoadingSpinner from "~/components/ui/LoadingSpinner";
 const CoachDashboard = clientOnly(() => import("~/components/coach/CoachDashboard"));
 
 export default function Coach() {
-  const { userIsAdmin, isAuthLoading } = usePocket();
+  const { userIsAdmin } = usePocket();
   return (
     <>
       <Title>Coach Dashboard</Title>
       <main class="w-full flex justify-center mt-4 mb-20">
         <Switch fallback={<LoadingSpinner />}>
-          <Match when={isAuthLoading()}>
-            <LoadingSpinner />
-          </Match>
           <Match when={userIsAdmin()}>
             <CoachContextProvider>
               <CoachDashboard />

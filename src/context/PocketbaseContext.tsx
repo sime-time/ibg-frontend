@@ -4,9 +4,10 @@ import {
   useContext,
   createSignal,
   createEffect,
+  onMount,
   ParentProps,
 } from "solid-js";
-import Pocketbase, { AuthModel } from "pocketbase";
+import { AuthModel } from "pocketbase";
 import { ClassData, MemberPasswordData } from "~/types/ValidationType";
 import {
   MemberData,
@@ -42,7 +43,7 @@ import {
   checkOut,
   getMemberAttendance,
   requestVerification,
-  requestEmailChange,
+  changeEmail,
   requestPasswordReset,
   waiverTimestamp,
   memberPayWithCash,
@@ -85,9 +86,9 @@ interface PocketbaseContextType {
   checkOut: (date: Date, memberId: string) => Promise<boolean>;
   getMemberAttendance: (date: Date) => Promise<MemberRecord[]>;
   requestVerification: (email: string) => Promise<boolean>;
-  requestEmailChange: (
+  changeEmail: (
     newEmail: string,
-    currentEmail: string
+    memberId: string
   ) => Promise<{ success: boolean; message: string }>;
   requestPasswordReset: (email: string) => Promise<boolean>;
   waiverTimestamp: (memberId: string, time: Date) => Promise<boolean>;
@@ -103,13 +104,11 @@ const PocketbaseContext = createContext<PocketbaseContextType>();
 // Get the existing auth data from `localStorage`
 const getInitialAuth = () => {
   if (typeof window === "undefined") return { token: null, user: null }; // Prevent server-side errors
-
-  const storedAuth = localStorage.getItem("pocketbase_auth");
-  if (!storedAuth) return { token: null, user: null };
-
   try {
+    const storedAuth = localStorage.getItem("pocketbase_auth");
+    if (!storedAuth) return { token: null, user: null };
     const parsedAuth = JSON.parse(storedAuth);
-    return { token: parsedAuth.token, user: parsedAuth.model }; // ✅ Extract token & user model
+    return { token: parsedAuth.token, user: parsedAuth.model }; // extract token & user model
   } catch (error) {
     console.error("Error parsing pocketbase_auth:", error);
     return { token: null, user: null };
@@ -117,21 +116,29 @@ const getInitialAuth = () => {
 };
 
 export function PocketbaseContextProvider(props: ParentProps) {
-  const { token: initialToken, user: initialUser } = getInitialAuth();
-  const [token, setToken] = createSignal<string | null>(initialToken);
-  const [user, setUser] = createSignal<any>(initialUser);
+  const [token, setToken] = createSignal<string | null>(null);
+  const [user, setUser] = createSignal<any>(null);
+  const [hydrated, setHydrated] = createSignal(false); // track hydration for navbar component
+
+  onMount(() => {
+    const { token, user } = getInitialAuth();
+    saveAuth(token, user);
+    setHydrated(true);
+  })
 
   const saveAuth = (thisToken: string | null, thisUser: any) => {
     setToken(thisToken);
     setUser(thisUser);
-    if (thisToken != null) {
-      localStorage.setItem("pocketbase_auth", JSON.stringify({ token: thisToken, model: thisUser }));
-    } else {
-      localStorage.removeItem("pocketbase_auth");
+    if (typeof window != "undefined") {
+      if (thisToken != null) {
+        localStorage.setItem("pocketbase_auth", JSON.stringify({ token: thisToken, model: thisUser }));
+      } else {
+        localStorage.removeItem("pocketbase_auth");
+      }
     }
   };
 
-  createEffect(() => {
+  createEffect(async () => {
     saveAuth(token(), user());
   });
 
@@ -164,28 +171,26 @@ export function PocketbaseContextProvider(props: ParentProps) {
   };
 
   const loggedIn = () => {
-    return token() !== null;
+    return hydrated() && token() != null;
   };
 
   const userIsAdmin = () => {
-    return loggedIn() && user()?.collectionName === "admins";
+    return hydrated() && !(user()?.collectionName); // admins have no collectionName in their model
   };
 
   const userIsMember = () => {
-    return loggedIn() && user()?.collectionName === "member";
+    return hydrated() && user()?.collectionName === "member";
   };
 
   const refreshMemberClient = async () => {
     const result = await refreshMember(token());
-    if (result.token) {
+    if (result.token != null) {
       saveAuth(result.token, result.user);
       return true;
     } else {
       return false;
     }
-  }
-
-
+  };
 
   return (
     <PocketbaseContext.Provider
@@ -218,7 +223,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
         checkOut,
         getMemberAttendance,
         requestVerification,
-        requestEmailChange,
+        changeEmail,
         requestPasswordReset,
         waiverTimestamp,
         memberPayWithCash,

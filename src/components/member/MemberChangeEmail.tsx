@@ -4,7 +4,7 @@ import { createSignal, Show } from 'solid-js';
 import { usePocket } from '~/context/PocketbaseContext';
 
 export default function MemberChangeEmail() {
-  const { user, requestEmailChange } = usePocket();
+  const { user, changeEmail, refreshMember } = usePocket();
   const [newEmail, setNewEmail] = createSignal("");
   const [error, setError] = createSignal("");
   const [submitDisabled, setSubmitDisabled] = createSignal(false);
@@ -19,7 +19,7 @@ export default function MemberChangeEmail() {
     setSubmitDisabled(true);
     setError("");
 
-    const result = await requestEmailChange(newEmail(), user()?.email)
+    const result = await changeEmail(newEmail(), user()?.id)
 
     if (result.success) {
       setNewEmail("");
@@ -32,6 +32,8 @@ export default function MemberChangeEmail() {
       emailAlertDiv.className = "alert alert-success text-sm md:text-base";
       emailAlertDiv.textContent = result.message;
       document.body.appendChild(emailAlertDiv);
+      // refresh the member
+      refreshMember();
 
       // Remove the message after few seconds
       setTimeout(() => {
