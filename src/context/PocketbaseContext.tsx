@@ -171,7 +171,7 @@ export function PocketbaseContextProvider(props: ParentProps) {
   };
 
   const loggedIn = () => {
-    return hydrated() && token() != null;
+    return hydrated() && !!token();
   };
 
   const userIsAdmin = () => {

@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta";
 import { usePocket } from "~/context/PocketbaseContext";
-import { Switch, Match, createSignal, createEffect } from "solid-js";
+import { Switch, Match, createSignal, createEffect, onMount } from "solid-js";
 import { clientOnly } from "@solidjs/start";
 
 const AccessDenied = clientOnly(() => import("~/components/AccessDenied"));
@@ -31,8 +31,13 @@ export default function Member() {
       setHasContactInfo(Boolean(user()?.phone_number));
       setHasAcceptedWaiver(Boolean(user()?.waiver_accepted));
       setIsSubscribed(user()?.is_subscribed);
-      console.log("isSubscribed: ", isSubscribed());
     });
+  });
+
+  onMount(() => {
+    setHasContactInfo(Boolean(user()?.phone_number));
+    setHasAcceptedWaiver(Boolean(user()?.waiver_accepted));
+    setIsSubscribed(user()?.is_subscribed);
   });
 
   return (
