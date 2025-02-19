@@ -59,7 +59,7 @@ function NavMenuEnd(props: { onNavClick?: () => void }) {
       </Match>
       <Match when={userIsMember() && location.pathname != "/member"}>
         <a href="/member" class="btn btn-secondary">
-          Member Dashboard
+          Member Page
         </a>
       </Match>
       <Match when={userIsAdmin() && location.pathname != "/coach"}>

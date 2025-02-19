@@ -60,8 +60,6 @@ export default function Login() {
     } catch (err) {
       if (err instanceof v.ValiError) {
         setError(err.issues[0].message);
-      } else if (err instanceof Error && err.message == "server_error") {
-        setError("Failed to connect to server. Try again later.")
       } else {
         setError("Email or password is incorrect.");
       }

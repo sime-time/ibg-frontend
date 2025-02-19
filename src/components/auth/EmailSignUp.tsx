@@ -49,7 +49,7 @@ export default function EmailSignUp() {
       if (err instanceof v.ValiError) {
         setError(err.issues[0].message);
       } else if (err instanceof Error && err.message == "server_error") {
-        setError("Failed to connect to server. Try again later.")
+        setError("Internal server error or email might already be taken. Try again later.")
       } else {
         setError("Email might already be taken. Go to login");
       }
