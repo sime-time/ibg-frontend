@@ -1,65 +1,7 @@
 import MemberPricingTable from "./member/MemberPricingTable";
 import { createSignal, For } from "solid-js";
 import { FaSolidCircleCheck } from "solid-icons/fa";
-
-interface PlanProps {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  features?: string[];
-  popular?: boolean;
-}
-
-const plans: PlanProps[] = [
-  {
-    id: "comp-boxing",
-    name: "Competitive Boxing",
-    description:
-      "Training for aspiring amateur boxers. (Select this price if member is under 16 years old) ",
-    price: 70,
-    features: [
-      "Group classes",
-      "Access to 1-on-1 training",
-      "Sparring sessions",
-    ],
-  },
-  {
-    id: "jiu-jitsu",
-    name: "Jiu-Jitsu",
-    description: "Training for beginners and competitive-level athletes.",
-    price: 100,
-    features: [
-      "Unlimited group classes",
-      "1-on-1 technique training",
-      "Expert coaching",
-    ],
-  },
-  {
-    id: "unlimited-boxing",
-    name: "Unlimited Boxing",
-    description: "High-intensity group training for beginners and competitors.",
-    price: 110,
-    features: [
-      "Unlimited group classes",
-      "Access to 1-on-1 training",
-      "Free wellness consultation",
-    ],
-    popular: true,
-  },
-  {
-    id: "mma",
-    name: "MMA",
-    description:
-      "Advanced training for Mixed Martial Arts athletes. (INVITE-ONLY)",
-    price: 120,
-    features: [
-      "Strength & conditioning",
-      "Access to 1-on-1 training",
-      "Expert coaching",
-    ],
-  },
-];
+import { PlanProps, plans } from "~/types/PlanType";
 
 const [showYearly, setShowYearly] = createSignal(false);
 
@@ -110,11 +52,10 @@ function Plan(props: PlanProps) {
   return (
     <div
       id={props.id}
-      class={`flex flex-col justify-between gap-9 p-9 rounded-xl ${
-        props.popular
+      class={`flex flex-col justify-between gap-9 p-9 rounded-xl ${props.popular
           ? "bg-gray-100 bg-opacity-10 border border-gray-400/40"
           : ""
-      }`}
+        }`}
     >
       <div class="flex flex-col gap-2">
         {props.popular ? (

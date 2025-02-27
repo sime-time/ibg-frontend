@@ -1,5 +1,6 @@
 import { onMount, createSignal, onCleanup, Show, For } from "solid-js";
 import { usePocket } from "~/context/PocketbaseContext";
+import { plans, PlanProps } from "~/types/PlanType";
 
 interface ClientSecretResponse {
   client_secret: string;
@@ -11,6 +12,7 @@ export default function MemberPricingTable() {
   const [error, setError] = createSignal("");
   const [payWithCashSelected, setPayWithCashSelected] = createSignal(false);
   const [submitDisabled, setSubmitDisabled] = createSignal(false);
+  const additionalCashAmount: number = 10;
 
   let divRef!: HTMLDivElement;
 
@@ -93,23 +95,18 @@ export default function MemberPricingTable() {
   };
 
   const CashProgramOptions = () => {
-    const programs = [
-      "Competitive Boxing",
-      "Jiu-Jitsu",
-      "Unlimited Boxing",
-      "MMA",
-    ];
     return (
-      <form class="flex flex-row gap-5">
-        <For each={programs}>
-          {(program, index) => (
+      <form class="flex flex-col md:flex-row gap-5">
+        <For each={plans}>
+          {(plan, index) => (
             <button
               type="submit"
               class="btn btn-success"
               disabled={submitDisabled()}
-              onClick={(e: Event) => setPayWithCash(e, program)}
+              onClick={(e: Event) => setPayWithCash(e, plan.name)}
             >
-              {program}
+              {`${plan.name} ($${plan.price + additionalCashAmount} per month)`}
+
             </button>
           )}
         </For>
@@ -119,7 +116,9 @@ export default function MemberPricingTable() {
 
   return (
     <section class="w-full flex flex-col mb-10">
+      <div ref={divRef} class="w-full"></div>
       <div class="w-full flex flex-col justify-center">
+        <div class="divider my-10 text-xl font-bold">OR</div>
         <div class="flex flex-col items-center justify-center gap-5 px-9">
           <Show
             when={payWithCashSelected()}
@@ -137,14 +136,16 @@ export default function MemberPricingTable() {
           <Show when={error()}>
             <p class="text-error">{error()}</p>
           </Show>
+
+          <p class="opacity-70 text-wrap text-center">
+            {`Cash options are an additional $${additionalCashAmount} per month for processing fees.`}
+          </p>
           <p class="opacity-70 text-wrap text-center">
             You must provide payment to the coach in-person every month (cash or
             check).
           </p>
         </div>
-        <div class="divider my-10 text-xl font-bold">OR</div>
       </div>
-      <div ref={divRef} class="w-full"></div>
     </section>
   );
 }
