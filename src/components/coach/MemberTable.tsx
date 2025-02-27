@@ -66,6 +66,7 @@ export default function MemberTable(props: MemberTableProps) {
   } = usePocket();
   const [queryName, setQueryName] = createSignal("");
   const [currentMemberId, setCurrentMemberId] = createSignal("");
+  const [dialogLoading, setDialogLoading] = createSignal(false);
 
   // Centralized member state
   const [memberState, setMemberState] = createStore({
@@ -89,6 +90,7 @@ export default function MemberTable(props: MemberTableProps) {
   const openDialog = async (dialogType: "edit" | "delete" | "emergency" | "contact", memberId: string) => {
     setCurrentMemberId(memberId);
     setEditError("");
+    setDialogLoading(true);
 
     // Reset state and fetch member data
     switch (dialogType) {
@@ -127,6 +129,7 @@ export default function MemberTable(props: MemberTableProps) {
         setContactDialogOpen(true);
         break;
     }
+    setDialogLoading(false);
   };
 
   const confirmEdit = async (e: Event) => {
@@ -221,12 +224,17 @@ export default function MemberTable(props: MemberTableProps) {
                   <tr>
                     {/* Name, Avatar, Email */}
                     <td>
-                      <div class="flex items-center gap-3">
-                        <div class="avatar">
+                      <div
+                        class="flex items-center gap-3"
+                      >
+                        <button
+                          class="avatar"
+                          onClick={() => openDialog('edit', member.id)}
+                        >
                           <div class="mask mask-squircle h-12 w-12">
                             <img src={member.avatarUrl} alt="Member Avatar" />
                           </div>
-                        </div>
+                        </button>
                         <div>
                           <div class="font-bold">{member.name}</div>
                           <div class="text-sm opacity-50">{member.email}</div>
@@ -266,9 +274,16 @@ export default function MemberTable(props: MemberTableProps) {
                     <td>
                       <button
                         onClick={() => openDialog('edit', member.id)}
-                        class="btn btn-sm btn-secondary"
+                        class="btn btn-secondary btn-xs md:btn-sm"
+                        disabled={dialogLoading() ? true : false}
                       >
-                        <BiRegularMenu class="size-6" />
+                        {
+                          dialogLoading() ?
+                            <div class="flex justify-center">
+                              <span class="loading loading-spinner loading-xs"></span>
+                            </div> :
+                            <BiRegularMenu class="size-6" />
+                        }
                       </button>
                     </td>
                   </tr>
@@ -323,6 +338,7 @@ export default function MemberTable(props: MemberTableProps) {
                       setContactDialogOpen(true);
                     }}
                     class="btn btn-outline flex-1"
+                    disabled={memberState.phone ? false : true}
                   >
                     <FaSolidPhone class="size-3" />
                     Personal
@@ -334,6 +350,7 @@ export default function MemberTable(props: MemberTableProps) {
                       setEmergencyDialogOpen(true);
                     }}
                     class="btn btn-outline btn-error flex-1"
+                    disabled={memberState.emergencyPhone ? false : true}
                   >
                     <FaSolidPhone class="size-3" /> Emergency
                   </button>
