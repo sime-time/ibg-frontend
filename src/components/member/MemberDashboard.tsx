@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Show } from "solid-js";
+import { createEffect, createSignal, Show, Switch, Match, Setter } from "solid-js";
 import { usePocket } from "~/context/PocketbaseContext";
 import { BsCreditCard2BackFill } from "solid-icons/bs";
 import { FaSolidArrowLeft, FaRegularCalendarDays } from "solid-icons/fa";
@@ -8,11 +8,13 @@ import MemberChangePassword from "./MemberChangePassword";
 import FullSchedule from "../schedule/readonly/FullSchedule";
 import EmailVerifyToast from "../auth/EmailVerifyToast";
 import MemberChangeEmail from "./MemberChangeEmail";
+import MemberPricingTable from "./MemberPricingTable";
 
 export default function MemberDashboard() {
   const { user, getAvatarUrl } = usePocket();
   const [buttonsDisabled, setButtonsDisabled] = createSignal(false);
   const [scheduleIsOpen, setScheduleIsOpen] = createSignal(false);
+  const [pricingTableIsOpen, setPricingTableIsOpen] = createSignal(false);
   const [avatarUrl, setAvatarUrl] = createSignal("");
 
   createEffect(async () => {
@@ -50,28 +52,7 @@ export default function MemberDashboard() {
   };
 
   return (
-    <Show
-      when={!scheduleIsOpen()}
-      fallback={
-        <div class="flex flex-col gap-6 w-full">
-          <button
-            onClick={() => setScheduleIsOpen(false)}
-            class="btn items-center flex lg:hidden"
-          >
-            <FaSolidArrowLeft />
-            Back
-          </button>
-          <FullSchedule />
-          <button
-            onClick={() => setScheduleIsOpen(false)}
-            class="btn items-center flex"
-          >
-            <FaSolidArrowLeft />
-            Back
-          </button>
-        </div>
-      }
-    >
+    <Switch fallback={<>
       <div class="card bg-base-100 shadow-xl mx-4 my-1 w-full md:w-96 h-fit">
         <div class="card-body flex flex-col gap-5">
           <div class="flex flex-row gap-3">
@@ -98,7 +79,8 @@ export default function MemberDashboard() {
             <FaRegularCalendarDays class="size-5" /> Class Schedule
           </button>
           <button
-            onClick={handleManageSubscription}
+            // if the user is paying with cash, show the pricing table instead of the stripe customer portal
+            onClick={(e) => { user()?.pay_with_cash ? setPricingTableIsOpen(true) : handleManageSubscription(e) }}
             disabled={buttonsDisabled()}
             class="btn btn-accent"
           >
@@ -119,6 +101,36 @@ export default function MemberDashboard() {
       <Show when={!user()?.verified}>
         <EmailVerifyToast email={user()?.email} />
       </Show>
-    </Show>
+    </>}>
+      <Match when={scheduleIsOpen()}>
+        <div class="flex flex-col w-full">
+          <BackButton setOpen={setScheduleIsOpen} />
+          <FullSchedule />
+          <BackButton setOpen={setScheduleIsOpen} />
+        </div>
+      </Match>
+      <Match when={pricingTableIsOpen()}>
+        <div class="w-full flex flex-col">
+          <BackButton setOpen={setPricingTableIsOpen} />
+          <MemberPricingTable />
+          <BackButton setOpen={setPricingTableIsOpen} />
+        </div>
+      </Match>
+    </Switch>
+  );
+}
+
+interface BackButtonProps {
+  setOpen: Setter<boolean>;
+}
+function BackButton(props: BackButtonProps) {
+  return (
+    <button
+      onClick={() => props.setOpen(false)}
+      class="btn btn-ghost items-center flex"
+    >
+      <FaSolidArrowLeft />
+      Back
+    </button>
   );
 }
