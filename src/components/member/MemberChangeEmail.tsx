@@ -58,7 +58,7 @@ export default function MemberChangeEmail() {
           </form>
 
           <h3 class="font-bold text-lg">Change Email</h3>
-          <p class="py-2">A new email change request will be sent to the email provided below. Press submit when done.</p>
+          <p class="py-2">Your member email will be changed to the email provided below. Press submit when done.</p>
 
           <div class="form-control">
             <label class="label">
