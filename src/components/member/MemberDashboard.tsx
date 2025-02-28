@@ -113,7 +113,6 @@ export default function MemberDashboard() {
         <div class="w-full flex flex-col">
           <BackButton setOpen={setPricingTableIsOpen} />
           <MemberPricingTable />
-          <BackButton setOpen={setPricingTableIsOpen} />
         </div>
       </Match>
     </Switch>

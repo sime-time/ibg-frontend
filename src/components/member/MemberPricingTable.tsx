@@ -1,8 +1,8 @@
 import { onMount, createSignal, onCleanup, Show, For, Switch, Match } from "solid-js";
 import { usePocket } from "~/context/PocketbaseContext";
 import { plans, PlanProps } from "~/types/PlanType";
-import { SiCashapp, SiZelle } from 'solid-icons/si'
-import { FaBrandsCcApplePay } from 'solid-icons/fa'
+import { SiCashapp } from 'solid-icons/si'
+import { FaBrandsApple, FaBrandsCcApplePay, FaBrandsGoogle, FaBrandsGooglePay } from 'solid-icons/fa'
 import { BsCreditCard2BackFill, BsCash } from 'solid-icons/bs'
 
 interface ClientSecretResponse {
@@ -138,13 +138,13 @@ export default function MemberPricingTable() {
               onClick={() => setPricingTableIsVisible(true)}
             >
               <BsCreditCard2BackFill />
-              Credit/Debit
+              Card
             </button>
             <button
-              class="btn btn-accent w-full md:w-fit text-lg "
+              class="btn w-full md:w-fit text-lg btn-primary text-gray-200 bg-black border-black focus:bg-neutral-700 hover:bg-neutral-700 hover:border-neutral-700"
               onClick={() => setPricingTableIsVisible(true)}
             >
-              <FaBrandsCcApplePay />
+              <FaBrandsApple />
               Apple Pay
             </button>
             <button
@@ -154,18 +154,25 @@ export default function MemberPricingTable() {
               <SiCashapp />
               Cash App
             </button>
+            <button
+              class="btn btn-accent w-full md:w-fit text-lg "
+              onClick={() => setPricingTableIsVisible(true)}
+            >
+              <FaBrandsGoogle />
+              Google Pay
+            </button>
           </>
         </Show>
         <div class={`w-full flex-col items-center justify-center gap-5 ${payCashIsVisible() ? "flex" : "hidden"}`}>
-          <button class="btn btn-ghost" onClick={() => setPayCashIsVisible(false)}>Return to payment options</button>
           <CashProgramOptions />
           <p class="opacity-70 text-wrap text-center">
             You must provide payment to the coach in-person every month (cash or check).
           </p>
+          <button class="btn btn-ghost" onClick={() => setPayCashIsVisible(false)}>Return to payment options</button>
         </div>
         <div class={`w-full flex flex-col justify-center items-center gap-5 ${pricingTableIsVisible() ? "visible" : "invisible"}`}>
-          <button class="btn btn-ghost" onClick={() => setPricingTableIsVisible(false)}>Return to payment options</button>
           <div ref={divRef} class="w-full"></div>
+          <button class="btn btn-ghost" onClick={() => setPricingTableIsVisible(false)}>Return to payment options</button>
         </div>
       </div>
     </section>
