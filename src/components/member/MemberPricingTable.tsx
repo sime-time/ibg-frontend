@@ -154,21 +154,13 @@ export default function MemberPricingTable() {
               <SiCashapp />
               Cash App
             </button>
-            <button
-              class="btn w-full md:w-fit  btn-primary text-purple-200 bg-purple-600 border-purple-700 focus:bg-purple-700 hover:bg-purple-700 hover:border-purple-700 text-lg"
-              onClick={() => setPayCashIsVisible(true)}
-            >
-              <SiZelle />
-              Zelle
-            </button>
           </>
         </Show>
         <div class={`w-full flex-col items-center justify-center gap-5 ${payCashIsVisible() ? "flex" : "hidden"}`}>
           <button class="btn btn-ghost" onClick={() => setPayCashIsVisible(false)}>Return to payment options</button>
           <CashProgramOptions />
           <p class="opacity-70 text-wrap text-center">
-            You must provide payment to the coach in-person every month (cash,
-            check, or Zelle).
+            You must provide payment to the coach in-person every month (cash or check).
           </p>
         </div>
         <div class={`w-full flex flex-col justify-center items-center gap-5 ${pricingTableIsVisible() ? "visible" : "invisible"}`}>
