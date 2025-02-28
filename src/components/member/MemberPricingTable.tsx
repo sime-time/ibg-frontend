@@ -1,6 +1,9 @@
-import { onMount, createSignal, onCleanup, Show, For } from "solid-js";
+import { onMount, createSignal, onCleanup, Show, For, Switch, Match } from "solid-js";
 import { usePocket } from "~/context/PocketbaseContext";
 import { plans, PlanProps } from "~/types/PlanType";
+import { SiCashapp, SiZelle } from 'solid-icons/si'
+import { FaBrandsCcApplePay } from 'solid-icons/fa'
+import { BsCreditCard2BackFill, BsCash } from 'solid-icons/bs'
 
 interface ClientSecretResponse {
   client_secret: string;
@@ -10,9 +13,9 @@ export default function MemberPricingTable() {
   const { memberPayWithCash, user } = usePocket();
   const [clientSecret, setClientSecret] = createSignal("");
   const [error, setError] = createSignal("");
-  const [payWithCashSelected, setPayWithCashSelected] = createSignal(false);
+  const [payCashIsVisible, setPayCashIsVisible] = createSignal(false);
   const [submitDisabled, setSubmitDisabled] = createSignal(false);
-  const additionalCashAmount: number = 10;
+  const [pricingTableIsVisible, setPricingTableIsVisible] = createSignal(false);
 
   let divRef!: HTMLDivElement;
 
@@ -105,7 +108,7 @@ export default function MemberPricingTable() {
               disabled={submitDisabled()}
               onClick={(e: Event) => setPayWithCash(e, plan.name)}
             >
-              {`${plan.name} ($${plan.price + additionalCashAmount} per month)`}
+              {`${plan.name} ($${plan.price} per month)`}
 
             </button>
           )}
@@ -116,34 +119,61 @@ export default function MemberPricingTable() {
 
   return (
     <section class="w-full flex flex-col mb-10">
-      <div ref={divRef} class="w-full"></div>
-      <div class="w-full flex flex-col justify-center">
-        <div class="divider my-10 text-xl font-bold">OR</div>
-        <div class="flex flex-col items-center justify-center gap-5 px-9">
-          <Show
-            when={payWithCashSelected()}
-            fallback={
-              <button
-                class="btn btn-success w-full md:w-fit text-lg"
-                onClick={() => setPayWithCashSelected(true)}
-              >
-                Pay with Cash
-              </button>
-            }
-          >
-            <CashProgramOptions />
-          </Show>
-          <Show when={error()}>
-            <p class="text-error">{error()}</p>
-          </Show>
-
+      <Show when={error()}>
+        <p class="text-error">{error()}</p>
+      </Show>
+      <div class="flex flex-col items-center justify-center gap-5 px-9 w-full" >
+        <Show when={!payCashIsVisible() && !pricingTableIsVisible()}>
+          <>
+            <h1 class="font-semibold text-2xl">How do you prefer to pay?</h1>
+            <button
+              class="btn btn-primary w-full md:w-fit text-lg"
+              onClick={() => setPayCashIsVisible(true)}
+            >
+              <BsCash />
+              Cash
+            </button>
+            <button
+              class="btn btn-secondary w-full md:w-fit text-lg"
+              onClick={() => setPricingTableIsVisible(true)}
+            >
+              <BsCreditCard2BackFill />
+              Credit/Debit
+            </button>
+            <button
+              class="btn btn-accent w-full md:w-fit text-lg "
+              onClick={() => setPricingTableIsVisible(true)}
+            >
+              <FaBrandsCcApplePay />
+              Apple Pay
+            </button>
+            <button
+              class="btn btn-success w-full md:w-fit text-lg"
+              onClick={() => setPricingTableIsVisible(true)}
+            >
+              <SiCashapp />
+              Cash App
+            </button>
+            <button
+              class="btn w-full md:w-fit  btn-primary text-purple-200 bg-purple-600 border-purple-700 focus:bg-purple-700 hover:bg-purple-700 hover:border-purple-700 text-lg"
+              onClick={() => setPayCashIsVisible(true)}
+            >
+              <SiZelle />
+              Zelle
+            </button>
+          </>
+        </Show>
+        <div class={`w-full flex-col items-center justify-center gap-5 ${payCashIsVisible() ? "flex" : "hidden"}`}>
+          <button class="btn btn-ghost" onClick={() => setPayCashIsVisible(false)}>Return to payment options</button>
+          <CashProgramOptions />
           <p class="opacity-70 text-wrap text-center">
-            {`Cash options are an additional $${additionalCashAmount} per month for processing fees.`}
+            You must provide payment to the coach in-person every month (cash,
+            check, or Zelle).
           </p>
-          <p class="opacity-70 text-wrap text-center">
-            You must provide payment to the coach in-person every month (cash or
-            check).
-          </p>
+        </div>
+        <div class={`w-full flex flex-col justify-center items-center gap-5 ${pricingTableIsVisible() ? "visible" : "invisible"}`}>
+          <button class="btn btn-ghost" onClick={() => setPricingTableIsVisible(false)}>Return to payment options</button>
+          <div ref={divRef} class="w-full"></div>
         </div>
       </div>
     </section>
