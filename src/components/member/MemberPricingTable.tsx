@@ -172,7 +172,6 @@ export default function MemberPricingTable() {
         </div>
         <div class={`w-full flex flex-col justify-center items-center gap-5 ${pricingTableIsVisible() ? "visible" : "invisible"}`}>
           <div ref={divRef} class="w-full"></div>
-          <button class="btn btn-ghost" onClick={() => setPricingTableIsVisible(false)}>Return to payment options</button>
         </div>
       </div>
     </section>

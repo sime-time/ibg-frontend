@@ -16,10 +16,7 @@ export default function FAQ() {
     },
     {
       question: "Where are you located?",
-      answer: (<>
-        <span class="font-bold">Indianapolis - </span><a href="https://maps.app.goo.gl/o84UTdgM7tfjiras7" target="_blank" class="link">4903 E 23rd St Indianapolis, IN 46218</a><br />
-        <span class="font-bold">Carmel - </span>Coming Soon
-      </>),
+      answer: <a href="https://maps.app.goo.gl/o84UTdgM7tfjiras7" target="_blank" class="link">4903 E 23rd St Indianapolis, IN 46218</a>
     },
     {
       question: "Can I pay membership dues in Cash App, Zelle, or cash?",
