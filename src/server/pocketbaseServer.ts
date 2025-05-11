@@ -24,8 +24,13 @@ export const signup = async (newMember: MemberData): Promise<TokenUser> => {
     await pb.collection("member").create(newMember);
     await pb.collection("member").requestVerification(newMember.email);
     return await loginMember(newMember.email, newMember.password);
-  } catch (err) {
-    console.error("Signup failed: ", err);
+  } catch (err: any) {
+    // check if the error is due to the email being already in use
+    // if it is, send the "invalid_email" code as a message to the client
+    if (err.response.data?.email?.code === "validation_invalid_email") {
+      console.error("Email already exists");
+      return { token: null, user: null, code: "validation_invalid_email" };
+    }
     return { token: null, user: null };
   }
 };

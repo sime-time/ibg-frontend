@@ -82,4 +82,5 @@ export interface PasswordUpdateResult {
 export interface TokenUser {
   token: string | null;
   user: AuthModel | null;
+  code?: string;
 }

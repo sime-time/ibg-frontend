@@ -1,6 +1,5 @@
 import { createSignal, Show } from "solid-js";
 import { FaSolidUser } from 'solid-icons/fa'
-import { IoClose } from "solid-icons/io";
 import { useNavigate } from "@solidjs/router";
 import * as v from "valibot";
 import { usePocket } from "~/context/PocketbaseContext";
@@ -36,10 +35,9 @@ export default function EmailSignUp() {
       // validate user input
       const validSignUp = v.parse(SignUpSchema, signUpData);
 
-      const successful: boolean = await signup(validSignUp);
-
-      if (successful === false) {
-        throw new Error("server_error");
+      const response = await signup(validSignUp);
+      if (!response.success) {
+        throw new Error("validation_invalid_email");
       } else {
         console.log("Member signed up successfully!");
         navigate("/member");
@@ -48,10 +46,10 @@ export default function EmailSignUp() {
     } catch (err) {
       if (err instanceof v.ValiError) {
         setError(err.issues[0].message);
-      } else if (err instanceof Error && err.message == "server_error") {
-        setError("Internal server error or email might already be taken. Try again later.")
+      } else if (err instanceof Error && err.message == "validation_invalid_email") {
+        setError('Email already in use.');
       } else {
-        setError("Email might already be taken. Go to login");
+        setError("Internal server error. Please try again.");
       }
     } finally {
       setSubmitDisabled(false);
@@ -153,7 +151,15 @@ export default function EmailSignUp() {
           </div>
 
           <Show when={error()}>
-            <p class="text-error">{error()}</p>
+            <p class="text-error">
+              {error() === 'Email already in use.' ? (
+                <>
+                  Email already in use. <a href="/login" class="link">Go to login.</a>
+                </>
+              ) : (
+                error()
+              )}
+            </p>
           </Show>
 
           <div class="form-control mt-3">

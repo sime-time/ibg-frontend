@@ -50,10 +50,10 @@ function NavMenuEnd(props: { onNavClick?: () => void }) {
       <Match
         when={!loggedIn()}
       >
-        <a href="/signup" class="btn btn-primary hidden sm:flex">
+        <a href="/signup" class="btn btn-primary btn-sm lg:btn-md">
           Sign Up
         </a>
-        <a href="/login" class="btn btn-outline">
+        <a href="/login" class="btn btn-outline btn-sm lg:btn-md">
           Log In
         </a>
       </Match>

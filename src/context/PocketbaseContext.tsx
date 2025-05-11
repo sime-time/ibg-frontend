@@ -52,7 +52,7 @@ import {
 
 interface PocketbaseContextType {
   user: Accessor<AuthModel>;
-  signup: (newMember: MemberData) => Promise<boolean>;
+  signup: (newMember: MemberData) => Promise<{ success: boolean, message: string }>;
   loginMember: (email: string, password: string) => Promise<boolean>;
   loginAdmin: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
@@ -142,15 +142,21 @@ export function PocketbaseContextProvider(props: ParentProps) {
     saveAuth(token(), user());
   });
 
-  const signupClient = async (newMember: MemberData): Promise<boolean> => {
-    try {
-      const auth: TokenUser = await signup(newMember);
-      saveAuth(auth.token, auth.user)
-      return true;
-    } catch (err) {
-      console.error(err);
-      return false;
+  const signupClient = async (newMember: MemberData) => {
+    const auth: TokenUser = await signup(newMember);
+
+    if (auth.code === "validation_invalid_email") {
+      return { success: false, message: "Email already in use. Please log in." };
     }
+
+    if (!auth.token || !auth.user) {
+      // if auth and token are null, then sign up went wrong
+      return { success: false, message: "Internal server error. Please try again." }
+    }
+
+    // happy path
+    saveAuth(auth.token, auth.user)
+    return { success: true, message: "Sign up successful" };
   };
 
 
