@@ -117,7 +117,7 @@ export default function Nav(props: ParentProps) {
               alt="IBG Logo"
               width="100%"
               height="auto"
-              class="max-w-20"
+              class="max-w-20 hidden md:block"
             />
             <img
               src="/images/indyboxing.png"
