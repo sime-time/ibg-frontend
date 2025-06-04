@@ -64,7 +64,7 @@ export default function CoachDashboard() {
                 <Stats members={members} revenue={revenue()} membersAttended={membersAttendedThisMonth} />
                 <MonthlyRevenue revenueData={revenue()} />
                 <MembersAcquired members={members} />
-                <TopAttendance membersAttended={membersAttendedThisMonth} />
+                {/* <TopAttendance membersAttended={membersAttendedThisMonth} /> */}
               </Show>
             </Suspense>
           </div>

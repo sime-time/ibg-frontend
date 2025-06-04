@@ -1,4 +1,4 @@
-import { createMemo, Resource } from "solid-js";
+import { Resource } from "solid-js";
 import { MemberRecord } from "~/types/UserType";
 import { FaSolidFileInvoiceDollar } from 'solid-icons/fa'
 import { FaSolidUserPlus } from 'solid-icons/fa'
@@ -7,7 +7,6 @@ import { TbRefresh } from 'solid-icons/tb'
 interface StatsProps {
   members: Resource<MemberRecord[]>;
   revenue: Record<string, number>;
-  membersAttended: Resource<MemberRecord[]>;
 }
 
 export default function Stats(props: StatsProps) {
@@ -19,13 +18,7 @@ export default function Stats(props: StatsProps) {
       maximumFractionDigits: 0,
     }).format(num);
   }
-  const topMember = createMemo(() => {
-    const members = props.membersAttended() ?? []; // Ensure we have an array
-    return members.reduce((max, member) =>
-      (member.attendance ?? 0) > (max.attendance ?? 0) ? member : max,
-      members[0] ?? null
-    );
-  });
+
 
   return (
     <div class="flex flex-col items-center gap-3">
@@ -53,18 +46,6 @@ export default function Stats(props: StatsProps) {
           </div>
         </div>
 
-        <div class="stat">
-          <div class="stat-figure mt-2">
-            <div class="avatar">
-              <div class="w-16 rounded-full">
-                <img src={topMember()?.avatarUrl} />
-              </div>
-            </div>
-          </div>
-          <div class="stat-title">{topMember()?.name}</div>
-          <div class="stat-value text-secondary">{topMember()?.attendance}</div>
-          <div class="stat-desc">Days this month</div>
-        </div>
       </div>
       <button class="btn btn-ghost" onClick={() => location.reload()}>Refresh data <TbRefresh class="size-5" /></button>
     </div>
