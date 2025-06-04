@@ -39,7 +39,7 @@ export function CoachContextProvider(props: ParentProps) {
     return getMembersAttendedThisMonth(members);
   });
 
-  const [monthsAgo, setMonthsAgo] = createSignal(12);
+  const [monthsAgo, setMonthsAgo] = createSignal(6);
   const fetchRevenue = async (monthsAgo: number) => {
     try {
       const response = await fetch(

@@ -5,7 +5,7 @@ const getShortMonthNames = (labels: string[]): string[] => {
   return labels.map(label => {
     const [year, month] = label.split('-').map(Number);
     const date = new Date(year, month - 1); // months are 0-indexed in JS
-    return new Intl.DateTimeFormat('en-US', { month: 'short', year: '2-digit' }).format(date);
+    return new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' }).format(date);
   });
 };
 
@@ -15,6 +15,7 @@ interface MonthlyRevenueProps {
 
 export default function MonthlyRevenue(props: MonthlyRevenueProps) {
   let canvasRef!: HTMLCanvasElement;
+
 
   createEffect(async () => {
     const data = props.revenueData;
@@ -28,21 +29,17 @@ export default function MonthlyRevenue(props: MonthlyRevenueProps) {
   const makeChart = async (chartData: number[], chartLabels: string[]) => {
     const ctx = canvasRef.getContext("2d") as ChartItem;
     new Chart(ctx, {
-      type: "line",
+      type: "bar", // Changed from "line" to "bar"
       data: {
         labels: chartLabels,
         datasets: [
           {
             label: "USD",
             data: chartData,
-            borderColor: "#4CAF50", // Softer green line
-            backgroundColor: "rgba(76, 175, 80, 0.2)", // Lighter green fill
-            borderWidth: 4, // Moderate line thickness
-            pointRadius: 6, // Slightly smaller dots
-            pointHoverRadius: 8, // Larger dots on hover
-            pointBackgroundColor: "#36B37E", // Matching green circles
-            tension: 0.3, // Smooth curves
-            fill: true, // Fill under the line
+            backgroundColor: "rgba(76, 175, 80, 0.2)", // Color of the bars
+            borderColor: "#36B37E", // Border color of the bars
+            borderWidth: 1,
+            // pointRadius, tension, fill are not applicable to bar charts
           },
         ],
       },
@@ -148,7 +145,7 @@ export default function MonthlyRevenue(props: MonthlyRevenueProps) {
 
 
   return (
-    <div class="w-full max-w-4xl mx-auto p-4">
+    <div class="w-full max-w-4xl mx-auto p-4 min-h-64 md:min-h-0">
       <canvas ref={canvasRef}></canvas>
     </div >
   );

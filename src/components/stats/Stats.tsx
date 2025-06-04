@@ -22,7 +22,7 @@ export default function Stats(props: StatsProps) {
 
   return (
     <div class="flex flex-col items-center gap-3">
-      <div class="stats shadow">
+      <div class="stats stats-vertical lg:stats-horizontal shadow">
 
         <div class="stat">
           <div class="stat-figure text-[#4CAF50] mt-2">
@@ -34,7 +34,7 @@ export default function Stats(props: StatsProps) {
           <div class="stat-desc">Subscription payments</div>
         </div>
 
-        <div class="stat flex items-center justify-center flex-row-reverse">
+        <div class="stat">
           <div class="stat-figure text-primary mt-2">
             <FaSolidUserPlus class="size-10" />
           </div>
@@ -42,7 +42,6 @@ export default function Stats(props: StatsProps) {
             <div class="stat-title">Total Members</div>
             <div class="stat-value text-primary">{props.members()?.length}</div>
             <div class="stat-desc">Signed up</div>
-
           </div>
         </div>
 

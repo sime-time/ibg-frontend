@@ -37,11 +37,10 @@ export default function CoachDashboard() {
     refetchMembers,
     revenue,
     monthsAgo,
-    membersAttendedThisMonth
   } = useCoachContext();
 
   return (
-    <div class="w-full flex justify-center mb-20">
+    <div class="w-screen flex justify-center mb-20">
       {/* Render based on currentView */}
       <Switch>
         <Match when={currentView() === View.Members}>
@@ -61,7 +60,7 @@ export default function CoachDashboard() {
               </div>}
             >
               <Show when={members() && revenue()}>
-                <Stats members={members} revenue={revenue()} membersAttended={membersAttendedThisMonth} />
+                <Stats members={members} revenue={revenue()} />
                 <MonthlyRevenue revenueData={revenue()} />
                 <MembersAcquired members={members} />
                 {/* <TopAttendance membersAttended={membersAttendedThisMonth} /> */}
