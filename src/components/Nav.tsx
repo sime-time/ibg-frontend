@@ -12,11 +12,6 @@ export function NavMenu(props: { onNavClick?: () => void }) {
         </a>
       </li>
       <li>
-        <a href="/our-team" onClick={props.onNavClick}>
-          Our Team
-        </a>
-      </li>
-      <li>
         <a href="/pricingschedule" onClick={props.onNavClick}>
           Schedule
         </a>
