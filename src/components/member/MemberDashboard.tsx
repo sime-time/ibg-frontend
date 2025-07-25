@@ -88,7 +88,7 @@ export default function MemberDashboard() {
               <span class="loading loading-spinner loading-md"></span>
             ) : (
               <>
-                <BsCreditCard2BackFill class="size-5" /> Manage Subscription
+                <BsCreditCard2BackFill class="size-5" /> Cancel Subscription
               </>
             )}
           </button>
